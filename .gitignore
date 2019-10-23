@@ -1,0 +1,11 @@
+# Unix/emacs backup files
+*~
+\#*\#
+
+# emacs/vi tag files
+TAGS
+tags
+
+# Our compiled java class files
+api/swipr/src/main/java/com/swipr/*.class
+frontend/*.class
