@@ -7,7 +7,7 @@ VOLUME /tmp
 # Add the jar file to the container
 ARG JAR=./target/swipr-0.0.1-SNAPSHOT.jar
 
-ADD ${JAR} swipr.jar
+COPY ${JAR} /swipr.jar
 
 # expose port 8080 on the container
 EXPOSE 8080

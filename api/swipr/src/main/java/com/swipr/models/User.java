@@ -1,6 +1,5 @@
 package com.swipr.models;
 
-import org.springframework.*;
 import lombok.*;
 
 // potential user model example

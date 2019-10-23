@@ -14,6 +14,7 @@ public class BuyerController {
     public ResponseEntity<?> testEndpoint() {
         return new ResponseEntity<>("Buyer test working\n", HttpStatus.OK);
     }
+
 }
 
 

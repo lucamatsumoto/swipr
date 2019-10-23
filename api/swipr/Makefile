@@ -17,7 +17,7 @@ docker-build:
 
 # runs the application in detached mode
 docker-run:
-	docker run -d -p 8080:8080 swipr
+	docker run -d -p 5000:8080 swipr
 
 # see container logs
 docker-log:

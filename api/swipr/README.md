@@ -57,5 +57,5 @@ See the docker logs
 
 Feel free to create directories as necessary. This is just a standard organization for Spring Boot apps.
 
-For now, I have set up two controllers that simply returns a string when we hit that endpoint. Start the application and run `curl localhost:8080/buyer/test` or `curl localhost:8080/seller/test` from your command line or open up `localhost:8080/buyer/test` to see the response. 
+For now, I have set up two controllers that simply returns a string when we hit that endpoint. Start the application and run `curl localhost:5000/buyer/test` or `curl localhost:5000/seller/test` from your command line or open up `localhost:5000/buyer/test` to see the response. 
 
