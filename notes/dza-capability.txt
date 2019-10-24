@@ -1,0 +1,10 @@
+David Akeley: Most of my software development experience has come from delivering C and C++ programs with demanding performance requirements. Such projects include
+
+MediocrePy: a C and Python module for averaging together stacks of telescope images for noise reduction. Written with Intel AVX SIMD instructions and pthreads.
+
+JellyMcJelloFace: 3rd place entry in UCLA CS174A Fall 2017 (Intro to Computer Graphics). Written with C and WebAssembly for the jelly simulation, and WebGL for reflection and refraction effects.
+
+Undisclosed Project: I wrote a multithreaded C++ particle simulation library for an undisclosed educational game about cancer treatment. The game was written with Unity Engine, which made the task particularly difficult as I had to integrate my multithreaded C++ library with a fundamentally single-threaded C# game engine.
+
+For this project, I will be working with Andrew and Luca on the Java backend. Since I don't have any web development experience, I warmed up by writing an extremely bare-bones prototype with C++ and websockets (https://github.com/akeley98/swipes0). Java and web technologies are both a bit outside my traditional comfort zone, but I am confident that I will be able to adapt my skills to this new area.
+
