@@ -27,10 +27,9 @@ A list of matched sellers appears in real time at the bottom of the buyer dashbo
 
 Seller Dashboard Results List
 
-Sellers see the aforementioned list of interested buyers. Similar to the buyers' result lists, each list entry includes an "interested" button. When pressed and confirmed, a notification is sent to the selected buyer.
+Sellers see the aforementioned list of interested buyers -- these entries include the buyer's preferred time and dining halls (but not the buyer's price, to avoid pricing conflicts). Similar to the buyers' result lists, each list entry includes an "interested" button. When pressed and confirmed, a notification is sent to the selected buyer.
 
 Unlisting
 
 Both buyers and sellers can unlist themselves, preventing the service from attempting to find more matches for them. Unlisted buyers can still see the list of sellers that they had previously indicated interest in, and unlisted sellers keep their list of interested buyers.
-
 
