@@ -1,0 +1,21 @@
+Buyer Dashboard & Seller Dashboard
+
+The app offers both a buyers' and sellers' dashboard, which the app user can choose between using two tabs at the top of the screen. They act as the "main menu" of the app. Most dashboard features are shared between the buyers' and sellers' dashboards.
+
+Dining Hall Selection
+
+The dashboards contain four checkboxes corresponding to the four UCLA dining halls. Users check these checkboxes to indicate the set of dining halls that they are interested in buying/selling swipes for. A buyer and a seller can be matched only if they have at least one such dining hall in common.
+
+Bid Pricing
+
+At a minimum, we will provide a slider to select the price users are willing to pay/accept in order to buy/sell a swipe. A buyer and seller can be matched only if the buyer's bid is at least as much as the seller's asking price.
+
+We're also considering adding a "price slip" feature: users can specify a dollars-per-hour price slip factor, and the app will periodically decrease the user's asking price down to a seller-specified minimum price. A similar but reversed system can be provided for buyers. This feature is similar in concept to a Dutch Auction, and can make it more likely that user bids are answered.
+
+Timing
+
+Buyer Dashboard Results List
+
+Seller Unlisting
+
+
