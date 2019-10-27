@@ -5,39 +5,42 @@ The backend for Swipr is written in Java using the Spring web framework and mave
 
 ## Dependencies ##
 
-- Maven 3.6.0
-- Optional: Docker >= 19.0
+Please make sure you have the following before you get started.
+- Optional: Maven 3.6.0
+- Docker >= 19.0 (Might be difficult for Windows users but there is a way I believe) and docker-compose >= 1.24.1
 - Java 8 (Most well documented/industry standard)
 
 ## Getting Started ##
+We are heavily relying on Docker and docker-compose to build and run our application. This allows us to reduce the number of dependencies we download, create database/multiple instances of applications simultaneously, and smoothen development. 
 
-We have created a Makefile to simplify the process of building and running our app.
+To build the applicaton use
 
-To build the app:
+`make build`
 
-`mvn clean install`
+This uses the maven dependency manager inside of the container to compile and build a jar file for the application to run. Whenever you want to add a library/dependency or change some code, go update the `pom.xml` file and run this command.
 
-To run the app:
+To run the application use
 
-`mvn spring-boot:run`
+`make run` or `make run-detached`
 
-To create a jar file in the targets directory
+This will spin up the application along with the database it is using.
 
-`mvn clean package`
+To stop the application use
 
-If you have Docker on your system, 
+`make stop`
 
-Build the app
+To view logs use
 
-`make docker-build`
+`make logs`
 
-Run the app
+To delete all persistent data
 
-`make docker-run`
+`make purge`
 
-See the docker logs
+## API Documentation ##
 
-`make docker-log`
+We have set up an API Documentation service called Swagger. This provides a useful tool for frontend and backend developers to a) test inputs and outputs b) view documentation and c) (mainly for frontend devs) know the shape of the data. After starting your application, go to `http://localhost:3000/swagger-ui.html#/` to check it out! (It's really neat)
+
 
 ## Notes for Backend Developers ##
 
@@ -53,9 +56,9 @@ See the docker logs
 
 `src/main/java/com/swipr/utils` is where any helper classes/functions will go.
 
-`src/main/java/com/swipr/service` is pretty much where the business logic goes. Things like DB transactions (if we need them).
+`src/main/java/com/swipr/repository` is where the DB transaction logic goes.
+
+`src/main/java/com/swipr/auth` is where the Google/Facebook authentication logic goes.
 
 Feel free to create directories as necessary. This is just a standard organization for Spring Boot apps.
-
-For now, I have set up two controllers that simply returns a string when we hit that endpoint. Start the application and run `curl localhost:5000/buyer/test` or `curl localhost:5000/seller/test` from your command line or open up `localhost:5000/buyer/test` to see the response. 
 

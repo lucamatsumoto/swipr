@@ -1,30 +1,27 @@
 .SILENT:
 
-# create a jar file to be executed in Docker container/command line
-package:
-	mvn clean package -DskipTests
-
+# build the app, compile dependencies etc. 
 build:
-	mvn clean install -DskipTests
-
-run:
-	mvn spring-boot:run
-
-# build the jar and docker image
-docker-build:
-	mvn clean package -DskipTests
 	docker-compose build
 
-# runs the application in detached mode
-docker-run:
-	docker-compose up
-	# if you wanna remove the volumes (persistent data)
-	# docker-compose rm -v
+# Deletes volumes/persistent data
+purge:
+	docker-compose rm -v
 
-# shut down docker instance
-docker-down:
+# run the application
+run:
+	docker-compose up
+
+# run the application in detached mode so the app runs in the background
+run-detached:
+	docker-compose up -d
+
+# Shut down the application
+stop:
 	docker-compose down 
 
-# see container logs
-docker-log:
+# view application logs
+logs:
 	docker-compose logs
+
+
