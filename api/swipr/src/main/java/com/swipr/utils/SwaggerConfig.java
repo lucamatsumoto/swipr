@@ -28,7 +28,7 @@ public class SwaggerConfig {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder().
             title("Swipr backend API")
-            .version("0.1")
+            .version("0.0.1")
             .description("Public API Endpoints for Swipr")
             .contact(new Contact("Luca Matsumoto", "https://github.com/lucamatsumoto/swipr", "lucamatsumoto@gmail.com"))
             .build();
