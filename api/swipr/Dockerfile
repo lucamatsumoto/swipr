@@ -1,16 +1,19 @@
+# Two stage Pipeline: Build Stage
+FROM maven:3.6.0-jdk-8-alpine AS maven
+
+COPY src /swipr/src
+
+COPY pom.xml /swipr
+
+RUN mvn -f /swipr/pom.xml clean package -DskipTests
+
+# Package
 # Create java 8 runtime
 FROM openjdk:8-jdk-alpine
 
-# Create a volume to maintain/persist container data
-VOLUME /tmp
+# Copy to main path
+COPY --from=maven /swipr/target/swipr-0.0.1-SNAPSHOT.jar /swipr/swipr.jar
 
-# Add the jar file to the container
-ARG JAR=./target/swipr-0.0.1-SNAPSHOT.jar
+# Run the jar file. JVM sometimes bottlenecks on random number generation so use .urandom
+ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar","/swipr/swipr.jar"]  
 
-COPY ${JAR} /swipr.jar
-
-# expose port 8080 on the container
-EXPOSE 8080
-
-# execute the command in the container
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/swipr.jar"]

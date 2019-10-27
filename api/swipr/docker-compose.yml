@@ -1,0 +1,44 @@
+version: '3.7'
+
+services:
+  db:
+    image: postgres:11.1
+    container_name: "swipr-db"
+    expose:
+      - 5432
+    ports:
+      - 5432:5432
+    volumes:
+      # - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./tmp:/var/lib/postgresql/data
+    environment:
+      # use default postgres user for now, we can change this later
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=swiprdb
+      - POSTGRES_PORT=5432
+    networks:
+      - backend
+
+  cache:
+    image: redis
+    container_name: "swipr-cache"
+    ports:
+      - 6379:6379
+    networks:
+      - backend
+    
+  web:
+    build: .
+    restart: always
+    volumes:
+      - .:/swipr-backend
+    ports:
+      - 3000:8080
+    networks:
+      - backend
+    depends_on:
+      - db
+      - cache
+
+networks:
+  backend:
