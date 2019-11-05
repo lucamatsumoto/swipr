@@ -16,9 +16,11 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_DB=swiprdb
       - POSTGRES_PORT=5432
+      # Make sure to add a database password and user later
     networks:
       - backend
-
+  
+  # Might not need this but include for now
   cache:
     image: redis
     container_name: "swipr-cache"
@@ -36,6 +38,8 @@ services:
       - 3000:8080
     networks:
       - backend
+    environment:
+      - JASYPT_ENCRYPT=${JASYPT_ENCRYPT}
     depends_on:
       - db
       - cache

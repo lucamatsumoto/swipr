@@ -1,11 +1,16 @@
 # Two stage Pipeline: Build Stage
 FROM maven:3.6.0-jdk-8-alpine AS maven
 
-COPY src /swipr/src
+WORKDIR /swipr 
 
 COPY pom.xml /swipr
 
+RUN mvn dependency:go-offline
+
+COPY src /swipr/src
+
 RUN mvn -f /swipr/pom.xml clean package -DskipTests
+
 
 # Package
 # Create java 8 runtime
