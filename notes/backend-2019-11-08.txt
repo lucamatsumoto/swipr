@@ -1,0 +1,97 @@
+TERMINOLOGY DECISION:
+
+bid = a buyer's listing (e.g. pay <=$8.00 from 5-7pm for bplate).
+offer = a seller's listing (e.g. accept $6.00 from 6-7pm for covel or de neve)
+query: info within a Bid/Offer object that is used to find matches
+    (for now, time range, dining hall bitfield, price in cents)
+
+USER MODEL:
+
+For now, Luca is responsible for the user model (authentication,
+linked Venmo accounts, etc.).
+
+Users are identified with an Integer (as opposed to int, required by
+Spring?)
+
+Each new/modified offer or bid will be identified with a long. We will
+assign these by keeping a global AtomicLong and incrementing it for
+each new offer or bid (Question: is there one atomic shared by both
+offers and bids, or two atomics, one for each?)
+
+Users can only have one active bid, or one active offer, at a time.
+
+Minimize implementation details of networking throughout the system:
+identify the "owner" of every object with these user or bid/offer IDs,
+and translate to network connections, etc. only at the last minute.
+This will be done with various Maps from Integer to sessions, etc.
+
+BUSINESS LOGIC:
+
+Andrew and David (me) will work on the business logic this week. Our
+tentative plan is to create
+
+1. A singleton mediator class, Matchmaker, that is responsible for
+   finding matches between offers and bids (overlapping dining halls
+   and time periods, and compatible price requests).
+
+2. Two observer interfaces, BidListener and OfferListener, that will
+   have callbacks called when suitable bids/offers are found, or
+   previously matched bids/offers are cancelled.
+
+The benefit of this design is that it allows implementation details of
+responding to found bids/offers (e.g. delivering notifications) to be
+hidden behind the callback, and the business logic can be written
+without having any knowledge of the networking code details. This is
+reminiscent of Haskell's separation of code into "pure" (functional)
+and "impure" (IO) sections -- indeed, we can write the core of the
+Matchmaker class in a pure functional style if we prefer.
+
+(Besides being helpful because of my low knowledge of writing network
+code, this design will also give us somithing to write about on our
+changability matrix. The HTTP-to-WebSockets transition comes to mind.)
+
+Tentative class outline:
+
+interface BidListener {
+    // Called whenever the Matchmaker finds a Bid that matches the
+    // query used to register the BidListener with the Matchmaker.
+    void onBidMatchFound(Bid);
+
+    // Called when a Bid that previously triggered onBidMatchFound is
+    // deleted from the Matchmaker.
+    void onBidCancelled(Bid);
+}
+
+interface OfferListener {
+    // Called whenever the Matchmaker finds an Offer that matches the
+    // query used to register the OfferListener with the Matchmaker.
+    void onOfferMatchFound(Offer);
+
+    // Called when an Offer that previously triggered onOfferMatchFound
+    // is deleted from the Matchmaker.
+    void onOfferCancelled(Offer);
+}
+
+class Matchmaker {
+    // Return the singleton instance of Matchmaker.
+    public static Matchmaker getSI();
+
+    // Register the BidListener with the Matchmaker, using query
+    // info from the given Offer. The given Offer should not have
+    // any of its query info modified after it is passed to this function.
+    //
+    // Deregisters any offers/bids with the same user id as the given Offer.
+    // Returns true iff any such offers/bids were found.
+    public bool updateOffer(Offer, BidListener);
+
+    // Pretty much the same as updateOffer, but with Bid and Offer reversed.
+    public bool updateBid(Bid, OfferListener);
+
+    // Deregisters any offers/bids with user id matching the given id.
+    // This prevents further matches with those offers/bids from being made,
+    // informs listeners already matched of the cancellation, and deregisters
+    // the listener provided with the deleted offer/bid.
+    //
+    // Returns true iff any such deletions occured. 
+    public bool deleteByUserId(Integer);
+}
