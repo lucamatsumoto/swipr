@@ -1,89 +1,56 @@
 package com.swipr.controllers;
 
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-
-import org.springframework.web.bind.annotation.RequestMethod;
-
-import java.util.List;
-
-import javax.validation.Valid;
-
 import com.swipr.models.User;
 import com.swipr.repository.UserRepository;
-
+import com.swipr.utils.UserSessionManager;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.messaging.simp.annotation.SendToUser;
+import org.springframework.stereotype.Controller;
 
-@RestController
-@Api(value = "UserController", description = "Operations pertaining to creating, updating, and getting user")
+@Controller
 public class UserController {
 
     @Autowired
     private UserRepository userRepository;
 
-    // Sample stuff
-    @ApiOperation(value = "Test endpoint", response = ResponseEntity.class)
-    @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "User test working\n", response = String.class)
-    })
-    @RequestMapping(value="/user/test", method=RequestMethod.GET) 
-    public ResponseEntity<?> testEndpoint() {
-        return new ResponseEntity<>("User test working\n", HttpStatus.OK);
+    @Autowired
+    private SimpMessageSendingOperations messagingTemplate;
+
+    // UserSessionManager object contains information about each sessions ID, headers, and other important information and their corresponding User objects
+    private UserSessionManager userSessionManager = UserSessionManager.getInstance();
+
+    @MessageMapping("/all")
+    @SendToUser("/queue/reply")
+    public void getUsers(SimpMessageHeaderAccessor headerAccessor) {
+        messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/reply", userRepository.findAll(), headerAccessor.getMessageHeaders());
     }
 
-    @ApiOperation(value = "Create a user/Check if the user exists", response = ResponseEntity.class)
-    @ApiResponses(value = {
-        @ApiResponse(code = 202, message = "User found", response = User.class),
-        @ApiResponse(code = 201, message = "User created", response = User.class)
-    })
-    @RequestMapping(value="/user/create", method=RequestMethod.POST)
-    public ResponseEntity<?> createUser(@Valid @RequestBody User user) {
-        // If the user has already been created, then return the created user
-        List<User> users = userRepository.findByEmail(user.getEmail());
-        if (!users.isEmpty()) {
-            // Assume that there will be unique emails
-            return new ResponseEntity<>(users.get(0), HttpStatus.ACCEPTED);
-        }
-        // Otherwise create the user and save in our repository
-        userRepository.save(user);
-        return new ResponseEntity<>(user, HttpStatus.CREATED);
-    }
-
-    @ApiOperation(value = "Get a list of all users. Use to test if DB is working", response = ResponseEntity.class)
-    @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "List of users found", response = User.class)
-    })
-    @RequestMapping(value="/user/all", method=RequestMethod.GET)
-    public ResponseEntity<?> getAllUsers() {
-        // get all users and return them
-        return new ResponseEntity<>(userRepository.findAll(), HttpStatus.OK);
-    }
-
-    @ApiOperation(value = "Update the Venmo Account of a user", response = ResponseEntity.class)
-    @ApiResponses(value = {
-        @ApiResponse(code = 201, message = "Updated user", response = User.class),
-        @ApiResponse(code = 400, message = "JDBC database driver found an error", response = String.class)
-    })
-    @RequestMapping(value="/user/update", method=RequestMethod.PUT)
-    public ResponseEntity<?> updateUser(@Valid @RequestBody User user) {
-        // search for the user's email and update their venmo account
-        try {
-            userRepository.updateUserByEmail(user.getVenmo(), user.getEmail());
-            return new ResponseEntity<>(user, HttpStatus.ACCEPTED);   
-        }
-        // Something went wrong with the JDBC driver
-        catch (DataAccessException e) {
-            return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.BAD_REQUEST);
+    // This will be replaced by authentication later
+    @MessageMapping("/create") 
+    @SendToUser("/queue/reply")
+    public void createUser(@Payload User user, SimpMessageHeaderAccessor headerAccessor) {
+        // Make sure to add error handling later as well 
+        System.out.println(headerAccessor.getSessionId());
+        if (userRepository.findByEmail(user.getEmail()).isEmpty()) {
+            userRepository.save(user);
         } 
+        else {
+            user = userRepository.findByEmail(user.getEmail()).get(0);
+        }
+        // Keep track of a map of users to sessionId in RAM
+        userSessionManager.addSession(user, headerAccessor);
+        messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/reply", user, headerAccessor.getMessageHeaders()); 
+    } 
+
+    @MessageMapping("/delete")
+    @SendToUser("/queue/reply")
+    public void deleteUser(@Payload User user, SimpMessageHeaderAccessor headerAccessor) {
+        userRepository.delete(user);
+        messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/reply", "deleted user with email " + user.getEmail(), headerAccessor.getMessageHeaders());
     }
 
 }

@@ -9,3 +9,6 @@ tags
 # Our compiled java class files
 api/swipr/src/main/java/com/swipr/*.class
 frontend/*.class
+
+### Vscode ###
+.vscode

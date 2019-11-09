@@ -16,9 +16,6 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -26,40 +23,31 @@ import io.swagger.annotations.ApiModelProperty;
 @Data
 @Table(name="Users")
 @NoArgsConstructor
-@ApiModel(description = "User model that is stored in Postgres. It is also the superclass of buyer and sellers.", subTypes = {Buyer.class, Seller.class})
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @ApiModelProperty(hidden = true)
     private Integer id; // Will serve as the primary key in our SQL DB
 
-    @ApiModelProperty(notes = "The user's first name", required = true)
     @NotBlank(message = "first name is mandatory")
     private String firstName;
     
-    @ApiModelProperty(notes = "The user's last name", required = true)
     @NotBlank(message = "last name is mandatory")
     private String lastName;
 
-    @ApiModelProperty(notes = "The user's email", required = true)
     @NotBlank(message = "email is mandatory")
     private String email;
 
-    @ApiModelProperty(notes = "The user's venmo account", required = false)
     private String venmo;
 
     // Mark some properties with @transient so that they aren't stored in the DB
     @Transient
-    @ApiModelProperty(hidden = true)
     private boolean here;
 
     @Transient
-    @ApiModelProperty(hidden = true)
     private boolean matchedOffer;
 
     @Transient
-    @ApiModelProperty(hidden = true)
     private Set<String> preferredDiningHalls;
 
     public User(String firstName, String lastName, String email) {
