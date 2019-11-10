@@ -50,57 +50,51 @@ Matchmaker class in a pure functional style if we prefer.
 code, this design will also give us somithing to write about on our
 changability matrix. The HTTP-to-WebSockets transition comes to mind.)
 
-Tentative class outline:
+TENTATIVE class outline:
 
-interface BidListener {
-    // Called whenever the Matchmaker finds a Bid that matches the
-    // query used to register the BidListener with the Matchmaker.
-    void onBidMatchFound(Bid);
+NOTE: Look at the real Matchmaker.java for actual design; Andrew & I
+deviated from this tentative design.
 
-    // Called when a Bid that previously triggered onBidMatchFound is
-    // deleted from the Matchmaker.
-    void onBidCancelled(Bid);
+public interface SellQueryListener {
+    // Called whenever the Matchmaker finds a SellQuery that matches
+    // the BuyQuery that was used to register this SellQueryListener
+    // with the Matchmaker.
+    public void onMatchFound(SellQuery foundSellQuery);
+
+    // Called whenever expiredSellQuery is deleted from the Matchmaker,
+    // and if expiredSellQuery previously triggered onMatchFound.
+    public void onMatchCancelled(SellQuery expiredSellQuery);
 }
 
 // Removed BidListener because only buyers will receive notifications
 // for matched seller offers -- sellers will only be notified when a
 // matched buyer manually indicates interest.
 
-interface OfferListener {
-    // Called whenever the Matchmaker finds an Offer that matches the
-    // query used to register the OfferListener with the Matchmaker.
-    void onOfferMatchFound(Offer);
-
-    // Called when an Offer that previously triggered onOfferMatchFound
-    // is deleted from the Matchmaker.
-    void onOfferCancelled(Offer);
-}
-
-Bid { 11, FEAST|DE_NEVE, 800, 28934923 };
-Bid { 11, FEAST, 800, 28234985 };
-
-class Matchmaker {
+// Ret-conned by David & Andrew.
+public class Matchmaker {
     // Return the singleton instance of Matchmaker.
-    public static Matchmaker getSI();
+    public static Matchmaker getInstance();
 
-    // Register the OfferListener with the Matchmaker, using query
-    // info from the given Bid. The given Bid shall not have any of
-    // its query info modified after it is passed to this function.
-    //
-    // Deregisters any offers/bids with the same user id as the given Bid.
-    // Returns true iff any such offers/bids were found.
-    public bool updateBid(Bid, OfferListener);
+    // Register the SellQueryListener with the Matchmaker, using query
+    // info from the given BuyQuery. Deregisters any queries with the
+    // same user id as the given BuyQuery.  Returns true iff any such
+    // queries were deleted.
+    public synchronized boolean updateBuyQuery(
+        BuyQuery newBuyQuery,
+        SellQueryListener listener);
 
-    // Add the given Offer to the list of candidate offers for buyer/seller
-    // matches. The given Offer shall not have any of its query info changed
-    // after it is passed to this function.
-    public bool updateOffer(Offer);
+    // Add the given sell query to the list of candidate sell queries
+    // for buy/sell matches.
+    public synchronized boolean updateSellQuery(SellQuery newSellQuery);
 
     // Deregisters any offers/bids with user id matching the given id.
     // This prevents further matches with those offers/bids from being made,
     // informs listeners already matched of the cancellation, and deregisters
     // the listener provided with the deleted offer/bid.
     //
-    // Returns true iff any such deletions occured.
-    public bool deleteByUserId(Integer);
+    // Returns true iff any such deletion occured. Since there should only
+    // ever be 1 query (buy or sell) for a given userId, we never expect
+    // do more than 1 deletion per deleteByUserId call -- the assertions
+    // below check for this.
+    public synchronized boolean deleteByUserId(long userId);
 }

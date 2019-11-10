@@ -10,4 +10,21 @@ public class BuyQuery extends Query {
     {
         super(userId, timeRangeStart, timeRangeEnd, priceCents, diningHallBitfield);
     }
+
+    @Override
+    public boolean equals(Object otherObject) {
+        BuyQuery other;
+        try {
+            other = (BuyQuery) otherObject;
+        } catch (ClassCastException ignored) {
+            return false;
+        }
+
+        return
+            userId == other.userId &&
+            timeRangeStart == other.timeRangeStart &&
+            timeRangeEnd == other.timeRangeEnd &&
+            priceCents == other.priceCents &&
+            diningHallBitfield == other.diningHallBitfield;
+    }
 }
