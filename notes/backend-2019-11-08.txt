@@ -62,6 +62,10 @@ interface BidListener {
     void onBidCancelled(Bid);
 }
 
+// Removed BidListener because only buyers will receive notifications
+// for matched seller offers -- sellers will only be notified when a
+// matched buyer manually indicates interest.
+
 interface OfferListener {
     // Called whenever the Matchmaker finds an Offer that matches the
     // query used to register the OfferListener with the Matchmaker.
@@ -72,26 +76,31 @@ interface OfferListener {
     void onOfferCancelled(Offer);
 }
 
+Bid { 11, FEAST|DE_NEVE, 800, 28934923 };
+Bid { 11, FEAST, 800, 28234985 };
+
 class Matchmaker {
     // Return the singleton instance of Matchmaker.
     public static Matchmaker getSI();
 
-    // Register the BidListener with the Matchmaker, using query
-    // info from the given Offer. The given Offer should not have
-    // any of its query info modified after it is passed to this function.
+    // Register the OfferListener with the Matchmaker, using query
+    // info from the given Bid. The given Bid shall not have any of
+    // its query info modified after it is passed to this function.
     //
-    // Deregisters any offers/bids with the same user id as the given Offer.
+    // Deregisters any offers/bids with the same user id as the given Bid.
     // Returns true iff any such offers/bids were found.
-    public bool updateOffer(Offer, BidListener);
-
-    // Pretty much the same as updateOffer, but with Bid and Offer reversed.
     public bool updateBid(Bid, OfferListener);
+
+    // Add the given Offer to the list of candidate offers for buyer/seller
+    // matches. The given Offer shall not have any of its query info changed
+    // after it is passed to this function.
+    public bool updateOffer(Offer);
 
     // Deregisters any offers/bids with user id matching the given id.
     // This prevents further matches with those offers/bids from being made,
     // informs listeners already matched of the cancellation, and deregisters
     // the listener provided with the deleted offer/bid.
     //
-    // Returns true iff any such deletions occured. 
+    // Returns true iff any such deletions occured.
     public bool deleteByUserId(Integer);
 }
