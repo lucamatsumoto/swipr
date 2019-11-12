@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="value_margin_start">30sp</dimen>
+    <dimen name="status">24sp</dimen>
+    <dimen name="offer_size">18sp</dimen>
+</resources>
