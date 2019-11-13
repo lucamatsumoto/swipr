@@ -63,6 +63,7 @@ jobs:
           name: Build service
           command: |
             set -x
+            which docker-compose
             docker-compose build
 
       - run:
