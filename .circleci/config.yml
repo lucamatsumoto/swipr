@@ -9,8 +9,7 @@ jobs:
         environment:
           POSTGRES_USER: postgres
           POSTGRES_DB: swiprdb
-
-    working-directory: ~/swipr
+    
     steps:
 
       - checkout
@@ -51,7 +50,7 @@ jobs:
           name: Build service
           command: |
             set -x
-            pwd
+            ls -al 
             docker-compose -f ~/swipr/api/swipr/docker-compose.yml build
 
       - run:
