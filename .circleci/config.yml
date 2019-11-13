@@ -9,11 +9,21 @@ jobs:
         environment:
           POSTGRES_USER: postgres
           POSTGRES_DB: swiprdb
-      - image: circleci/openjdk:8-jdk
 
     working_directory: ~/swipr/api/swipr
 
     steps:
+
+      - run:
+          name: Install curl
+          command: apk update && apk add curl curl-dev bash
+      - run:
+          name: Install git
+          command: apk add git
+      - run:
+          name: Install ssh
+          command: apk add openssh
+
       - checkout
 
       - run:
@@ -31,10 +41,6 @@ jobs:
           docker_layer_caching: false
 
       # This should go into custom primary image, here's only for the sake of explanation
-
-      - run:
-          name: Install curl
-          command: apk update && apk add curl curl-dev bash
 
       - run:
           name: Install Docker client
