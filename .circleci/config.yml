@@ -27,12 +27,6 @@ jobs:
             done
             echo Failed waiting for Postgress && exit 1
 
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "pom.xml" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
-
       - setup_remote_docker:
           docker_layer_caching: false
 
