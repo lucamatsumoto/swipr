@@ -22,7 +22,7 @@ public class BuyerActivity extends AppCompatActivity {
         interests.addInterests(new Interest());
         interests.addInterests(new Interest());
         interests.addInterests(new Interest());
-        interestRecycler = findViewById(R.id.buyer_interest_view);
+        interestRecycler = findViewById(R.id.buyer_pending_recycler);
         interestAdapter = new InterestAdapter(this, interests.getInterests());
         interestRecycler.setAdapter(interestAdapter);
         interestRecycler.setLayoutManager(new LinearLayoutManager(this));

@@ -1,46 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".BuyerActivity">
+
     <Button
         android:id="@+id/logout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="launchLoginActivity"
         android:text="@string/logout_button"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:onClick="launchLoginActivity"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/seller"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="launchSellerActivity"
         android:text="@string/seller_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:onClick="launchSellerActivity" />
+        app:layout_constraintTop_toTopOf="parent" />
 
-
-    <FrameLayout
-        android:id="@+id/buyer_frame"
+    <RelativeLayout
+        android:id="@+id/buyer_query_frame"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         app:layout_constraintTop_toBottomOf="@id/logout"
-        app:layout_constraintHeight_default="percent"
-        app:layout_constraintHeight_percent="0.5">
-    </FrameLayout>
+        app:layout_constraintBottom_toTopOf="@id/guideline">
 
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/buyer_interest_view"
-        android:layout_width="match_parent"
+    </RelativeLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHeight_default="percent"
-        app:layout_constraintHeight_percent="0.5" />
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.7" />
+
+    <RelativeLayout
+        android:id="@+id/buyer_pending_frame"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        app:layout_constraintTop_toBottomOf="@id/guideline"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <TextView
+            android:id="@+id/buyer_pending_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/buyer_pending_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/buyer_pending_tag">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+    </RelativeLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
