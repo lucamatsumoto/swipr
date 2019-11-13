@@ -1,7 +1,5 @@
 package com.swipr.matcher;
 
-import java.util.ArrayList;
-
 public interface SellQueryListener {
     // Called whenever the Matchmaker finds a SellQuery that matches
     // the BuyQuery that was used to register this SellQueryListener

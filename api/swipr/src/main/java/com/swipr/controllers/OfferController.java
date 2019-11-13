@@ -3,6 +3,7 @@ package com.swipr.controllers;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.swipr.matcher.Matchmaker;
 import com.swipr.models.Offer;
 import com.swipr.repository.UserRepository;
 import com.swipr.utils.UserSessionManager;
@@ -44,6 +45,11 @@ public class OfferController {
     private Map<Integer, Offer> activeOffers = new HashMap<>();
 
     /**
+     * Matchmaker object for handling all offer business logic
+     */
+    private Matchmaker matchMaker = Matchmaker.getInstance();
+
+    /**
      * Update the offer corresponding to a particular seller
      * @param headerAccessor header object that is sent with every request
      * @param offer Offer that the seller wants to update
@@ -65,7 +71,7 @@ public class OfferController {
     @MessageMapping("/findOffers")
     @SendToUser
     public void findOffers(SimpMessageHeaderAccessor headerAccessor, Offer offer) {
-
+        
     }
 
     /**

@@ -1,7 +1,11 @@
 package com.swipr.matcher;
 
 import java.util.ArrayList;
+
+import com.swipr.swipr.ApplicationTests;
+
 import org.junit.*;
+import org.springframework.boot.test.context.SpringBootTest;
 
 class SellQueryListListener implements SellQueryListener {
     public final ArrayList<SellQuery> list = new ArrayList<SellQuery>();
@@ -17,7 +21,8 @@ class SellQueryListListener implements SellQueryListener {
     }
 }
 
-public class MatchmakerTest {
+@SpringBootTest
+public class MatchmakerTest extends ApplicationTests {
     @Test
     public void oneBuyerTest() {
         BuyQuery bq = new BuyQuery(0, 0, 10, 1000, Query.BPLATE|Query.COVEL);
