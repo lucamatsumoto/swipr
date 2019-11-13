@@ -11,30 +11,50 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
 
+/**
+ * Represents a Websocket handler for creating, deleting, and retrieving user information
+ */
+
 @Controller
 public class UserController {
 
+
+    /**
+     * Interface for handling database interactions for user business logic
+     */
     @Autowired
     private UserRepository userRepository;
 
+    /**
+     * Object for handling networking logic of sending and receiving from users, retrieving session IDs, headers, etc. 
+     */
     @Autowired
     private SimpMessageSendingOperations messagingTemplate;
 
-    // UserSessionManager object contains information about each sessions ID, headers, and other important information and their corresponding User objects
+    /**
+     * UserSessionManager object contains information about each sessions ID, headers, and other important information and their corresponding User objects  
+     */ 
     private UserSessionManager userSessionManager = UserSessionManager.getInstance();
 
+    /**
+     * Retrieves all users that have been created
+     * @param headerAccessor header object that is sent with every request
+     */
     @MessageMapping("/all")
     @SendToUser("/queue/reply")
     public void getUsers(SimpMessageHeaderAccessor headerAccessor) {
         messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/reply", userRepository.findAll(), headerAccessor.getMessageHeaders());
     }
 
-    // This will be replaced by authentication later
+    /**
+     * Creates an authenticated user's object into the database
+     * @param user the authenticated user
+     * @param headerAccessor header object that is sent with every request
+     */
     @MessageMapping("/create") 
     @SendToUser("/queue/reply")
     public void createUser(@Payload User user, SimpMessageHeaderAccessor headerAccessor) {
         // Make sure to add error handling later as well 
-        System.out.println(headerAccessor.getSessionId());
         if (userRepository.findByEmail(user.getEmail()).isEmpty()) {
             userRepository.save(user);
         } 
@@ -46,6 +66,11 @@ public class UserController {
         messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/reply", user, headerAccessor.getMessageHeaders()); 
     } 
 
+    /**
+     * Deletes a specific user from the database
+     * @param user the authenticated user
+     * @param headerAccessor header object that is sent with every request
+     */
     @MessageMapping("/delete")
     @SendToUser("/queue/reply")
     public void deleteUser(@Payload User user, SimpMessageHeaderAccessor headerAccessor) {

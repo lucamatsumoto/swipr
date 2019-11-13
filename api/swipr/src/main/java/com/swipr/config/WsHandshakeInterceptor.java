@@ -18,6 +18,7 @@ public class WsHandshakeInterceptor implements HandshakeInterceptor {
 		if (request instanceof ServletServerHttpRequest) {
 			ServletServerHttpRequest servletRequest = (ServletServerHttpRequest) request;
 			HttpSession session = servletRequest.getServletRequest().getSession();
+			// We need to somehow get the userID in the header
 			attributes.put("sessionId", session.getId());
 		}
 		return true;
