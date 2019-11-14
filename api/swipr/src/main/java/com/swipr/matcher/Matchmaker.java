@@ -2,6 +2,18 @@ package com.swipr.matcher;
 
 import java.util.ArrayList;
 
+/** The Matchmaker class forms the core of our "business logic". It is
+ *  a singleton mediator that
+ *
+ *  1. Keeps an in-memory database of all active requests to buy and
+ *     sell swipes; these are represented with the immutable objects
+ *     BuyQuery and SellQuery. Each user may have at most one active
+ *     request (either buy or sell, but not both)
+ *
+ *  2. Finds matches between buy and sell requests, reporting them using
+ *     the observer interface SellQueryListener (one SellQueryListener is
+ *     associated with each BuyQuery registered with the matchmaker).
+ */
 public class Matchmaker {
     // Singleton Matchmaker.
     private static Matchmaker theInstance;
@@ -18,7 +30,7 @@ public class Matchmaker {
     private final ArrayList<SellQueryListener> listenerList =
         new ArrayList<SellQueryListener>();
 
-    // Return the singleton instance of Matchmaker.
+    /** Return the singleton instance of Matchmaker. */
     public static Matchmaker getInstance() {
         if (theInstance != null) return theInstance;
         return getInstanceSynchronized();
@@ -30,15 +42,24 @@ public class Matchmaker {
         return (theInstance = new Matchmaker());
     }
 
-    // Register the SellQueryListener with the Matchmaker, using query
-    // info from the given BuyQuery. Deregisters any queries with the
-    // same user id as the given BuyQuery.  Returns true iff any such
-    // queries were deleted.
+    /** Add (or replace) a BuyQuery to the database of active buy
+     *  requests, and associate the given SellQueryListener with the
+     *  new BuyQuery. The SellQueryListener will be notified of all
+     *  SellQuery matches found for the given BuyQuery.
+     *
+     *  Replacement occurs iff the given BuyQuery has the same user id
+     *  as some other active query stored in this Matchmaker. In this
+     *  case, the old BuyQuery's associated SellQueryListener is
+     *  deregistered, and updateBuyQuery returns true.
+     */
     public synchronized boolean updateBuyQuery(
         BuyQuery newBuyQuery,
         SellQueryListener listener)
     {
         boolean didDelete = deleteByUserId(newBuyQuery.userId);
+
+        // Recall 1-to-1 mapping of BuyQueries to SellQueryListener.
+        assert(buyQueryList.size() == listenerList.size());
 
         // Add the new query and listener to the parallel lists.
         buyQueryList.add(newBuyQuery);
@@ -57,8 +78,13 @@ public class Matchmaker {
         return didDelete;
     }
 
-    // Add the given sell query to the list of candidate sell queries
-    // for buy/sell matches.
+    /** Add (or replace) a SellQuery to the database of active sell
+     *  requests. This may cause some SellQueryListeners to be notified.
+     *
+     *  Replacement occurs iff this SellQuery has the same user id as
+     *  some other active query stored in this Matchmaker --
+     *  updateSellQuery returns true iff this replacement occurs.
+     */
     public synchronized boolean updateSellQuery(SellQuery newSellQuery) {
         boolean didDelete = deleteByUserId(newSellQuery.userId);
 
@@ -76,22 +102,28 @@ public class Matchmaker {
             if (matches(newSellQuery, thisBuyQuery)) {
                 SellQueryListener listener = listenerList.get(i);
                 listener.onMatchFound(newSellQuery);
+                // Optimization possibility: Instead of calling
+                // listener.onMatchFound now (potentially expensive),
+                // make a list of SellQueryListeners to notify and
+                // call them outside of this synchronized function.
             }
         }
 
         return didDelete;
     }
 
-    // Deregisters any offers/bids with user id matching the given id.
-    // This prevents further matches with those offers/bids from being made,
-    // informs listeners already matched of the cancellation, and deregisters
-    // the listener provided with the deleted offer/bid.
-    //
-    // Returns true iff any such deletion occured. Since there should only
-    // ever be 1 query (buy or sell) for a given userId, we never expect
-    // do more than 1 deletion per deleteByUserId call -- the assertions
-    // below check for this.
+    /** Deregisters any offers/bids with user id matching the given
+     *  id.  This prevents further matches with those offers/bids from
+     *  being made, informs listeners already matched of the
+     *  cancellation, and deregisters the listener provided with the
+     *  deleted offer/bid.
+     *
+     *  Returns true iff any such deletion occured.
+     */
     public synchronized boolean deleteByUserId(long userId) {
+        // Since there should only ever be 1 query (buy or sell) for a
+        // given userId, we never expect do more than 1 deletion per
+        // deleteByUserId call -- the assertions on !didDelete check for this.
         boolean didDelete = false;
 
         // Remove buy queries (and associated listeners) that match
