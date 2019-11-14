@@ -69,4 +69,4 @@ jobs:
             docker build -t lucamatsumoto/swipr_web:latest . 
             docker login -u $DOCKER_LOGIN -p $DOCKER_PWD
             docker push lucamatsumoto/swipr_web:latest
-            ssh -v $SWIPR_USER@SWIPR_IP "docker-compose down; docker-compose build; docker-compose up -d"
+            ssh -v $SWIPR_USER@$SWIPR_IP "docker-compose down; docker-compose build; docker-compose up -d"
