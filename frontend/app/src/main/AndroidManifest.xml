@@ -9,7 +9,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".BuyerActivity"></activity>
+        <activity android:name=".InterestActivity"
+            android:label = "Interest Activity"
+            android:parentActivityName=".BuyerActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=
+                    "com.example.chris_frontend.MainActivity" />
+        </activity>
+        <activity android:name=".BuyerActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

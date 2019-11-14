@@ -1,13 +1,14 @@
-package com.example.chris_frontend;
+package com.example.chris_frontend.Interest;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.chris_frontend.R;
 
 import java.util.List;
 
@@ -29,19 +30,14 @@ public class InterestAdapter extends RecyclerView.Adapter<InterestAdapter.Intere
     private LayoutInflater inflater;
 
     public InterestAdapter(Context context, List<Interest> aInterestArray) {
-        Log.d("here", "13");
         inflater = LayoutInflater.from(context);
-        Log.d("here", "14");
         this.interestList = aInterestArray;
-        Log.d("here", "15");
     }
 
     @NonNull
     @Override
     public InterestAdapter.InterestHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        Log.d("here", "11");
         ViewGroup item = (ViewGroup) inflater.inflate(R.layout.interest, viewGroup, false);
-        Log.d("here", "12");
         return new InterestHolder(item, this);
     }
 
