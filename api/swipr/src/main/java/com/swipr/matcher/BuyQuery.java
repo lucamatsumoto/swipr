@@ -1,6 +1,12 @@
 package com.swipr.matcher;
 
 public class BuyQuery extends Query {
+    /** This is the SellQueryListener that notified by the Matchmaker
+     * of SellQuery matches on this BuyQuery. See Matchmaker class for
+     * fuller explanation.
+     */
+    public final SellQueryListener listener;
+
     public BuyQuery(
         long userId,
         long timeRangeStart,
@@ -9,6 +15,19 @@ public class BuyQuery extends Query {
         long diningHallBitfield)
     {
         super(userId, timeRangeStart, timeRangeEnd, priceCents, diningHallBitfield);
+        this.listener = null;
+    }
+
+    public BuyQuery(
+        long userId,
+        long timeRangeStart,
+        long timeRangeEnd,
+        long priceCents,
+        long diningHallBitfield,
+        SellQueryListener listener)
+    {
+        super(userId, timeRangeStart, timeRangeEnd, priceCents, diningHallBitfield);
+        this.listener = listener;
     }
 
     @Override

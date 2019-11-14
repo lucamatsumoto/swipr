@@ -23,12 +23,9 @@ public class Matchmaker {
     private final ArrayList<SellQuery> sellQueryList =
         new ArrayList<SellQuery>();
 
-    // List of active buyer queries and their corresponding
-    // SellQueryListeners. buyQueryList[i] corresponds to listenerList[i].
+    // List of active buyer queries.
     private final ArrayList<BuyQuery> buyQueryList =
         new ArrayList<BuyQuery>();
-    private final ArrayList<SellQueryListener> listenerList =
-        new ArrayList<SellQueryListener>();
 
     /** Return the singleton instance of Matchmaker. */
     public static Matchmaker getInstance() {
@@ -43,8 +40,8 @@ public class Matchmaker {
     }
 
     /** Add (or replace) a BuyQuery to the database of active buy
-     *  requests, and associate the given SellQueryListener with the
-     *  new BuyQuery. The SellQueryListener will be notified of all
+     *  requests, and associate the query's SellQueryListener with
+     *  this Matchmaker. The SellQueryListener will be notified of all
      *  SellQuery matches found for the given BuyQuery.
      *
      *  Replacement occurs iff the given BuyQuery has the same user id
@@ -52,18 +49,15 @@ public class Matchmaker {
      *  case, the old BuyQuery's associated SellQueryListener is
      *  deregistered, and updateBuyQuery returns true.
      */
-    public synchronized boolean updateBuyQuery(
-        BuyQuery newBuyQuery,
-        SellQueryListener listener)
+    public synchronized boolean updateBuyQuery(BuyQuery newBuyQuery)
     {
+        if (newBuyQuery.listener == null) {
+            throw new NullPointerException("BuyQuery must have non-null listener.");
+        }
         boolean didDelete = deleteByUserId(newBuyQuery.userId);
 
-        // Recall 1-to-1 mapping of BuyQueries to SellQueryListener.
-        assert(buyQueryList.size() == listenerList.size());
-
-        // Add the new query and listener to the parallel lists.
+        // Remember the new buy query.
         buyQueryList.add(newBuyQuery);
-        listenerList.add(listener);
 
         // Notify the listener immediately of preexisting SellQueries
         // that match the Buy Query.
@@ -76,6 +70,28 @@ public class Matchmaker {
         }
 
         return didDelete;
+    }
+
+    /** Like updateBuyQuery(BuyQuery), but the given SellQueryListener
+     *  is registered with the Matchmaker instead of the given
+     *  BuyQuery's listener.
+     */
+    public boolean updateBuyQuery(
+        BuyQuery newBuyQuery,
+        SellQueryListener listener)
+    {
+        if (newBuyQuery.listener != listener) {
+            BuyQuery old = newBuyQuery;
+            newBuyQuery = new BuyQuery(
+                old.userId,
+                old.timeRangeStart,
+                old.timeRangeEnd,
+                old.priceCents,
+                old.diningHallBitfield,
+                listener);
+        }
+
+        return updateBuyQuery(newBuyQuery, listener);
     }
 
     /** Add (or replace) a SellQuery to the database of active sell
@@ -91,16 +107,13 @@ public class Matchmaker {
         // Remember this new sell query.
         sellQueryList.add(newSellQuery);
 
-        // Recall 1-to-1 mapping of BuyQueries to SellQueryListener.
-        assert(buyQueryList.size() == listenerList.size());
-
         // Look for buy queries that match the newSellQuery, and notify
         // their corresponding listeners.
         int sz = buyQueryList.size();
         for (int i = 0; i < sz; ++i) {
             BuyQuery thisBuyQuery = buyQueryList.get(i);
             if (matches(newSellQuery, thisBuyQuery)) {
-                SellQueryListener listener = listenerList.get(i);
+                SellQueryListener listener = thisBuyQuery.listener;
                 listener.onMatchFound(newSellQuery);
                 // Optimization possibility: Instead of calling
                 // listener.onMatchFound now (potentially expensive),
@@ -133,7 +146,6 @@ public class Matchmaker {
                 assert(!didDelete);
                 didDelete = true;
                 buyQueryList.remove(i);
-                listenerList.remove(i);
             }
         }
 
@@ -148,8 +160,9 @@ public class Matchmaker {
 
                 int sz = buyQueryList.size();
                 for (int j = 0; j < sz; ++j) {
-                    if (matches(currentQuery, buyQueryList.get(j))) {
-                        listenerList.get(j).onMatchCancelled(currentQuery);
+                    BuyQuery thisBuyQuery = buyQueryList.get(j);
+                    if (matches(currentQuery, thisBuyQuery)) {
+                        thisBuyQuery.listener.onMatchCancelled(currentQuery);
                     }
                 }
             }
