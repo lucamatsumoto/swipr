@@ -35,7 +35,7 @@ services:
     volumes:
       - .:/swipr-backend
     ports:
-      - 3000:8080
+      - "0.0.0.0:3000:8080"
     networks:
       - backend
     environment:

@@ -10,8 +10,18 @@ import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.HandshakeInterceptor;
 
+/**
+ * Class for intercepting websocket connection requests to manager the session ID of the client
+ */
 public class WsHandshakeInterceptor implements HandshakeInterceptor {
 
+	/**
+     * Adds a unique session ID attribute to each user
+     * @param request Request coming from the client
+	 * @param response Response outgoing to the client
+	 * @param wsHandler the registered Websocket handler 
+	 * @param attributes A map of attributes that pertain to a particular user's request
+     */
 	@Override
 	public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler,
 			Map attributes) throws Exception {

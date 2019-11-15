@@ -143,4 +143,8 @@ public class Matchmaker {
         return sellQuery.timeRangeStart <= buyQuery.timeRangeEnd
             && buyQuery.timeRangeStart <= sellQuery.timeRangeEnd;
     }
+
+    public ArrayList<SellQuery> getActiveSellQueries() {
+        return sellQueryList;
+    }
 }

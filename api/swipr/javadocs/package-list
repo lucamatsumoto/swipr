@@ -1,0 +1,5 @@
+com.swipr.config
+com.swipr.controllers
+com.swipr.models
+com.swipr.repository
+com.swipr.utils

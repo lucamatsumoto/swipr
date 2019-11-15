@@ -1,9 +1,12 @@
 package com.swipr.controllers;
 
+import java.util.List;
+
 import com.swipr.models.User;
 import com.swipr.repository.UserRepository;
 import com.swipr.utils.UserSessionManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
@@ -19,21 +22,12 @@ import org.springframework.stereotype.Controller;
 public class UserController {
 
 
-    /**
-     * Interface for handling database interactions for user business logic
-     */
     @Autowired
     private UserRepository userRepository;
 
-    /**
-     * Object for handling networking logic of sending and receiving from users, retrieving session IDs, headers, etc. 
-     */
     @Autowired
     private SimpMessageSendingOperations messagingTemplate;
 
-    /**
-     * UserSessionManager object contains information about each sessions ID, headers, and other important information and their corresponding User objects  
-     */ 
     private UserSessionManager userSessionManager = UserSessionManager.getInstance();
 
     /**
@@ -43,7 +37,12 @@ public class UserController {
     @MessageMapping("/all")
     @SendToUser("/queue/reply")
     public void getUsers(SimpMessageHeaderAccessor headerAccessor) {
-        messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/reply", userRepository.findAll(), headerAccessor.getMessageHeaders());
+        try {
+            List<User> allUsers = userRepository.findAll();
+            messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/reply", allUsers, headerAccessor.getMessageHeaders());
+        } catch(DataAccessException e) {
+            messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/reply", e.getLocalizedMessage(), headerAccessor.getMessageHeaders());
+        }
     }
 
     /**
@@ -55,15 +54,19 @@ public class UserController {
     @SendToUser("/queue/reply")
     public void createUser(@Payload User user, SimpMessageHeaderAccessor headerAccessor) {
         // Make sure to add error handling later as well 
-        if (userRepository.findByEmail(user.getEmail()).isEmpty()) {
-            userRepository.save(user);
-        } 
-        else {
-            user = userRepository.findByEmail(user.getEmail()).get(0);
+        try {
+            if (userRepository.findByEmail(user.getEmail()).isEmpty()) {
+                userRepository.save(user);
+            } 
+            else {
+                user = userRepository.findByEmail(user.getEmail()).get(0);
+            }
+            // Keep track of a map of users to sessionId in RAM
+            userSessionManager.addSession(user, headerAccessor);
+            messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/reply", user, headerAccessor.getMessageHeaders()); 
+        } catch (DataAccessException e) {
+            messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/reply", e.getLocalizedMessage(), headerAccessor.getMessageHeaders()); 
         }
-        // Keep track of a map of users to sessionId in RAM
-        userSessionManager.addSession(user, headerAccessor);
-        messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/reply", user, headerAccessor.getMessageHeaders()); 
     } 
 
     /**
@@ -74,8 +77,33 @@ public class UserController {
     @MessageMapping("/delete")
     @SendToUser("/queue/reply")
     public void deleteUser(@Payload User user, SimpMessageHeaderAccessor headerAccessor) {
-        userRepository.delete(user);
-        messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/reply", "deleted user with email " + user.getEmail(), headerAccessor.getMessageHeaders());
+        try {
+            userRepository.delete(user);
+            messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/reply", "deleted user with email " + user.getEmail(), headerAccessor.getMessageHeaders());
+        } catch(DataAccessException e) {
+            messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/reply", e.getLocalizedMessage(), headerAccessor.getMessageHeaders());
+        }
+    }
+
+    /**
+     * Updates the venmo account of a specific user
+     * @param user The authenticated user that would like to update their information
+     * @param headerAccessor header object that is sent with every request
+     */
+    @MessageMapping("/updateVenmo")
+    @SendToUser("/queue/reply")
+    public void updateVenmo(@Payload User user, SimpMessageHeaderAccessor headerAccessor) {
+        List<User> users = userRepository.findByEmail(user.getEmail());
+        if (!users.isEmpty()) {
+            try {
+                userRepository.updateUserByEmail(user.getVenmo(), user.getEmail());
+                messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/reply", user, headerAccessor.getMessageHeaders());
+            } catch(DataAccessException e) {
+                messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/reply", e.getLocalizedMessage(), headerAccessor.getMessageHeaders());
+            }
+        } else {
+            messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/reply", "The user you looked for doesn't exist", headerAccessor.getMessageHeaders());
+        }
     }
 
 }

@@ -7,6 +7,9 @@ import com.swipr.models.User;
 
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 
+/**
+ * Singleton helper object to manage each User's sessions 
+ */
 public class UserSessionManager {
 
     private static volatile UserSessionManager helperInstance;
@@ -17,9 +20,6 @@ public class UserSessionManager {
         userSessions = new HashMap<>();
     }
 
-    /*
-        Thread Safe Singleton helper class for helper functions :)
-    */
     public static UserSessionManager getInstance() {
         if (helperInstance == null) {
             synchronized(UserSessionManager.class) {
@@ -31,7 +31,11 @@ public class UserSessionManager {
         return helperInstance;
     }
 
-    // Add a session to the list of sessions and associated users
+    /**
+     * Add a session ID associated to a particular user
+     * @param user the user that sent the request
+     * @param headerAccessor header attached to the request to retrieve session ID from 
+     */
     public void addSession(User user, SimpMessageHeaderAccessor headerAccessor) {
         userSessions.put(user, headerAccessor);
     }

@@ -11,16 +11,31 @@ import java.util.List;
 
 import com.swipr.models.User;
 
-// Interface for handling database related transactions
+/**
+ * Interface for handling database related transactions
+ */
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+    /**
+     * Looks for a particular user based on their email
+     * @param email the searched email parameter
+     * @return a "list" of users that match the specified email. Will have at most a length of 1
+     */
     List<User> findByEmail(String email);
-    List<User> findByVenmo(String venmo);
-    // Query to update a user's venmo account. This is the only field that a user can realistically update
+
+    /**
+     * Update the user's venmo account 
+     * @param userVenmo venmo account URL to update the field with
+     * @param userEmail user's email to look for
+     */
     @Modifying
     @Query(value="UPDATE Users u SET venmo=:userVenmo WHERE u.email=:userEmail", nativeQuery=true)
     @Transactional
     void updateUserByEmail(@Param("userVenmo") String userVenmo, @Param("userEmail") String userEmail);
 
+    /**
+     * Delete a user from the database
+     * @param user the user to delete from the database
+     */
     void delete(User user);
 }

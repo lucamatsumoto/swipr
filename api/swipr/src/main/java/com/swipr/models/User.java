@@ -16,7 +16,10 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 
-
+/**
+ * User superclass that represents the provided user information from Google, and their venmo account. 
+ * This information is stored in our PostgreSQL database.
+ */
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 // Might wanna set up a listener later but it's okay for now
@@ -59,6 +62,10 @@ public class User {
         this.preferredDiningHalls = new HashSet<>();
     }
 
+    /**
+     * Helper method for adding/updating the preferred dining hall of the user
+     * @param diningHall dininghall that the user is looking for
+     */
     public void addPreferredDiningHall(String diningHall) {
         preferredDiningHalls.add(diningHall);
     }
