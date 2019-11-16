@@ -11,6 +11,8 @@ import com.swipr.matcher.BidQueryListener;
 import com.swipr.matcher.BuyQuery;
 import com.swipr.matcher.Matchmaker;
 import com.swipr.matcher.SellQuery;
+import com.swipr.models.Buyer;
+import com.swipr.models.Seller;
 import com.swipr.models.User;
 import com.swipr.repository.UserRepository;
 import com.swipr.utils.UserSessionManager;
@@ -39,10 +41,6 @@ public class OfferController {
     private UserSessionManager userSessionManager = UserSessionManager.getInstance();
 
     private Matchmaker matchMaker = Matchmaker.getInstance();
-
-    // Map of UserID to listeners 
-    private Map<Integer, BidQueryListener> userListeners = new HashMap<>();
-
 
     /**
      * Gets the average daily price of the offers. Everytime a new offer is added, we update and broadcast to all clients
@@ -94,21 +92,19 @@ public class OfferController {
     @MessageMapping("/findOffers")
     @SendToUser("/queue/reply")
     public void findOffers(SimpMessageHeaderAccessor headerAccessor, BuyQuery query) {
-        BidQueryListener listener = new BidQueryListener();
+        Buyer buyer = (Buyer) userRepository.findById(query.userId);
         // Add listener to the corresponding user ID
-        userListeners.put(query.userId, listener);
-        matchMaker.updateBuyQuery(query, listener);
+        matchMaker.updateBuyQuery(query, buyer);
         // Retrieve a list of all bids found and send to the user
-        messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/reply", listener.getSellQueryList(), headerAccessor.getMessageHeaders());
+        messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/reply", buyer.getMatchedSellQueries(), headerAccessor.getMessageHeaders());
     }
 
     @MessageMapping("/refreshOffers")
     @SendToUser("/queue/reply")
     public void refreshOffers(SimpMessageHeaderAccessor headerAccessor) {
         // Retrieve user based on the session ID
-        User user = userSessionManager.getUserFromSessionId(headerAccessor);
-        BidQueryListener listener = userListeners.get(user.getId());
-        messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/reply", listener.getSellQueryList(), headerAccessor.getMessageHeaders());
+        Buyer buyer = (Buyer) userSessionManager.getUserFromSessionId(headerAccessor);
+        messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/reply", buyer.getMatchedSellQueries(), headerAccessor.getMessageHeaders());
     }
 
     // Need logic for subscribing to multiple topics. Buyer should be notified in real time when a new sellquery is posted that matches their 

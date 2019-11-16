@@ -189,6 +189,7 @@ public class Matchmaker {
             && buyQuery.timeRangeStart <= sellQuery.timeRangeEnd;
     }
 
+    // Hack.
     public ArrayList<SellQuery> getActiveSellQueries() {
         return sellQueryList;
     }

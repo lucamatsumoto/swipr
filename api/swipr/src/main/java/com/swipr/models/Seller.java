@@ -10,6 +10,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import com.swipr.matcher.BuyQuery;
+
 /**
  * Seller class that represents the provided user information from Google, and their venmo account. 
  * This information is stored in our PostgreSQL database.
@@ -37,6 +39,6 @@ public class Seller extends User {
      */
     public void addPotentialBuyer(Buyer buyer) {
         potentialBuyers.add(buyer);
+        // TODO: Send Information to Seller of interested Buyer.
     }
-
 }

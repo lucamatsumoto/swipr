@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @Setter 
 @NoArgsConstructor
 public class Offer {
-
     private long id;
     // Thread safe unique id generation 
     private static AtomicLong next_id = new AtomicLong(5000000000l);
