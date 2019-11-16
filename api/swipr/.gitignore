@@ -2,8 +2,17 @@ HELP.md
 target/
 tmp/
 !.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**
-!**/src/test/**
+
+# David Akeley: Ammend weird auto-generated gitignore exception to
+# only match java source files.
+# !**/src/main/**
+# !**/src/test/**
+!**/src/main/**/*.java
+!**/src/test/**/*.java
+
+# David Akeley: Ignore class files.
+**/src/main/**/*.class
+**/src/test/**/*.class
 
 ### STS ###
 .apt_generated
