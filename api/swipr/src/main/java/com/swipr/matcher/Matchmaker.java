@@ -133,7 +133,7 @@ public class Matchmaker {
      *
      *  Returns true iff any such deletion occured.
      */
-    public synchronized boolean deleteByUserId(long userId) {
+    public synchronized boolean deleteByUserId(int userId) {
         // Since there should only ever be 1 query (buy or sell) for a
         // given userId, we never expect do more than 1 deletion per
         // deleteByUserId call -- the assertions on !didDelete check for this.

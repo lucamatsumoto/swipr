@@ -2,7 +2,7 @@ package com.swipr.matcher;
 
 public class SellQuery extends Query {
     public SellQuery(
-        long userId,
+        int userId,
         long timeRangeStart,
         long timeRangeEnd,
         long priceCents,

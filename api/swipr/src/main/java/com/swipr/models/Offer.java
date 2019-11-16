@@ -1,6 +1,5 @@
 package com.swipr.models;
 
-import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
 
 import lombok.Getter;
@@ -14,7 +13,7 @@ public class Offer {
 
     private long id;
     // Thread safe unique id generation 
-    private static AtomicLong next_id = new AtomicLong();
+    private static AtomicLong next_id = new AtomicLong(5000000000l);
     private int cents;
     // private long timestamp;
     private String diningHall;

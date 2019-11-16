@@ -39,4 +39,13 @@ public class UserSessionManager {
     public void addSession(User user, SimpMessageHeaderAccessor headerAccessor) {
         userSessions.put(user, headerAccessor);
     }
+
+    public User getUserFromSessionId(SimpMessageHeaderAccessor headerAccessor) {
+        for (Map.Entry<User, SimpMessageHeaderAccessor> entry: userSessions.entrySet()) {
+            if (entry.getValue().getSessionId().equals(headerAccessor.getSessionId())) {
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
 }

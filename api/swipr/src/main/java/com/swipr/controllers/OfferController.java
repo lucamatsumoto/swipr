@@ -1,10 +1,8 @@
 package com.swipr.controllers;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
@@ -12,9 +10,8 @@ import java.util.TimeZone;
 import com.swipr.matcher.BidQueryListener;
 import com.swipr.matcher.BuyQuery;
 import com.swipr.matcher.Matchmaker;
-import com.swipr.matcher.Query;
 import com.swipr.matcher.SellQuery;
-import com.swipr.models.Offer;
+import com.swipr.models.User;
 import com.swipr.repository.UserRepository;
 import com.swipr.utils.UserSessionManager;
 
@@ -32,28 +29,19 @@ import org.springframework.stereotype.Controller;
  */
 @Controller
 public class OfferController {
-    
-    /**
-     * Interface for handling database interactions for user business logic
-     */    
+      
     @Autowired
     private UserRepository userRepository;
 
-    /**
-     * Object for handling networking logic of sending and receiving from users, retrieving session IDs, headers, etc. 
-     */
     @Autowired
     private SimpMessageSendingOperations messagingTemplate;
 
-    /**
-     * UserSessionManager object contains information about each sessions ID, headers, and other important information and their corresponding User objects  
-     */ 
     private UserSessionManager userSessionManager = UserSessionManager.getInstance();
 
-    /**
-     * Matchmaker object for handling all offer business logic
-     */
     private Matchmaker matchMaker = Matchmaker.getInstance();
+
+    // Map of UserID to listeners 
+    private Map<Integer, BidQueryListener> userListeners = new HashMap<>();
 
 
     /**
@@ -94,7 +82,7 @@ public class OfferController {
         // userSessionManager.addSession(offer.getUser(), headerAccessor);
         matchMaker.updateSellQuery(query);
         // Don't know if this works 
-        getAverageSellPrice(headerAccessor);
+        // getAverageSellPrice(headerAccessor);
         messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/reply", "Offer successfully updated", headerAccessor.getMessageHeaders());
     }
 
@@ -104,10 +92,27 @@ public class OfferController {
      * @param query Offer query that the seller wants to update
      */
     @MessageMapping("/findOffers")
-    @SendToUser
+    @SendToUser("/queue/reply")
     public void findOffers(SimpMessageHeaderAccessor headerAccessor, BuyQuery query) {
-        matchMaker.updateBuyQuery(query, new BidQueryListener(messagingTemplate, headerAccessor));
+        BidQueryListener listener = new BidQueryListener();
+        // Add listener to the corresponding user ID
+        userListeners.put(query.userId, listener);
+        matchMaker.updateBuyQuery(query, listener);
+        // Retrieve a list of all bids found and send to the user
+        messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/reply", listener.getSellQueryList(), headerAccessor.getMessageHeaders());
     }
+
+    @MessageMapping("/refreshOffers")
+    @SendToUser("/queue/reply")
+    public void refreshOffers(SimpMessageHeaderAccessor headerAccessor) {
+        // Retrieve user based on the session ID
+        User user = userSessionManager.getUserFromSessionId(headerAccessor);
+        BidQueryListener listener = userListeners.get(user.getId());
+        messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/reply", listener.getSellQueryList(), headerAccessor.getMessageHeaders());
+    }
+
+    // Need logic for subscribing to multiple topics. Buyer should be notified in real time when a new sellquery is posted that matches their 
+    // buy parameters
 
     /**
      * Endpoint for a buyer to indicate interest in a seller's offer
@@ -119,14 +124,22 @@ public class OfferController {
 
     }
 
+    @MessageMapping("/cancelInterest")
+    @SendToUser
+    public void cancelInterest(SimpMessageHeaderAccessor headerAccessor) {
+
+    }
+
     /**
      * Cancel an offer if expired or if user cancels
      * @param headerAccessor header object that is sent with every request
      */
     @MessageMapping("/cancelOffer")
-    @SendToUser
+    @SendToUser("/queue/reply")
     public void cancelOffer(SimpMessageHeaderAccessor headerAccessor) {
-
+        User user = userSessionManager.getUserFromSessionId(headerAccessor);
+        matchMaker.deleteByUserId(user.getId());
+        messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/reply", "Your offer has been cancelled", headerAccessor.getMessageHeaders());
     }
 
 }

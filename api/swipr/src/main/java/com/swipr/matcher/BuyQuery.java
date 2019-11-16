@@ -8,7 +8,7 @@ public class BuyQuery extends Query {
     public final SellQueryListener listener;
 
     public BuyQuery(
-        long userId,
+        int userId,
         long timeRangeStart,
         long timeRangeEnd,
         long priceCents,
@@ -19,7 +19,7 @@ public class BuyQuery extends Query {
     }
 
     public BuyQuery(
-        long userId,
+        int userId,
         long timeRangeStart,
         long timeRangeEnd,
         long priceCents,
