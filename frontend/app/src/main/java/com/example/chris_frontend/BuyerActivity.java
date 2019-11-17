@@ -63,16 +63,28 @@ public class BuyerActivity extends AppCompatActivity implements AdapterView.OnIt
 
     }
 
+    /**
+     * Launches the Login Activity.
+     * @param view      The java side representation of the UI button that triggered this function call.
+     */
     public void launchLoginActivity(View view) {
         //launch login tab
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
 
+    /**
+     * Launches the Seller activity.
+     * @param view      The java side representation of the UI button that triggered this function call.
+     */
     public void launchSellerActivity(View view) {
         //launch seller tab.
     }
 
+    /**
+     * Launches the Interest sub activity.
+     * @param view      The java side representation of the UI button that triggered this function call.
+     */
     public void launchInterestsActivity(View view) {
         //launch login tab
         Intent intent = new Intent(this, InterestActivity.class);

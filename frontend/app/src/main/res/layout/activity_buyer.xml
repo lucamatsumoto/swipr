@@ -18,12 +18,16 @@
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         app:layout_constraintStart_toEndOf="@id/logout"
         app:layout_constraintLeft_toRightOf="@id/logout"
         app:layout_constraintEnd_toStartOf="@id/seller"
         app:layout_constraintRight_toLeftOf="@id/seller"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/logout"
+        android:gravity="center_vertical|center_horizontal"
+        android:background="@color/colorPrimary"
+        android:textColor="@color/colorPrimaryDark"
         android:text="BUYER" />
 
     <Button
