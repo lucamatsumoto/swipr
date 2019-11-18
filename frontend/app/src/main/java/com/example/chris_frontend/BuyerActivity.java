@@ -6,14 +6,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+import com.example.chris_frontend.Chris_Templates.SimpleSpinAdapter;
 import com.example.chris_frontend.Result.ResultAdapter;
 
 public class BuyerActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
