@@ -5,32 +5,33 @@ import org.junit.*;
 
 public class MatchmakerTests {
     private static Matchmaker m;
-
-    private static DummyQueryListener listener1;
-
+    private static DummyQueryListener l1;
     private static ArrayList<SellQuery> sqList1;
-
-    private static BuyQuery bq1 = new BuyQuery(0, 0, 10, 500, Query.BPLATE|Query.COVEL);
-
-    private static SellQuery sq1 = new SellQuery(1, 0, 10, 500, Query.BPLATE|Query.COVEL, 101);
-    private static SellQuery sq2 = new SellQuery(2, 0, 10, 499, Query.BPLATE|Query.COVEL, 102);
-    private static SellQuery sq3 = new SellQuery(3, 0, 10, 501, Query.BPLATE|Query.COVEL, 103);
-    private static SellQuery sq4 = new SellQuery(4, 1, 9, 500, Query.BPLATE|Query.COVEL, 104);
-    private static SellQuery sq5 = new SellQuery(5, -1, 9, 500, Query.BPLATE|Query.COVEL, 105);
-    private static SellQuery sq6 = new SellQuery(6, -1, 11, 500, Query.BPLATE|Query.COVEL, 106);
-    private static SellQuery sq7 = new SellQuery(7, 1, 11, 500, Query.BPLATE|Query.COVEL, 107);
-    private static SellQuery sq8 = new SellQuery(8, 11, 20, 500, Query.BPLATE|Query.COVEL, 108);
-    private static SellQuery sq9 = new SellQuery(9, -10, -1, 500, Query.BPLATE|Query.COVEL, 109);
-    private static SellQuery sq10 = new SellQuery(10, 0, 10, 500, Query.COVEL, 110);
-    private static SellQuery sq11 = new SellQuery(11, 0, 10, 500, Query.BPLATE|Query.COVEL|Query.DE_NEVE, 111);
-    private static SellQuery sq12 = new SellQuery(12, 0, 10, 500, Query.DE_NEVE|Query.FEAST, 112);
+    private static BuyQuery bq1;
+    private static SellQuery sq1, sq2, sq3, sq4, sq5, sq6, sq7, sq8, sq9, sq10, sq11, sq12;
 
     @BeforeClass
     public static void setup () {
         m = Matchmaker.getInstance();
-        listener1 = new DummyQueryListener();
 
-        m.updateBuyQuery(bq1, listener1);
+        l1 = new DummyQueryListener();
+
+        bq1 = new BuyQuery(0, 0, 10, 500, Query.BPLATE|Query.COVEL);
+
+        sq1 = new SellQuery(1, 0, 10, 500, Query.BPLATE|Query.COVEL, 101);
+        sq2 = new SellQuery(2, 0, 10, 499, Query.BPLATE|Query.COVEL, 102);
+        sq3 = new SellQuery(3, 0, 10, 501, Query.BPLATE|Query.COVEL, 103);
+        sq4 = new SellQuery(4, 1, 9, 500, Query.BPLATE|Query.COVEL, 104);
+        sq5 = new SellQuery(5, -1, 9, 500, Query.BPLATE|Query.COVEL, 105);
+        sq6 = new SellQuery(6, -1, 11, 500, Query.BPLATE|Query.COVEL, 106);
+        sq7 = new SellQuery(7, 1, 11, 500, Query.BPLATE|Query.COVEL, 107);
+        sq8 = new SellQuery(8, 11, 20, 500, Query.BPLATE|Query.COVEL, 108);
+        sq9 = new SellQuery(9, -10, -1, 500, Query.BPLATE|Query.COVEL, 109);
+        sq10 = new SellQuery(10, 0, 10, 500, Query.COVEL, 110);
+        sq11 = new SellQuery(11, 0, 10, 500, Query.BPLATE|Query.COVEL|Query.DE_NEVE, 111);
+        sq12 = new SellQuery(12, 0, 10, 500, Query.DE_NEVE|Query.FEAST, 112);
+
+        m.updateBuyQuery(bq1, l1);
 
         m.updateSellQuery(sq1);
         m.updateSellQuery(sq2);
@@ -45,7 +46,7 @@ public class MatchmakerTests {
         m.updateSellQuery(sq11);
         m.updateSellQuery(sq12);
 
-        sqList1 = listener1.sellQueryList;
+        sqList1 = l1.sellQueryList;
     }
 
     @Test
