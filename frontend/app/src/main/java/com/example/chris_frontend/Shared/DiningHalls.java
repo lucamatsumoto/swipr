@@ -20,6 +20,6 @@ public class DiningHalls {
         diningHallList = temp;
 
     }
-    public DiningHalls() {}
-    public List<String> get(){return diningHallList;}
+    private DiningHalls() {}
+    public static List<String> get(){return diningHallList;}
 }
