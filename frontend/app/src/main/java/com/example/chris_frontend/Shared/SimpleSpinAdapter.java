@@ -1,4 +1,4 @@
-package com.example.chris_frontend.Chris_Templates;
+package com.example.chris_frontend.Shared;
 
 import android.content.Context;
 import android.widget.ArrayAdapter;

@@ -1,6 +1,6 @@
-package com.example.chris_frontend;
+package com.example.chris_frontend.Buyer;
 
-import com.example.chris_frontend.Interest.Interest;
+import com.example.chris_frontend.Buyer.Interest.Interest;
 
 import java.util.ArrayList;
 import java.util.List;

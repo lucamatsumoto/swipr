@@ -9,16 +9,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".InterestActivity"
+        <activity android:name=".Buyer.InterestActivity"
             android:label = "Interest Activity"
-            android:parentActivityName=".BuyerActivity">
+            android:parentActivityName=".Buyer.BuyerActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=
-                    "com.example.chris_frontend.MainActivity" />
+                    "com.example.chris_frontend.Buyer.MainActivity" />
         </activity>
-        <activity android:name=".BuyerActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".Buyer.BuyerActivity" />
+        <activity android:name=".Buyer.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

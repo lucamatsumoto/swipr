@@ -1,4 +1,4 @@
-package com.example.chris_frontend;
+package com.example.chris_frontend.Buyer;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -12,8 +12,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
-import com.example.chris_frontend.Chris_Templates.SimpleSpinAdapter;
-import com.example.chris_frontend.Result.ResultAdapter;
+import com.example.chris_frontend.R;
+import com.example.chris_frontend.Shared.SimpleSpinAdapter;
+import com.example.chris_frontend.Buyer.Result.ResultAdapter;
 
 public class BuyerActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 

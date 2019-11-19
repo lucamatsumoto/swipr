@@ -1,4 +1,6 @@
-package com.example.chris_frontend;
+package com.example.chris_frontend.Buyer;
+
+import com.example.chris_frontend.Shared.Offer;
 
 import java.util.ArrayList;
 import java.util.List;

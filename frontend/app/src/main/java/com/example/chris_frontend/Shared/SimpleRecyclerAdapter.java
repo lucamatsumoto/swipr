@@ -1,4 +1,4 @@
-package com.example.chris_frontend.Chris_Templates;
+package com.example.chris_frontend.Shared;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -22,17 +22,17 @@ public abstract class SimpleRecyclerAdapter extends RecyclerView.Adapter<SimpleR
      *                              to store in the Recyclerview.
      *                          Of the form, "R.layout.<layoutFileName>"
      */
-    public SimpleRecyclerAdapter(Context context, List<Object> objectList, int itemLayout) {
+    public SimpleRecyclerAdapter(Context context, List<? extends Object> objectList, int itemLayout) {
         inflater = LayoutInflater.from(context);
         this.mObjectList = objectList;
         mItemLayout = itemLayout;
     }
 
-    private List<Object> mObjectList;
+    protected List<? extends Object> mObjectList;
     private LayoutInflater inflater;
 	private int mItemLayout;
 	
-    class SimpleViewHolder extends RecyclerView.ViewHolder
+    public class SimpleViewHolder extends RecyclerView.ViewHolder
     {
         public final ViewGroup mItem;
         final SimpleRecyclerAdapter mAdapter;
@@ -54,7 +54,7 @@ public abstract class SimpleRecyclerAdapter extends RecyclerView.Adapter<SimpleR
     //This will bind an xml layout item to the java object.
     //What you need to do here is populate the xml's fields with the object's values.
     @Override
-    public abstract void onBindViewHolder(@NonNull SimpleRecyclerAdapter.SimpleViewHolder SimpleViewHolder, int i);
+    public abstract void onBindViewHolder(@NonNull SimpleRecyclerAdapter.SimpleViewHolder simpleViewHolder, int i);
     //Example Implementation:
         /*
         Offer object = (Offer) mObjectList.get(i);

@@ -1,4 +1,4 @@
-package com.example.chris_frontend;
+package com.example.chris_frontend.Buyer;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -6,7 +6,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 
-import com.example.chris_frontend.Interest.InterestAdapter;
+import com.example.chris_frontend.Buyer.Interest.InterestAdapter;
+import com.example.chris_frontend.R;
 
 public class InterestActivity extends AppCompatActivity {
 
