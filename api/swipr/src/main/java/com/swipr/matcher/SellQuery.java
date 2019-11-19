@@ -20,18 +20,6 @@ public class SellQuery extends Query {
         this.offerId = offerId;
     }
 
-    // temp, for tests to compile.
-    public SellQuery(
-        int userId,
-        long timeRangeStart,
-        long timeRangeEnd,
-        long priceCents,
-        long diningHallBitfield)
-    {
-        super(userId, timeRangeStart, timeRangeEnd, priceCents, diningHallBitfield);
-        this.offerId = 0;
-    }
-
     @Override
     public boolean equals(Object otherObject) {
         SellQuery other;
