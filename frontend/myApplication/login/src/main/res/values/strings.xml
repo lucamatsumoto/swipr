@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Swipr</string>
+    <string name="edit_message">Enter a Message</string>
+    <string name="button_send">Send</string>
+    <string name="facebook_app_id">2474085599495379</string>
+    <string name="fb_login_protocol_scheme">fb2474085599495379</string>
+</resources>

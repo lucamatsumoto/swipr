@@ -5,6 +5,7 @@
 # emacs/vi tag files
 TAGS
 tags
-
+#android studio
+.idea
 ### Vscode ###
 .vscode
