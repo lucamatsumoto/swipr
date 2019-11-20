@@ -16,6 +16,9 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * User superclass that represents the provided user information from Google, and their venmo account. 
  * This information is stored in our PostgreSQL database.
@@ -45,12 +48,15 @@ public class User {
 
     // Mark some properties with @transient so that they aren't stored in the DB
     @Transient
+    @JsonIgnore
     private boolean here;
 
     @Transient
+    @JsonIgnore
     private boolean matchedOffer;
 
     @Transient
+    @JsonIgnore
     private Set<String> preferredDiningHalls;
 
     public User(String firstName, String lastName, String email) {
@@ -68,5 +74,25 @@ public class User {
      */
     public void addPreferredDiningHall(String diningHall) {
         preferredDiningHalls.add(diningHall);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof User)) {
+            return false;
+        }
+        User user = (User) o;
+        return user.id.equals(this.id);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 3;
+        result = 31 * result + firstName.hashCode();
+        result = 31 * result + email.hashCode();
+        return result;
     }
 }

@@ -1,5 +1,15 @@
 package com.swipr.matcher;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.Data;
+
+@Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SellQuery extends Query {
     final public long offerId;
 
@@ -8,12 +18,19 @@ public class SellQuery extends Query {
     // on this for other purposes.
     public long averageUniqueId = -1;
 
+    @JsonCreator
     public SellQuery(
+        @JsonProperty("userId")
         int userId,
+        @JsonProperty("timeRangeStart")
         long timeRangeStart,
+        @JsonProperty("timeRangeEnd")
         long timeRangeEnd,
+        @JsonProperty("priceCents")
         long priceCents,
+        @JsonProperty("diningHallBitfield")
         long diningHallBitfield,
+        @JsonProperty("offerId")
         long offerId)
     {
         super(userId, timeRangeStart, timeRangeEnd, priceCents, diningHallBitfield);

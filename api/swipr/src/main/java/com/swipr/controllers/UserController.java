@@ -58,11 +58,8 @@ public class UserController {
             if (userRepository.findByEmail(user.getEmail()).isEmpty()) {
                 userRepository.save(user);
             } 
-            else {
-                user = userRepository.findByEmail(user.getEmail()).get(0);
-            }
+            user = userRepository.findByEmail(user.getEmail()).get(0);
             // Keep track of a map of users to sessionId in RAM
-            userSessionManager.addSession(user, headerAccessor);
             messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/reply", user, headerAccessor.getMessageHeaders()); 
         } catch (DataAccessException e) {
             messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/reply", e.getLocalizedMessage(), headerAccessor.getMessageHeaders()); 

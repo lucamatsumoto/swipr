@@ -6,6 +6,13 @@ function setConnected(connected) {
     document.getElementById('conversationDiv').style.visibility = connected ? 'visible' : 'hidden';
     document.getElementById('getUsersDiv').style.visibility = connected ? 'visible' : 'hidden';
     document.getElementById('deleteUserDiv').style.visibility = connected ? 'visible' : 'hidden';
+    document.getElementById('getActiveOffersDiv').style.visibility = connected ? 'visible' : 'hidden';
+    document.getElementById('sellQueryDiv').style.visibility = connected ? 'visible' : 'hidden';
+    document.getElementById('refreshOffersDiv').style.visibility = connected ? 'visible' : 'hidden';
+    document.getElementById('buyQueryDiv').style.visibility = connected ? 'visible' : 'hidden';
+    document.getElementById('showInterestDiv').style.visibility = connected ? 'visible' : 'hidden';
+    document.getElementById('confirmInterestDiv').style.visibility = connected ? 'visible' : 'hidden';
+    document.getElementById('cancelInterestDiv').style.visibility = connected ? 'visible' : 'hidden';
 }
 
 function connect() {
@@ -15,7 +22,11 @@ function connect() {
     stompClient.connect({}, function(frame) {
         setConnected(true);
         console.log('Connected: ' + frame);
+        // Subscribe to the average price 
         stompClient.subscribe('/user/queue/reply', function(greeting){
+            console.log(greeting)
+        });
+        stompClient.subscribe('/topic/average', function(greeting){
             console.log(greeting)
         });
     });
@@ -53,4 +64,62 @@ function showGreeting(message) {
     p.style.wordWrap = 'break-word';
     p.appendChild(document.createTextNode(message));
     response.appendChild(p);
+}
+
+function addSellQuery() {
+    var userId = document.getElementById('sellUserId').value;
+    var startTime = document.getElementById('sellStartTime').value;
+    var endTime = document.getElementById('sellEndTime').value;
+    var price = document.getElementById('sellPrice').value;
+    var diningHall = document.getElementById('sellDiningHall').value;
+    var offerId = document.getElementById('sellOfferId').value;
+    stompClient.send("/swipr/updateOffer", {}, JSON.stringify({'userId': parseInt(userId), 'timeRangeStart': parseInt(startTime), 'timeRangeEnd': parseInt(endTime), 'priceCents': parseInt(price), 'diningHallBitfield': parseInt(diningHall), 'offerId': parseInt(offerId)}))
+}
+
+function getActiveOffers() {
+    stompClient.send("/swipr/getAllOffers")
+}
+
+function refreshOffers() {
+    stompClient.send("/swipr/refreshOffers")
+}
+
+function postBuyQuery() {
+    var userId = document.getElementById('buyUserId').value;
+    var startTime = document.getElementById('buyStartTime').value;
+    var endTime = document.getElementById('buyEndTime').value;
+    var price = document.getElementById('buyPrice').value;
+    var diningHall = document.getElementById('buyDiningHall').value;
+    stompClient.send("/swipr/findOffers", {}, JSON.stringify({'userId': parseInt(userId), 'timeRangeStart': parseInt(startTime), 'timeRangeEnd': parseInt(endTime), 'priceCents': parseInt(price), 'diningHallBitfield': parseInt(diningHall)}))
+}
+
+function showInterest() {
+    var buyerId = document.getElementById('interestUserId').value;
+    var userId = document.getElementById('sellInterestUserId').value;
+    var startTime = document.getElementById('sellInterestStartTime').value;
+    var endTime = document.getElementById('sellInterestEndTime').value;
+    var price = document.getElementById('sellInterestPrice').value;
+    var diningHall = document.getElementById('sellInterestDiningHall').value;
+    var offerId = document.getElementById('sellInterestOfferId').value;
+    stompClient.send("/swipr/showInterest", {buyerId: parseInt(buyerId)}, JSON.stringify({'userId': parseInt(userId), 'timeRangeStart': parseInt(startTime), 'timeRangeEnd': parseInt(endTime), 'priceCents': parseInt(price), 'diningHallBitfield': parseInt(diningHall), 'offerId': parseInt(offerId)}))
+}
+
+function cancelInterest() {
+    var buyerId = document.getElementById('interestUserId').value;
+    var userId = document.getElementById('sellInterestUserId').value;
+    var startTime = document.getElementById('sellInterestStartTime').value;
+    var endTime = document.getElementById('sellInterestEndTime').value;
+    var price = document.getElementById('sellInterestPrice').value;
+    var diningHall = document.getElementById('sellInterestDiningHall').value;
+    var offerId = document.getElementById('sellInterestOfferId').value;
+    stompClient.send("/swipr/cancelInterest", {buyerId: parseInt(buyerId)}, JSON.stringify({'userId': parseInt(userId), 'timeRangeStart': parseInt(startTime), 'timeRangeEnd': parseInt(endTime), 'priceCents': parseInt(price), 'diningHallBitfield': parseInt(diningHall), 'offerId': parseInt(offerId)}))
+}
+
+function confirmInterest() {
+    var userId = document.getElementById('confirmUserId').value;
+    var startTime = document.getElementById('confirmStartTime').value;
+    var endTime = document.getElementById('confirmEndTime').value;
+    var price = document.getElementById('confirmPrice').value;
+    var diningHall = document.getElementById('confirmDiningHall').value;
+    stompClient.send("/swipr/confirmInterest", {}, JSON.stringify({'userId': parseInt(userId), 'timeRangeStart': parseInt(startTime), 'timeRangeEnd': parseInt(endTime), 'priceCents': parseInt(price), 'diningHallBitfield': parseInt(diningHall)}))
 }

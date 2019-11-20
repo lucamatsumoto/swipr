@@ -25,7 +25,7 @@ To run the application use
 
 This will spin up the application along with the database it is using.
 
-To stop the application use
+To stop the application use (shut down)
 
 `make stop`
 
@@ -36,10 +36,6 @@ To view logs use
 To delete all persistent data
 
 `make purge`
-
-## API Documentation ##
-
-We have set up an API Documentation service called Swagger. This provides a useful tool for frontend and backend developers to a) test inputs and outputs b) view documentation and c) (mainly for frontend devs) know the shape of the data. After starting your application, go to `http://localhost:3000/swagger-ui.html#/` to check it out! (It's really neat)
 
 
 ## Notes for Backend Developers ##

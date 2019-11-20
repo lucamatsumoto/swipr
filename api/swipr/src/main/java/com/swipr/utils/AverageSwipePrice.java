@@ -2,7 +2,6 @@ package com.swipr.utils;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-import com.swipr.repository.UserRepository;
 import com.swipr.matcher.SellQuery;
 
 /** Functions for maintaining a global average swipe price. */
@@ -65,4 +64,13 @@ public class AverageSwipePrice {
         totalCents.addAndGet(sq.priceCents);
         totalSamples.incrementAndGet();
     }
+
+    public static void excludeSellQuery(SellQuery sq) {
+        if (sq.averageUniqueId == averageUniqueId.get()) return;
+        sq.averageUniqueId = averageUniqueId.get();
+
+        totalCents.addAndGet(-1 * sq.priceCents);
+        totalSamples.decrementAndGet();
+    }
+
 }
