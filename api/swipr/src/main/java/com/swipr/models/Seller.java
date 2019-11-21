@@ -1,7 +1,9 @@
 package com.swipr.models;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.Transient;
@@ -30,16 +32,14 @@ import lombok.NoArgsConstructor;
 public class Seller extends User {
 
     @Transient
-    private Offer offer;
-    @Transient
-    private List<Buyer> potentialBuyers;
+    private Set<Buyer> potentialBuyers;
 
     private Integer id;
 
     @JsonCreator
     public Seller(@JsonProperty("id") Integer id, @JsonProperty("firstName") String firstName, @JsonProperty("lastName") String lastName, @JsonProperty("email") String email) {
         super(firstName, lastName, email);
-        this.potentialBuyers = new ArrayList<>();
+        this.potentialBuyers = new HashSet<>();
         this.id = id;
     }
 

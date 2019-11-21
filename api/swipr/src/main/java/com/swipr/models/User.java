@@ -85,6 +85,8 @@ public class User {
             return false;
         }
         User user = (User) o;
+        System.out.println(user.id);
+        System.out.println(this.id);
         return user.id.equals(this.id);
     }
 

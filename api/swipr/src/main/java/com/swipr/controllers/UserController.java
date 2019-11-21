@@ -11,7 +11,6 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
-import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
 
 /**
@@ -31,17 +30,16 @@ public class UserController {
     private UserSessionManager userSessionManager = UserSessionManager.getInstance();
 
     /**
-     * Retrieves all users that have been created
+     * Retrieves all users that have been created. Use for debugging
      * @param headerAccessor header object that is sent with every request
      */
     @MessageMapping("/all")
-    @SendToUser("/queue/reply")
     public void getUsers(SimpMessageHeaderAccessor headerAccessor) {
         try {
             List<User> allUsers = userRepository.findAll();
-            messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/reply", allUsers, headerAccessor.getMessageHeaders());
+            userSessionManager.sendToUser(headerAccessor, "/queue/reply", allUsers, messagingTemplate);
         } catch(DataAccessException e) {
-            messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/reply", e.getLocalizedMessage(), headerAccessor.getMessageHeaders());
+            userSessionManager.sendToUser(headerAccessor, "/queue/error", e.getLocalizedMessage(), messagingTemplate);
         }
     }
 
@@ -51,7 +49,6 @@ public class UserController {
      * @param headerAccessor header object that is sent with every request
      */
     @MessageMapping("/create") 
-    @SendToUser("/queue/reply")
     public void createUser(@Payload User user, SimpMessageHeaderAccessor headerAccessor) {
         // Make sure to add error handling later as well 
         try {
@@ -60,9 +57,9 @@ public class UserController {
             } 
             user = userRepository.findByEmail(user.getEmail()).get(0);
             // Keep track of a map of users to sessionId in RAM
-            messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/reply", user, headerAccessor.getMessageHeaders()); 
+            userSessionManager.sendToUser(headerAccessor, "/queue/reply", user, messagingTemplate);
         } catch (DataAccessException e) {
-            messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/reply", e.getLocalizedMessage(), headerAccessor.getMessageHeaders()); 
+            userSessionManager.sendToUser(headerAccessor, "/queue/error", e.getLocalizedMessage(), messagingTemplate);
         }
     } 
 
@@ -72,13 +69,12 @@ public class UserController {
      * @param headerAccessor header object that is sent with every request
      */
     @MessageMapping("/delete")
-    @SendToUser("/queue/reply")
     public void deleteUser(@Payload User user, SimpMessageHeaderAccessor headerAccessor) {
         try {
             userRepository.delete(user);
-            messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/reply", "deleted user with email " + user.getEmail(), headerAccessor.getMessageHeaders());
+            userSessionManager.sendToUser(headerAccessor, "/queue/reply", "deleted user with email " + user.getEmail(),  messagingTemplate);
         } catch(DataAccessException e) {
-            messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/reply", e.getLocalizedMessage(), headerAccessor.getMessageHeaders());
+            userSessionManager.sendToUser(headerAccessor, "/queue/error", e.getLocalizedMessage(),  messagingTemplate);
         }
     }
 
@@ -88,18 +84,17 @@ public class UserController {
      * @param headerAccessor header object that is sent with every request
      */
     @MessageMapping("/updateVenmo")
-    @SendToUser("/queue/reply")
     public void updateVenmo(@Payload User user, SimpMessageHeaderAccessor headerAccessor) {
         List<User> users = userRepository.findByEmail(user.getEmail());
         if (!users.isEmpty()) {
             try {
                 userRepository.updateUserByEmail(user.getVenmo(), user.getEmail());
-                messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/reply", user, headerAccessor.getMessageHeaders());
+                userSessionManager.sendToUser(headerAccessor, "/queue/reply", user,  messagingTemplate);
             } catch(DataAccessException e) {
-                messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/reply", e.getLocalizedMessage(), headerAccessor.getMessageHeaders());
+                userSessionManager.sendToUser(headerAccessor, "/queue/error", e.getLocalizedMessage(),  messagingTemplate);
             }
         } else {
-            messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/reply", "The user you looked for doesn't exist", headerAccessor.getMessageHeaders());
+            userSessionManager.sendToUser(headerAccessor, "/queue/error", "The user you looked for doesn't exist", messagingTemplate);
         }
     }
 

@@ -9,7 +9,7 @@ import lombok.Data;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonIgnoreProperties({"averageUniqueId"})
 public class SellQuery extends Query {
     final public long offerId;
 

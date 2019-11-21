@@ -16,19 +16,28 @@ function setConnected(connected) {
 }
 
 function connect() {
-    stompClient = Stomp.client('ws://157.245.235.19:3000/index');
+    stompClient = Stomp.client('ws://localhost:3000/index');
     stompClient.debug = null;
     console.log("Hello")
     stompClient.connect({}, function(frame) {
         setConnected(true);
         console.log('Connected: ' + frame);
         // Subscribe to the average price 
-        stompClient.subscribe('/user/queue/reply', function(greeting){
-            console.log(greeting)
+        stompClient.subscribe('/user/queue/reply', function(message){
+            console.log(message)
         });
-        stompClient.subscribe('/topic/average', function(greeting){
-            console.log(greeting)
+        stompClient.subscribe('/topic/average', function(message){
+            console.log(message)
         });
+        stompClient.subscribe('/user/queue/buyer', function(message) {
+            console.log(message)
+        });
+        stompClient.subscribe('/user/queue/seller', function(message) {
+            console.log(message)
+        })
+        stompClient.subscribe('/user/queue/error', function(message) {
+            console.log(message)
+        })
     });
 }
 
@@ -101,7 +110,7 @@ function showInterest() {
     var price = document.getElementById('sellInterestPrice').value;
     var diningHall = document.getElementById('sellInterestDiningHall').value;
     var offerId = document.getElementById('sellInterestOfferId').value;
-    stompClient.send("/swipr/showInterest", {buyerId: parseInt(buyerId)}, JSON.stringify({'userId': parseInt(userId), 'timeRangeStart': parseInt(startTime), 'timeRangeEnd': parseInt(endTime), 'priceCents': parseInt(price), 'diningHallBitfield': parseInt(diningHall), 'offerId': parseInt(offerId)}))
+    stompClient.send("/swipr/showInterest", {}, JSON.stringify({'buyerId': parseInt(buyerId), 'sellQuery': {'userId': parseInt(userId), 'timeRangeStart': parseInt(startTime), 'timeRangeEnd': parseInt(endTime), 'priceCents': parseInt(price), 'diningHallBitfield': parseInt(diningHall), 'offerId': parseInt(offerId)}}))
 }
 
 function cancelInterest() {
@@ -112,7 +121,7 @@ function cancelInterest() {
     var price = document.getElementById('sellInterestPrice').value;
     var diningHall = document.getElementById('sellInterestDiningHall').value;
     var offerId = document.getElementById('sellInterestOfferId').value;
-    stompClient.send("/swipr/cancelInterest", {buyerId: parseInt(buyerId)}, JSON.stringify({'userId': parseInt(userId), 'timeRangeStart': parseInt(startTime), 'timeRangeEnd': parseInt(endTime), 'priceCents': parseInt(price), 'diningHallBitfield': parseInt(diningHall), 'offerId': parseInt(offerId)}))
+    stompClient.send("/swipr/cancelInterest", {}, JSON.stringify({'buyerId': parseInt(buyerId), 'sellQuery': {'userId': parseInt(userId), 'timeRangeStart': parseInt(startTime), 'timeRangeEnd': parseInt(endTime), 'priceCents': parseInt(price), 'diningHallBitfield': parseInt(diningHall), 'offerId': parseInt(offerId)}}))
 }
 
 function confirmInterest() {
