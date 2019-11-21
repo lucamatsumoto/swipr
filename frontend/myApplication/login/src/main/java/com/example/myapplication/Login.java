@@ -11,6 +11,9 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.example.myapplication.Buyer.BuyerActivity;
+import com.example.myapplication.Shared.NetworkManager;
+import com.example.myapplication.Shared.NetworkResponder;
+import com.example.myapplication.Shared.ProfileSingleton;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -33,12 +36,6 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
-import ua.naiksoftware.stomp.Stomp;
-import ua.naiksoftware.stomp.StompClient;
-
 public class Login extends AppCompatActivity implements View.OnClickListener {
     private static final int RC_SIGN_IN = 0;
     private static final String TAG = "Login";
@@ -48,13 +45,10 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     CallbackManager callbackManager;
     LoginButton loginButton;
 
-    private StompClient mStompClient;
-    private CompositeDisposable compositeDisposable;
+    NetworkManager networkManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d("here", "Login");
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
@@ -65,8 +59,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 .build();
 
         // Build a GoogleSignInClient with the options specified by gso.
-         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-         findViewById(R.id.sign_in_button).setOnClickListener(this);
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        findViewById(R.id.sign_in_button).setOnClickListener(this);
 
         callbackManager = CallbackManager.Factory.create();
         loginButton = findViewById(R.id.fb_login);
@@ -96,43 +90,11 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                     }
                 });
 
-        try {
-            mStompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, "ws://157.245.235.19:3000/index");
-            mStompClient.connect();
-        }
-        catch(Exception e)
-        {
-            Log.e("STOMP_FAIL", "ERROR connecting to server");
-        }
 
-        compositeDisposable = new CompositeDisposable();
+        networkManager = NetworkManager.getInstance();
+        networkManager.connect();
 
-        Disposable dispLifecycle = mStompClient.lifecycle()
-                .subscribe(lifecycleEvent -> {
-                    switch (lifecycleEvent.getType()) {
-                        case OPENED:
-                            Log.i("Success", "Stomp connection opened");
-                            break;
-                        case ERROR:
-                            Log.e(TAG, "Stomp connection error", lifecycleEvent.getException());
-                            break;
-                        case CLOSED:
-                            Log.i("Close", "Stomp connection closed");
-                            break;
-                    }
-                });
-        Disposable dispTopic = mStompClient.topic("/user/queue/reply")
-                .subscribeOn(Schedulers.io())
-                .subscribe(topicMessage -> {
-                    Log.d("SubSuccess", "Received " + topicMessage.getPayload());
-                    //TODO: create user from login info
-                }, throwable -> {
-                    Log.e("SubFail", "Error on subscribe topic", throwable);
-                });
-
-        compositeDisposable.add(dispLifecycle);
-
-        compositeDisposable.add(dispTopic);
+        networkManager.subscribe("/user/queue/reply", new LoginResponder());
     }
 
 
@@ -140,16 +102,11 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     {
         super.onStart();
 
-        Log.d("here", "Login4");
         // Check for existing Google Sign In account, if the user is already signed in
         // the GoogleSignInAccount will be non-null.
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-        Log.d("here", "Login5");
-        if(account != null) {
-            Log.d("here", "Login6");
-
+        if(account != null)
             updateUI(account);
-        }
 
     }
 
@@ -250,7 +207,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         intent.putExtra("ID", name);
         intent.putExtra("From", "google");
         startActivity(intent);
-        Log.d("here", "Login7");
     }
     private void UpdateUI(AccessToken at) {
 
@@ -290,48 +246,19 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         }
 
 
-        //Fails somewhere here:
-//        try {
-//            mStompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, "ws://157.245.235.19:3000/index");
-//            mStompClient.connect();
-//        }
-//        catch(Exception e)
-//        {
-//            Log.e("STOMP_FAIL", "ERROR connecting to server");
-//            return;
-//        }
-        compositeDisposable.add(mStompClient.send("/swipr/create", json.toString())
-                .subscribe(() -> {
-                    Log.d("SendSuccess", "STOMP echo send successfully");
-                }, throwable -> {
-                    Log.e("SendFail", "Error send STOMP echo", throwable);
-                }));
-//        try {
-//            mStompClient.topic("/user/queue/reply").subscribe(topicMessage -> {
-//                        Log.d("loginSuccess", topicMessage.getPayload());
-//                    }, throwable -> {
-//                        Log.e("loginFail", "throwable " + throwable.getMessage());
-//                    }
-//
-//            );
-//        }
-//        catch(Exception e)
-//        {
-//            Log.e("login Fail", e.getMessage());
-//            return;
-//        }
-
-//        mStompClient.send("/swipr/create", json.toString()).subscribe();
-        //to here.
+        networkManager.send("/swipr/create", json.toString());
    }
     @Override
     protected void onDestroy() {
-        mStompClient.disconnect();
-        if (compositeDisposable != null) {
-            compositeDisposable.dispose();
-        }
-
         super.onDestroy();
+    }
+
+    class LoginResponder implements NetworkResponder
+    {
+        @Override
+        public void onMessageReceived(String json) {
+            ProfileSingleton.getInstance().setInstance(json);
+        }
     }
 
 }

@@ -12,11 +12,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.Spinner;
 
 import com.example.myapplication.Login;
 import com.example.myapplication.R;
+import com.example.myapplication.Shared.NetworkManager;
 import com.example.myapplication.Shared.SimpleSpinAdapter;
 import com.example.myapplication.Buyer.Result.ResultAdapter;
 import com.facebook.login.LoginManager;
@@ -35,17 +35,18 @@ public class BuyerActivity extends AppCompatActivity implements AdapterView.OnIt
     private ViewGroup resultFrame;
     private GoogleSignInClient mGoogleSignInClient;
     private Spinner diningHallSpinner;
+    private NetworkManager networkManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_buyer);
 
+        networkManager = NetworkManager.getInstance();
+
         buyerBacker = BuyerBacker.getInstance();
 
         Intent intent = getIntent();
-        if(intent == null)
-            Log.d("Here", "intent = null");
         String option = intent.getExtras().getString("From");
         buyerBacker.setSignin(option);
 
@@ -89,15 +90,12 @@ public class BuyerActivity extends AppCompatActivity implements AdapterView.OnIt
      * @param view      The java side representation of the UI button that triggered this function call.
      */
     public void launchLoginActivity(View view) {
-        Log.d("here", "1");
         //launch login tab
         String option = buyerBacker.getSignin();
-        Log.d("here", option);
         if(option.equals("google"))
             signOutGoogle();
         else if(option.equals("fb"))
             signOutFacebook();
-        Log.d("here", "2");
     }
 
     /**
@@ -114,11 +112,8 @@ public class BuyerActivity extends AppCompatActivity implements AdapterView.OnIt
      */
     public void launchInterestsActivity(View view) {
         //launch login tab
-        Log.d("here", "7");
         Intent intent = new Intent(this, InterestActivity.class);
-        Log.d("here", "8");
         startActivity(intent);
-        Log.d("here", "9");
     }
 
     public void search(View view) {
@@ -152,7 +147,6 @@ public class BuyerActivity extends AppCompatActivity implements AdapterView.OnIt
 
 
     private void signOutGoogle() {
-        Log.d("here", "3");
         mGoogleSignInClient.signOut()
                 .addOnCompleteListener(this, new OnCompleteListener<Void>() {
                     @Override
@@ -172,10 +166,9 @@ public class BuyerActivity extends AppCompatActivity implements AdapterView.OnIt
 
     private void returnToLogin()
     {
-        Log.d("here", "4");
+        networkManager.disconnect();
         Intent intent = new Intent(getApplicationContext(), Login.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
-        Log.d("here", "5");
     }
 }
