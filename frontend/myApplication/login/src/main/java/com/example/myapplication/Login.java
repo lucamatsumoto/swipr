@@ -10,7 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.example.chris_frontend.Buyer.BuyerActivity;
+import com.example.myapplication.Buyer.BuyerActivity;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -53,6 +53,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d("here", "Login");
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
@@ -94,7 +95,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                         // App code
                     }
                 });
-
 
         try {
             mStompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, "ws://157.245.235.19:3000/index");
@@ -140,11 +140,17 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     {
         super.onStart();
 
+        Log.d("here", "Login4");
         // Check for existing Google Sign In account, if the user is already signed in
         // the GoogleSignInAccount will be non-null.
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-        if(account != null)
+        Log.d("here", "Login5");
+        if(account != null) {
+            Log.d("here", "Login6");
+
             updateUI(account);
+        }
+
     }
 
     @Override
@@ -239,16 +245,17 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
     private void updateUI(GoogleSignInAccount account)
     {
-        Intent intent = new Intent(this, DisplayMessageActivity.class);
+        Intent intent = new Intent(this, BuyerActivity.class);
         String name = account.getDisplayName();
         intent.putExtra("ID", name);
         intent.putExtra("From", "google");
         startActivity(intent);
+        Log.d("here", "Login7");
     }
     private void UpdateUI(AccessToken at) {
 
         String ID = at.getUserId();
-        Intent intent = new Intent(this, DisplayMessageActivity.class);
+        Intent intent = new Intent(this, BuyerActivity.class);
         intent.putExtra("ID", ID);
         intent.putExtra("From", "fb");
         startActivity(intent);
@@ -328,4 +335,3 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     }
 
 }
-

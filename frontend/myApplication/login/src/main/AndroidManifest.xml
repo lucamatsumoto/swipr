@@ -44,6 +44,15 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
+        <activity android:name=".Buyer.InterestActivity"
+            android:label = "Interest Activity"
+            android:parentActivityName=".Buyer.BuyerActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=
+                    "com.example.myapplication.Buyer.MainActivity" />
+        </activity>
+        <activity android:name=".Buyer.BuyerActivity" />
     </application>
 
 </manifest>
