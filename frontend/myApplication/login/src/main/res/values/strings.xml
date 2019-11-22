@@ -14,4 +14,6 @@
     <string name="remove_button">Remove</string>
     <string name="status_tag">Status:</string>
     <string name="interest_button">I\'m Interested</string>
+    <string name="Close">Close</string>
+    <string name="Open">Open</string>
 </resources>

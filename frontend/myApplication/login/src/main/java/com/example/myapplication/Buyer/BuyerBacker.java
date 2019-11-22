@@ -26,7 +26,7 @@ public class BuyerBacker {
         diningHallList.add("B Plate");
         diningHallList.add("Covel");
     }
-    static BuyerBacker getInstance()
+    public static BuyerBacker getInstance()
     {
         if(instance == null)
             instance = new BuyerBacker();

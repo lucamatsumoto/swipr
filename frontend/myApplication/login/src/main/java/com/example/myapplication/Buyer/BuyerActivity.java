@@ -1,21 +1,28 @@
 package com.example.myapplication.Buyer;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.myapplication.Login;
 import com.example.myapplication.R;
+import com.example.myapplication.Shared.DrawerBaseActivity;
 import com.example.myapplication.Shared.NetworkManager;
 import com.example.myapplication.Shared.SimpleSpinAdapter;
 import com.example.myapplication.Buyer.Result.ResultAdapter;
@@ -25,22 +32,29 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.navigation.NavigationView;
 
-public class BuyerActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class BuyerActivity extends DrawerBaseActivity implements AdapterView.OnItemSelectedListener {
 
     private RecyclerView resultRecycler;
     private ResultAdapter resultAdapter;
     private BuyerBacker buyerBacker;
     private ViewGroup filterFrame;
     private ViewGroup resultFrame;
-    private GoogleSignInClient mGoogleSignInClient;
     private Spinner diningHallSpinner;
-    private NetworkManager networkManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_buyer);
+
+        //ADD THESE LINES TO ADD DRAWER FOR PROFILE INFO
+        //setContentView(R.layout.activity_buyer);
+        LayoutInflater inflater = (LayoutInflater) this
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View contentView = inflater.inflate(R.layout.activity_buyer, null, false);
+        dl.addView(contentView, 0);
+        //END
 
         networkManager = NetworkManager.getInstance();
 
@@ -63,11 +77,6 @@ public class BuyerActivity extends AppCompatActivity implements AdapterView.OnIt
         ArrayAdapter<String> diningHallAdapter = new SimpleSpinAdapter(this, buyerBacker.getDiningHalls());
         diningHallSpinner.setAdapter(diningHallAdapter);
 
-
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build();
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
     }
 
     @Override
@@ -83,19 +92,6 @@ public class BuyerActivity extends AppCompatActivity implements AdapterView.OnIt
         }
         initSpinnerSelection(diningHallSpinner, 2, buyerBacker.getDiningHallIndex());
 
-    }
-
-    /**
-     * Launches the Login Activity.
-     * @param view      The java side representation of the UI button that triggered this function call.
-     */
-    public void launchLoginActivity(View view) {
-        //launch login tab
-        String option = buyerBacker.getSignin();
-        if(option.equals("google"))
-            signOutGoogle();
-        else if(option.equals("fb"))
-            signOutFacebook();
     }
 
     /**
@@ -143,32 +139,5 @@ public class BuyerActivity extends AppCompatActivity implements AdapterView.OnIt
     {
         if(index >= 0 && index < size)
             spinner.setSelection(index);
-    }
-
-
-    private void signOutGoogle() {
-        mGoogleSignInClient.signOut()
-                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        returnToLogin();
-
-                    }
-                });
-    }
-
-    private void signOutFacebook()
-    {
-        LoginManager.getInstance().logOut();
-        returnToLogin();
-    }
-
-
-    private void returnToLogin()
-    {
-        networkManager.disconnect();
-        Intent intent = new Intent(getApplicationContext(), Login.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
     }
 }

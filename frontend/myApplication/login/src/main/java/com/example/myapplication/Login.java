@@ -162,6 +162,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                             String firstName = object.getString("first_name");
                             String lastName = object.getString("last_name");
                             String email = object.getString("email");
+                            //TODO: ADD FIELD FOR PROFILE PICTURE
                             packageJSON(firstName, lastName, email);
                         }
                         catch(JSONException e){
@@ -188,6 +189,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
             String firstName = account.getGivenName();
             String lastName = account.getFamilyName();
             String email = account.getEmail();
+            //TODO: ADD FIELD FOR PROFILE PICTURE
             packageJSON(firstName, lastName, email);
 
             // Signed in successfully, show authenticated UI.
