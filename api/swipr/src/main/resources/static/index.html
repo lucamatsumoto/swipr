@@ -17,7 +17,12 @@
                 <label>What is your first name?</label><input type="text" id="firstName" />
                 <label>What is your last name?</label><input type="text" id="lastName" />
                 <label>What is your email?</label><input type="text" id="email" />
+<<<<<<< HEAD
                 <button id="sendName" onclick="createUser();">Send</button>
+=======
+                <label>What is your profile pic url?</label><input type="text" id="profilePic" />
+                <button id="sendName" onclick="createUser();">Create</button>
+>>>>>>> 7a67c46f7b9b92e323214b6d7679fa7482e96f81
             </div>
             <div id="deleteUserDiv">
                 <p>Delete a User</p>
@@ -35,6 +40,9 @@
                 <label>What is your Dining Hall Bit?</label><input type="text" id="sellDiningHall" />
                 <label>What is your Offer ID?</label><input type="text" id="sellOfferId" />
                 <button id="addOffer" onclick="addSellQuery();">Add Offer</button>
+            </div>
+            <div id="cancelOfferDiv">
+                <button id="cancelOffer" onclick="cancelOffer();">Cancel Offer</button>
             </div>
             <div id="buyQueryDiv">
                 <p>See Matching Offers</p>
@@ -62,9 +70,9 @@
             <div id="confirmInterestDiv">
                 <p>Confirm Interest</p>
                 <label>What is your buyerID?</label><input type="text" id="confirmUserId" />
-                <label>What is your Buyer First Name?</label><input type="text" id="confirmStartTime" />
-                <label>What is your Buyer Last Name?</label><input type="text" id="confirmEndTime" />
-                <label>What is your Buyer Email?</label><input type="text" id="confirmPrice" />
+                <label>What is your Buyer First Name?</label><input type="text" id="confirmFirstName" />
+                <label>What is your Buyer Last Name?</label><input type="text" id="confirmLastName" />
+                <label>What is your Buyer Email?</label><input type="text" id="confirmEmail" />
                 <button id="confirmInterest" onclick="confirmInterest();">Confirm Interest</button>
             </div>
             <div id="getUsersDiv">

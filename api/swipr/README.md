@@ -73,7 +73,8 @@ Here are the primary objects that you will need to know (for JSON).
     "firstName": "string", 
     "lastName": "string", 
     "email": "string",
-    "venmo": "will be added when user hits update venmo"
+    "venmo": "will be added when user hits update venmo, do not pass in when calling an endpoint",
+    "profilePicUrl": "string"
 }
 ```
 
@@ -83,7 +84,8 @@ Here are the primary objects that you will need to know (for JSON).
     "firstName": "string", 
     "lastName": "string", 
     "email": "string",
-    "venmo": "will be added when user hits update venmo"
+    "venmo": "will be added when user hits update venmo, do not pass in when calling an endpoint",
+    "profilePicUrl": "string"
 }
 ```
 ##### Seller #####
@@ -92,14 +94,15 @@ Here are the primary objects that you will need to know (for JSON).
     "firstName": "string", 
     "lastName": "string", 
     "email": "string",
-    "venmo": "will be added when user hits update venmo"
+    "venmo": "will be added when user hits update venmo, do not pass in when calling an endpoint",
+    "profilePicUrl": "string"
 }
 ```
 
 ##### BuyQuery #####
 ```json
 {
-    "usedIr": "int", 
+    "userId": "int", 
     "timeRangeStart": "long", 
     "timeRangeEnd": "long",
     "priceCents": "long", 
@@ -148,7 +151,7 @@ This topic is used for handling all user logic such as creating, updating, and d
 This topic is used for any error messages that occur from backend transactions.
 All users must be subscribed to this topic and the frontend must handle all errors coming from this topic.
 
-#### Topic `/topic/average #### 
+#### Topic `/topic/average` #### 
 This topic is used for calculating the daily average price of a swipe. All users (buyers and sellers) must subscribe to this topic.
 
 #### Endpoints related to `/topic/average` ####
@@ -185,5 +188,11 @@ This topic is used for getting a list of potential buyers.
 
 `/swipr/confirmInterest`: Confirms that the seller is interested in the buyer's bid. Clears the list of potential buyers attached to that seller and returns an empty list of `Buyer`'s to the seller. Additionally, sends a `confirmed` message to the `/user/queue/buyerInterest` topic. 
 
+#### Topic `/user/queue/sellerCancel` ####
+This topic is used whenever an offer is cancelled
+
+#### Endpoints related to `/user/queue/sellerCancel ####
+`/swipr/cancelOffer`: This endpoint is used for canceling an Offer. Does not require any parameters
+
 #### WIP ####
-Cancelling Offers, I'm here functionality, Confirm interest still need to be tested. 
+I'm here functionality, error handling on OfferController

@@ -61,6 +61,7 @@ public class UserSessionManager {
         // Hasn't been found yet
         Buyer buyer = new Buyer(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail());
         buyer.setVenmo(user.getVenmo());
+        buyer.setProfilePicUrl(user.getProfilePicUrl());
         return buyer;
     }
 
@@ -72,6 +73,7 @@ public class UserSessionManager {
         }
         Seller seller = new Seller(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail());
         seller.setVenmo(user.getVenmo());
+        seller.setProfilePicUrl(user.getProfilePicUrl());
         return seller;
     }
 

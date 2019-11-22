@@ -14,6 +14,7 @@ function setConnected(connected) {
     document.getElementById('confirmInterestDiv').style.visibility = connected ? 'visible' : 'hidden';
     document.getElementById('cancelInterestDiv').style.visibility = connected ? 'visible' : 'hidden';
     document.getElementById('requestAverageDiv').style.visibility = connected ? 'visible' : 'hidden';
+    document.getElementById('cancelOfferDiv').style.visibility = connected ? 'visible' : 'hidden';
 }
 
 function connect() {
@@ -35,11 +36,20 @@ function connect() {
             console.log(message)
             showOutput(message)
         });
-        stompClient.subscribe('/user/queue/buyer', function(message) {
+        stompClient.subscribe('/user/queue/buyerInterest', function(message) {
             console.log(message)
             showOutput(message)
         });
-        stompClient.subscribe('/user/queue/seller', function(message) {
+        stompClient.subscribe('/user/queue/sellerInterest', function(message) {
+            console.log(message)
+        })
+        stompClient.subscribe('/user/queue/buyerFind', function(message) {
+            console.log(message)
+        });
+        stompClient.subscribe('/user/queue/sellerCancel', function(message) {
+            console.log(message)
+        });
+        stompClient.subscribe('/user/queue/sellerUpdate', function(message) {
             console.log(message)
             showOutput(message)
         })
@@ -75,7 +85,8 @@ function createUser() {
     var firstName = document.getElementById('firstName').value;
     var lastName = document.getElementById('lastName').value;
     var email = document.getElementById('email').value;
-    stompClient.send("/swipr/create", {}, JSON.stringify({ 'firstName': firstName, 'lastName': lastName, 'email': email }));
+    var profilePic = document.getElementById('profilePic').value;
+    stompClient.send("/swipr/create", {}, JSON.stringify({ 'firstName': firstName, 'lastName': lastName, 'email': email, profilePicUrl: profilePic }));
 }
 
 function getUsers() {
@@ -152,13 +163,12 @@ function cancelInterest() {
 
 function confirmInterest() {
     var userId = document.getElementById('confirmUserId').value;
-    var startTime = document.getElementById('confirmStartTime').value;
-    var endTime = document.getElementById('confirmEndTime').value;
-    var price = document.getElementById('confirmPrice').value;
-    var diningHall = document.getElementById('confirmDiningHall').value;
-    stompClient.send("/swipr/confirmInterest", {}, JSON.stringify({'userId': parseInt(userId), 'timeRangeStart': parseInt(startTime), 'timeRangeEnd': parseInt(endTime), 'priceCents': parseInt(price), 'diningHallBitfield': parseInt(diningHall)}))
+    var firstName = document.getElementById('confirmFirstName').value;
+    var lastName = document.getElementById('confirmLastName').value;
+    var email = document.getElementById('confirmEmail').value;
+    stompClient.send("/swipr/confirmInterest", {}, JSON.stringify({'id': parseInt(userId), 'firstName': firstName, 'lastName': lastName, 'email': email }))
 }
 
-function test() {
-    
+function cancelOffer() {
+    stompClient.send("/swipr/cancelOffer")
 }

@@ -46,34 +46,19 @@ public class User {
 
     private String venmo;
 
-    // Mark some properties with @transient so that they aren't stored in the DB
-    @Transient
-    @JsonIgnore
-    private boolean here;
-
-    @Transient
-    @JsonIgnore
-    private boolean matchedOffer;
-
-    @Transient
-    @JsonIgnore
-    private Set<String> preferredDiningHalls;
+    private String profilePicUrl; 
 
     public User(String firstName, String lastName, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.here = false;
-        this.matchedOffer = false;
-        this.preferredDiningHalls = new HashSet<>();
     }
 
-    /**
-     * Helper method for adding/updating the preferred dining hall of the user
-     * @param diningHall dininghall that the user is looking for
-     */
-    public void addPreferredDiningHall(String diningHall) {
-        preferredDiningHalls.add(diningHall);
+    public User(String firstName, String lastName, String email, String profilePicUrl) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.profilePicUrl = profilePicUrl;
     }
 
     @Override
@@ -85,8 +70,6 @@ public class User {
             return false;
         }
         User user = (User) o;
-        System.out.println(user.id);
-        System.out.println(this.id);
         return user.id.equals(this.id);
     }
 
