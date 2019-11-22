@@ -1,6 +1,5 @@
 package com.swipr.controllers;
 
-import java.util.List;
 import java.util.Set;
 
 import com.swipr.matcher.BuyQuery;
@@ -15,7 +14,6 @@ import com.swipr.utils.AverageSwipePrice;
 import com.swipr.utils.UserSessionManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
@@ -162,10 +160,14 @@ public class OfferController {
         // Also remove the buyer from the seller's list and notify the seller
         Seller seller = userSessionManager.getSellerFromSessionId(null, headerAccessor);
         seller.clearPotentialBuyers();
-        userSessionManager.sendToUser(headerAccessor, "/queue/sellerInterest", seller.getPotentialBuyers(), messagingTemplate);
+        // Make sure to remove that offer from the list of active offers
+        matchMaker.deleteByUserId(seller.getId());
+        // We send back the buyer's information, including the venmo 
+        User boughtFrom = userRepository.findById(buyer.getId());
+        userSessionManager.sendToUser(headerAccessor, "/queue/sellerInterest", boughtFrom, messagingTemplate);
         // When the buyer confirms interest, send out the new average price to all users
+        userSessionManager.sendToUser(buyingUserHeaders, "/queue/buyerInterest", seller, messagingTemplate);
         getAverageSellPrice();
-        userSessionManager.sendToUser(buyingUserHeaders, "/queue/buyerInterest", "Confirmed", messagingTemplate);
     }
 
     /**
@@ -176,7 +178,7 @@ public class OfferController {
     public void cancelOffer(SimpMessageHeaderAccessor headerAccessor) {
         Seller seller = userSessionManager.getSellerFromSessionId(null, headerAccessor);
         matchMaker.deleteByUserId(seller.getId());
-        messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/seller", "Your offer has been cancelled", headerAccessor.getMessageHeaders());
+        messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/sellerCancel", "Your offer has been cancelled", headerAccessor.getMessageHeaders());
     }
 
     /**
@@ -185,9 +187,17 @@ public class OfferController {
      */
     @MessageMapping("/getAllOffers")
     public void getAllOffers(SimpMessageHeaderAccessor headerAccessor) {
-        // User user = userSessionManager.getUserFromSessionId(headerAccessor);
-        // matchMaker.deleteByUserId(user.getId());
         messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/reply", matchMaker.getActiveSellQueries(), headerAccessor.getMessageHeaders());
+    }
+
+    /**
+     * 
+     * @param user the user you will like to notify
+     * @param headerAccessor header object that is sent with every request
+     */
+    @MessageMapping("/here")
+    public void notifyHere(@Payload User user, SimpMessageHeaderAccessor headerAccessor) {
+
     }
 
 }
