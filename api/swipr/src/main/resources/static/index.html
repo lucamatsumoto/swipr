@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Hello WebSocket</title>
+        <title>Websockets Ruined My Marriage</title>
     </head>
     <body onload="disconnect()">
         <noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being enabled. Please enable
@@ -77,6 +77,10 @@
                 <button id="refreshOffers" onclick="refreshOffers();">Refresh Offers</button>
             </div>
         </div>
+        <h2>LAST OUTPUT:</h2>
+        <div id="lastOutput"></div>
+        <h2>LOG OUTPUT:</h2>
+        <div id="logOutput"></div>
         <script src="stomp.js"></script>
         <script src="app.js"></script>
     </body>

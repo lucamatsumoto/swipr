@@ -22,23 +22,41 @@ function connect() {
     stompClient.connect({}, function(frame) {
         setConnected(true);
         console.log('Connected: ' + frame);
-        // Subscribe to the average price 
+        // Subscribe to the average price
         stompClient.subscribe('/user/queue/reply', function(message){
             console.log(message)
+            showOutput(message)
         });
         stompClient.subscribe('/topic/average', function(message){
             console.log(message)
+            showOutput(message)
         });
         stompClient.subscribe('/user/queue/buyer', function(message) {
             console.log(message)
+            showOutput(message)
         });
         stompClient.subscribe('/user/queue/seller', function(message) {
             console.log(message)
+            showOutput(message)
         })
         stompClient.subscribe('/user/queue/error', function(message) {
             console.log(message)
+            showOutput(message)
         })
     });
+}
+
+oldLastChild = null;
+
+function showOutput(message) {
+    last = document.getElementById("lastOutput");
+    if (oldLastChild != null) {
+        last.removeChild(oldLastChild);
+    }
+    oldLastChild = document.createTextNode(message);
+    last.appendChild(oldLastChild);
+    log = document.getElementById("logOutput");
+    log.appendChild(document.createTextNode(message));
 }
 
 function disconnect() {
