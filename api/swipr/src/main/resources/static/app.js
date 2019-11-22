@@ -13,6 +13,7 @@ function setConnected(connected) {
     document.getElementById('showInterestDiv').style.visibility = connected ? 'visible' : 'hidden';
     document.getElementById('confirmInterestDiv').style.visibility = connected ? 'visible' : 'hidden';
     document.getElementById('cancelInterestDiv').style.visibility = connected ? 'visible' : 'hidden';
+    document.getElementById('requestAverageDiv').style.visibility = connected ? 'visible' : 'hidden';
 }
 
 function connect() {
@@ -22,12 +23,15 @@ function connect() {
     stompClient.connect({}, function(frame) {
         setConnected(true);
         console.log('Connected: ' + frame);
-        // Subscribe to the average price
-        stompClient.subscribe('/user/queue/reply', function(message){
+        stompClient.subscribe('/user/queue/reply', function(message) {
             console.log(message)
             showOutput(message)
         });
-        stompClient.subscribe('/topic/average', function(message){
+        stompClient.subscribe('/queue/buyerFind', function(message) {
+            console.log(message)
+            showOutput(message)
+        });
+        stompClient.subscribe('/topic/average', function(message) {
             console.log(message)
             showOutput(message)
         });
@@ -67,7 +71,7 @@ function disconnect() {
     console.log("Disconnected");
 }
 
-function sendName() {
+function createUser() {
     var firstName = document.getElementById('firstName').value;
     var lastName = document.getElementById('lastName').value;
     var email = document.getElementById('email').value;
@@ -111,6 +115,10 @@ function refreshOffers() {
     stompClient.send("/swipr/refreshOffers")
 }
 
+function requestAverage() {
+    stompClient.send("/swipr/averageOffer")
+}
+
 function postBuyQuery() {
     var userId = document.getElementById('buyUserId').value;
     var startTime = document.getElementById('buyStartTime').value;
@@ -149,4 +157,8 @@ function confirmInterest() {
     var price = document.getElementById('confirmPrice').value;
     var diningHall = document.getElementById('confirmDiningHall').value;
     stompClient.send("/swipr/confirmInterest", {}, JSON.stringify({'userId': parseInt(userId), 'timeRangeStart': parseInt(startTime), 'timeRangeEnd': parseInt(endTime), 'priceCents': parseInt(price), 'diningHallBitfield': parseInt(diningHall)}))
+}
+
+function test() {
+    
 }

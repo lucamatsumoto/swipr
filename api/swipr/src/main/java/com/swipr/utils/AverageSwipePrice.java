@@ -17,7 +17,7 @@ public class AverageSwipePrice {
     // This is incremented each time the average is reset. This is
     // used to avoid double-counting a SellQuery in the running
     // average, but DO count a SellQuery again after a reset.
-    private static AtomicLong averageUniqueId = new AtomicLong(0);
+    private static AtomicLong averageUniqueId = new AtomicLong(1);
 
     /** Return, in cents, the average price of a swipe.
      */
