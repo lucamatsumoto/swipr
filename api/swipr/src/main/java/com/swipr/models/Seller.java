@@ -33,6 +33,11 @@ public class Seller extends User {
         this.potentialBuyers = new ArrayList<>();
     }
 
+    //For unit tests, might be useful later on
+    public List<Buyer> getPotentialBuyers() {
+        return potentialBuyers;
+    }
+
     /**
      * Adds the potential matched buyer to this seller
      * @param buyer Matched buyer
