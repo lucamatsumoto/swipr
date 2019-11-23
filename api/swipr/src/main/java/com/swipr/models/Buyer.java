@@ -31,7 +31,7 @@ public class Buyer extends User implements SellQueryListener {
 
     @Transient
     private ArrayList<SellQuery> matchedSellQueries; // offer ids inside.
-    
+
     private Integer id;
 
     @JsonCreator
@@ -68,6 +68,14 @@ public class Buyer extends User implements SellQueryListener {
     @Override
     public void onMatchCancelled(SellQuery expiredSellQuery) {
         matchedSellQueries.remove(expiredSellQuery);
+    }
+
+    /**
+     *  Clear the list of matched sell queries. Needed in case the
+     *  user changes their buy query.
+     */
+    public void clearMatchedSellQueries() {
+        matchedSellQueries.clear();
     }
 
     /**

@@ -78,7 +78,9 @@ public class OfferController {
         // Need to rethink this because of cast exception from (Buyer) userRepository.findById(). A hack that'll work for now
         Buyer buyer = userSessionManager.getBuyerFromSessionId(user, headerAccessor);
         userSessionManager.addBuyerSession(buyer, headerAccessor);    
-        // Add listener to the corresponding user ID
+        // Use the Buyer object (for the corresponding user ID) as the listener.
+        // Remove stale matches first though.
+        buyer.clearMatchedSellQueries();
         matchMaker.updateBuyQuery(query, buyer);
         // Retrieve a list of all bids found and send to the user
         userSessionManager.sendToUser(headerAccessor, "/queue/buyerFind", buyer.getMatchedSellQueries(), messagingTemplate);
