@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
@@ -51,7 +52,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -162,8 +162,10 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                             String firstName = object.getString("first_name");
                             String lastName = object.getString("last_name");
                             String email = object.getString("email");
-                            //TODO: ADD FIELD FOR PROFILE PICTURE
-                            packageJSON(firstName, lastName, email);
+                            String id = object.getString("id");
+                            //Uri profPic = "https://graph.facebook.com/"+id+"/picture?type=large";
+
+                            packageJSON(firstName, lastName, email, null);
                         }
                         catch(JSONException e){
                             e.printStackTrace();
@@ -189,9 +191,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
             String firstName = account.getGivenName();
             String lastName = account.getFamilyName();
             String email = account.getEmail();
-            //TODO: ADD FIELD FOR PROFILE PICTURE
-            packageJSON(firstName, lastName, email);
-
+            Uri profPicture = account.getPhotoUrl();
+            packageJSON(firstName, lastName, email, profPicture);
             // Signed in successfully, show authenticated UI.
             updateUI(account);
             //System.out.println(account.getDisplayName());
@@ -226,21 +227,26 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
      * @param lastName
      * @param email
      */
-    private void packageJSON(String firstName, String lastName, String email)
+    private void packageJSON(String firstName, String lastName, String email, Uri profPic)
     {
 
         String TAG =  "INFO";
         Log.i(TAG, "FirstName = " + firstName);
         Log.i(TAG, "lastName = " + lastName);
         Log.i(TAG, "email = " + email);
+        Log.i(TAG, "profilePicture = " + profPic);
 
         JSONObject json = new JSONObject();
+        String profPicString = null;
+        if(profPic != null)
+            profPicString = profPic.toString();
 
         try
         {
             json.put("firstName", firstName);
             json.put("lastName", lastName);
             json.put("email", email);
+            json.put("profilePicUrl", profPicString);
         }
         catch(JSONException e)
         {

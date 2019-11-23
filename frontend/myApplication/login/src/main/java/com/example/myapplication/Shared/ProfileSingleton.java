@@ -25,10 +25,10 @@ public class ProfileSingleton {
         try {
             JSONObject reader = new JSONObject(json);
             m_id = Integer.valueOf(reader.getString("id"));
-            m_firstName = reader.getString("firstName");
-            m_lastName = reader.getString("lastName");
-            m_email = reader.getString("email");
-            m_venmo = reader.getString("venmo");
+            m_firstName = checkNull(reader.getString("firstName"));
+            m_lastName = checkNull(reader.getString("lastName"));
+            m_email = checkNull(reader.getString("email"));
+            m_venmo = checkNull(reader.getString("venmo"));
             here = Boolean.valueOf(reader.getString("here"));
             matchedOffer = Boolean.valueOf(reader.getString("matchedOffer"));
             Log.d("Here", "profile created");
@@ -46,4 +46,16 @@ public class ProfileSingleton {
     public String getVenmo() {return m_venmo;}
     public boolean isHere() {return here;}
     public boolean hasMatched() {return matchedOffer;}
+    public void setVenmo(String s) {m_venmo = s;}
+    public void setHere(boolean b) {here = b;}
+    public void setMatched(boolean b) {matchedOffer = b;}
+
+
+    private static String checkNull(String s)
+    {
+        if(s.toLowerCase() == "null")
+            return null;
+        else
+            return s;
+    }
 }

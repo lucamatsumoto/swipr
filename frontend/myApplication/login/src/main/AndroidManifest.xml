@@ -13,6 +13,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".EditProfileActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.myapplication.Buyer.BuyerActivity" />
+        </activity>
         <activity
             android:name=".Login"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
@@ -52,7 +57,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.myapplication.Buyer.MainActivity" />
         </activity>
-        <activity android:name=".Buyer.BuyerActivity"></activity>
+        <activity android:name=".Buyer.BuyerActivity"
+            android:launchMode="singleTop"
+            />
     </application>
 
 </manifest>

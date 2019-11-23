@@ -2,6 +2,7 @@ package com.example.myapplication.Shared;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -12,6 +13,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.myapplication.Buyer.BuyerBacker;
 import com.example.myapplication.Buyer.MainActivity;
+import com.example.myapplication.EditProfileActivity;
 import com.example.myapplication.Login;
 import com.example.myapplication.R;
 import com.facebook.login.LoginManager;
@@ -51,9 +53,11 @@ public class DrawerBaseActivity extends AppCompatActivity {
                 switch(id)
                 {
                     case R.id.profile:
-                        //Toast.makeText(MainActivity.this, "My Account",Toast.LENGTH_SHORT).show();break;
+                        launchProfileActivity();
+                        break;
                     case R.id.offers:
-                        //Toast.makeText(MainActivity.this, "Settings",Toast.LENGTH_SHORT).show();break;
+                        //Toast.makeText(MainActivity.this, "Settings",Toast.LENGTH_SHORT).show();
+                        break;
                     case R.id.drawer_logout:
                         launchLoginActivity();
                         break;
@@ -77,6 +81,12 @@ public class DrawerBaseActivity extends AppCompatActivity {
             return true;
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void launchProfileActivity(){
+        Log.d("HERE", "launching profile page");
+        Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
+        startActivity(intent);
     }
 
     /**
@@ -112,7 +122,8 @@ public class DrawerBaseActivity extends AppCompatActivity {
 
     private void returnToLogin()
     {
-        networkManager.disconnect();
+        if(networkManager != null)
+            networkManager.disconnect();
         Intent intent = new Intent(getApplicationContext(), Login.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
