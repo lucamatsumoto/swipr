@@ -45,10 +45,12 @@ public class UserSessionManager {
      * @param headerAccessor header attached to the request to retrieve session ID from 
      */
     public void addBuyerSession(Buyer buyer, SimpMessageHeaderAccessor headerAccessor) {
+        buyerExists(buyer);
         buyerSessions.put(buyer, headerAccessor);
     }
 
     public void addSellerSession(Seller seller, SimpMessageHeaderAccessor headerAccessor) {
+        sellerExists(seller);
         sellerSessions.put(seller, headerAccessor);
     }
 
@@ -108,5 +110,24 @@ public class UserSessionManager {
         headerAccessor.setSessionId(sessionId);
         headerAccessor.setLeaveMutable(true);
         return headerAccessor.getMessageHeaders();
+    }
+
+    // Since you cannot not when a user disconnected, we will check whether the ID already exists to refresh
+    private void sellerExists(User user) {
+        for (Map.Entry<Seller, SimpMessageHeaderAccessor> entry: sellerSessions.entrySet()) {
+            if (user.getId().equals(entry.getKey().getId())) {
+                sellerSessions.remove(entry.getKey());
+                break;
+            }
+        }
+    }
+
+    private void buyerExists(User user) {
+        for (Map.Entry<Buyer, SimpMessageHeaderAccessor> entry: buyerSessions.entrySet()) {
+            if (user.getId().equals(entry.getKey().getId())) {
+                buyerSessions.remove(entry.getKey());
+                break;
+            }
+        }
     }
 }

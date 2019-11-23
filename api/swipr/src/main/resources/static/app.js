@@ -114,8 +114,7 @@ function addSellQuery() {
     var endTime = document.getElementById('sellEndTime').value;
     var price = document.getElementById('sellPrice').value;
     var diningHall = document.getElementById('sellDiningHall').value;
-    var offerId = document.getElementById('sellOfferId').value;
-    stompClient.send("/swipr/updateOffer", {}, JSON.stringify({'userId': parseInt(userId), 'timeRangeStart': parseInt(startTime), 'timeRangeEnd': parseInt(endTime), 'priceCents': parseInt(price), 'diningHallBitfield': parseInt(diningHall), 'offerId': parseInt(offerId)}))
+    stompClient.send("/swipr/updateOffer", {}, JSON.stringify({'userId': parseInt(userId), 'timeRangeStart': parseInt(startTime), 'timeRangeEnd': parseInt(endTime), 'priceCents': parseInt(price), 'diningHallBitfield': parseInt(diningHall) }))
 }
 
 function getActiveOffers() {

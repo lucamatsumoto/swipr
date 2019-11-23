@@ -1,6 +1,8 @@
 package com.swipr.controllers;
 
+import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 
 import com.swipr.matcher.BuyQuery;
 import com.swipr.matcher.Matchmaker;
@@ -37,6 +39,9 @@ public class OfferController {
 
     private Matchmaker matchMaker = Matchmaker.getInstance();
 
+    // Maintain a counter of how many offer ID's we have
+    private AtomicLong currentOfferId = new AtomicLong(0);
+
 
     /**
      * Gets the average daily price of the offers. Everytime a new offer is added, we update and broadcast to all clients
@@ -59,10 +64,17 @@ public class OfferController {
     public void updateOffer(@Payload SellQuery query, SimpMessageHeaderAccessor headerAccessor) {
         // Update the offer / post a new offer
         User user = userRepository.findById(query.userId);
-        Seller seller = userSessionManager.getSellerFromSessionId(user, headerAccessor);
-        userSessionManager.addSellerSession(seller, headerAccessor);
-        matchMaker.updateSellQuery(query);
-        userSessionManager.sendToUser(headerAccessor, "/queue/sellerUpdate", "Offer successfully updated", messagingTemplate);
+        // If the user is not found, then their account might have been deleted
+        if (user == null) {
+            userSessionManager.sendToUser(headerAccessor, "/queue/error", "queried user not found", messagingTemplate);
+        } else {
+            Seller seller = userSessionManager.getSellerFromSessionId(user, headerAccessor);
+            // Figure out error handling later
+            userSessionManager.addSellerSession(seller, headerAccessor);
+            query.offerId = currentOfferId.getAndIncrement();
+            matchMaker.updateSellQuery(query);
+            userSessionManager.sendToUser(headerAccessor, "/queue/sellerUpdate", "Offer successfully updated", messagingTemplate);
+        }
         // messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/reply", "Offer successfully updated", headerAccessor.getMessageHeaders());
     }
 
@@ -75,16 +87,23 @@ public class OfferController {
     public void findOffers(@Payload BuyQuery query, SimpMessageHeaderAccessor headerAccessor) {
         // Find the buyer that matches the query id
         User user = userRepository.findById(query.userId);
-        // Need to rethink this because of cast exception from (Buyer) userRepository.findById(). A hack that'll work for now
-        Buyer buyer = userSessionManager.getBuyerFromSessionId(user, headerAccessor);
-        userSessionManager.addBuyerSession(buyer, headerAccessor);
-        // Use the Buyer object (for the corresponding user ID) as the listener.
-        // Remove stale matches first though.
-        buyer.clearMatchedSellQueries();
-        matchMaker.updateBuyQuery(query, buyer);
-        // Retrieve a list of all bids found and send to the user
-        userSessionManager.sendToUser(headerAccessor, "/queue/buyerFind", buyer.getMatchedSellQueries(), messagingTemplate);
-        // messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/reply", buyer.getMatchedSellQueries(), headerAccessor.getMessageHeaders());
+        if (user == null) {
+            userSessionManager.sendToUser(headerAccessor, "/queue/error", "queried user not found", messagingTemplate);
+        } else {
+            Buyer buyer = userSessionManager.getBuyerFromSessionId(user, headerAccessor);
+            userSessionManager.addBuyerSession(buyer, headerAccessor);
+            // Use the Buyer object (for the corresponding user ID) as the listener.
+            // Remove stale matches first though.
+            buyer.clearMatchedSellQueries();
+            matchMaker.updateBuyQuery(query, buyer);
+            List<SellQuery> matchedSellQueries = buyer.getMatchedSellQueries();
+            if (matchedSellQueries.isEmpty()) {
+                userSessionManager.sendToUser(headerAccessor, "/queue/error", "No matches found!", messagingTemplate);
+            } else {
+                userSessionManager.sendToUser(headerAccessor, "/queue/buyerFind", matchedSellQueries, messagingTemplate);
+            }
+            // Retrieve a list of all bids found and send to the user
+        }
     }
 
     /**
@@ -95,8 +114,13 @@ public class OfferController {
     public void refreshOffers(SimpMessageHeaderAccessor headerAccessor) {
         // Retrieve user based on the session ID
         Buyer buyer = userSessionManager.getBuyerFromSessionId(null, headerAccessor);
-        userSessionManager.sendToUser(headerAccessor, "/queue/buyerFind", buyer.getMatchedSellQueries(), messagingTemplate);
-        // messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/reply", buyer.getMatchedSellQueries(), headerAccessor.getMessageHeaders());
+        // Make the frontend handle 
+        List<SellQuery> matchedSellQueries = buyer.getMatchedSellQueries();
+        if (matchedSellQueries.isEmpty()) {
+            userSessionManager.sendToUser(headerAccessor, "/queue/error", "No matches found!", messagingTemplate);
+        } else {
+            userSessionManager.sendToUser(headerAccessor, "/queue/buyerFind", buyer.getMatchedSellQueries(), messagingTemplate);
+        }
     }
 
     // Need logic for subscribing to multiple topics. Buyer should be notified in real time when a new sellquery is posted that matches their

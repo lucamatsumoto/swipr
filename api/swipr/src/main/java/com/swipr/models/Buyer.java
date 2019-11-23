@@ -8,12 +8,12 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import com.swipr.matcher.SellQueryListener;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.swipr.matcher.SellQuery;
-import com.swipr.utils.AverageSwipePrice;
 import java.util.ArrayList;
 
 /**
@@ -26,7 +26,7 @@ import java.util.ArrayList;
 @Entity
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties({"matchedSellQueries"})
+@JsonIgnoreProperties({"matchedSellQueries, matchedSellers"})
 public class Buyer extends User implements SellQueryListener {
 
     @Transient

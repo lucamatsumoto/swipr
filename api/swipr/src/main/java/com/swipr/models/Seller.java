@@ -26,7 +26,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties({"potentialBuyers", "offer"})
+@JsonIgnoreProperties({"potentialBuyers"})
 public class Seller extends User {
 
     @Transient
