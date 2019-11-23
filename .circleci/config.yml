@@ -4,7 +4,6 @@ jobs:
     docker:
       # using custom image, see .circleci/images/primary/Dockerfile
       - image: circleci/cci-demo-docker-primary:0.0.2
-      - image: redis
       - image: postgres:11.1
         environment:
           POSTGRES_USER: postgres
@@ -69,4 +68,4 @@ jobs:
             docker build -t lucamatsumoto/swipr_web:latest . 
             docker login -u $DOCKER_LOGIN -p $DOCKER_PWD
             docker push lucamatsumoto/swipr_web:latest
-            ssh -o "StrictHostKeyChecking no" $SWIPR_USER@$SWIPR_IP "docker-compose down; docker-compose build; docker-compose up -d"
+            ssh -o "StrictHostKeyChecking no" $SWIPR_USER@$SWIPR_IP "cd ~/swipr/api/swipr; docker-compose down; git pull origin master; docker-compose build; docker-compose up -d"

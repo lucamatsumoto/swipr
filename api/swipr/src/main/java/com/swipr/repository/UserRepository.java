@@ -43,5 +43,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * Find a User/Buyer/Seller object based on their User ID. Returns a list of 1 user.
      * @param id the id of the users
      */
-    List<User> findById(Integer id);
+    User findById(Integer id);
 }

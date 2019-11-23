@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Hello WebSocket</title>
+        <title>Websockets Ruined My Marriage</title>
     </head>
     <body onload="disconnect()">
         <noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being enabled. Please enable
@@ -17,10 +17,8 @@
                 <label>What is your first name?</label><input type="text" id="firstName" />
                 <label>What is your last name?</label><input type="text" id="lastName" />
                 <label>What is your email?</label><input type="text" id="email" />
-                <button id="sendName" onclick="sendName();">Send</button>
-            </div>
-            <div id="getUsersDiv">
-                <button id="getUsers" onclick="getUsers();">Get Users</button>
+                <label>What is your profile pic url?</label><input type="text" id="profilePic" />
+                <button id="sendName" onclick="createUser();">Create</button>
             </div>
             <div id="deleteUserDiv">
                 <p>Delete a User</p>
@@ -29,7 +27,66 @@
                 <label>What is your email?</label><input type="text" id="emailDelete" />
                 <button id="deleteUser" onclick="deleteUser();">Delete</button>
             </div>
+            <div id="sellQueryDiv">
+                <p>Post an Offer</p>
+                <label>What is your userID?</label><input type="text" id="sellUserId" />
+                <label>What is your Start Time?</label><input type="text" id="sellStartTime" />
+                <label>What is your End Time?</label><input type="text" id="sellEndTime" />
+                <label>What is your Swipe Price?</label><input type="text" id="sellPrice" />
+                <label>What is your Dining Hall Bit?</label><input type="text" id="sellDiningHall" />
+                <button id="addOffer" onclick="addSellQuery();">Add Offer</button>
+            </div>
+            <div id="cancelOfferDiv">
+                <button id="cancelOffer" onclick="cancelOffer();">Cancel Offer</button>
+            </div>
+            <div id="buyQueryDiv">
+                <p>See Matching Offers</p>
+                <label>What is your userID?</label><input type="text" id="buyUserId" />
+                <label>What is your Start Time?</label><input type="text" id="buyStartTime" />
+                <label>What is your End Time?</label><input type="text" id="buyEndTime" />
+                <label>What is your Swipe Price?</label><input type="text" id="buyPrice" />
+                <label>What is your Dining Hall Bit?</label><input type="text" id="buyDiningHall" />
+                <button id="getOffers" onclick="postBuyQuery();">Find Matches</button>
+            </div>
+            <div id="showInterestDiv">
+                <p>Show Interest in an Offer</p>
+                <label>What is your buyerID?</label><input type="text" id="interestUserId" />
+                <label>What is your sellerID?</label><input type="text" id="sellInterestUserId" />
+                <label>What is your Start Time?</label><input type="text" id="sellInterestStartTime" />
+                <label>What is your End Time?</label><input type="text" id="sellInterestEndTime" />
+                <label>What is your Swipe Price?</label><input type="text" id="sellInterestPrice" />
+                <label>What is your Dining Hall Bit?</label><input type="text" id="sellInterestDiningHall" />
+                <label>What is your Offer ID?</label><input type="text" id="sellInterestOfferId" />
+                <button id="showInterest" onclick="showInterest();">Show Interest</button>
+            </div>
+            <div id="cancelInterestDiv">
+                <button id="cancelInterest" onclick="cancelInterest();">Cancel Interest</button>
+            </div>
+            <div id="confirmInterestDiv">
+                <p>Confirm Interest</p>
+                <label>What is your buyerID?</label><input type="text" id="confirmUserId" />
+                <label>What is your Buyer First Name?</label><input type="text" id="confirmFirstName" />
+                <label>What is your Buyer Last Name?</label><input type="text" id="confirmLastName" />
+                <label>What is your Buyer Email?</label><input type="text" id="confirmEmail" />
+                <button id="confirmInterest" onclick="confirmInterest();">Confirm Interest</button>
+            </div>
+            <div id="getUsersDiv">
+                <button id="getUsers" onclick="getUsers();">Get Users</button>
+            </div>
+            <div id="getActiveOffersDiv">
+                <button id="getActiveOffers" onclick="getActiveOffers();">Get Active Offers</button>
+            </div>
+            <div id="refreshOffersDiv">
+                <button id="refreshOffers" onclick="refreshOffers();">Refresh Offers</button>
+            </div>
+            <div id="requestAverageDiv">
+                <button id="requestAverage" onclick="requestAverage();">Request Average Price</button>
+            </div>
         </div>
+        <h2>LAST OUTPUT:</h2>
+        <div id="lastOutput"></div>
+        <h2>LOG OUTPUT:</h2>
+        <div id="logOutput"></div>
         <script src="stomp.js"></script>
         <script src="app.js"></script>
     </body>

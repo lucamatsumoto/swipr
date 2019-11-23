@@ -8,11 +8,13 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import com.swipr.matcher.SellQueryListener;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.swipr.matcher.SellQuery;
-import com.swipr.utils.AverageSwipePrice;
 import java.util.ArrayList;
-import org.springframework.beans.factory.annotation.Autowired;
-import com.swipr.repository.UserRepository;
 
 /**
  * Buyer class that represents the provided user information from Google, and their venmo account.
@@ -23,15 +25,20 @@ import com.swipr.repository.UserRepository;
 @EqualsAndHashCode(callSuper=true)
 @Entity
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties({"matchedSellQueries, matchedSellers"})
 public class Buyer extends User implements SellQueryListener {
-    @Autowired
-    UserRepository userRepository;
 
     @Transient
     private ArrayList<SellQuery> matchedSellQueries; // offer ids inside.
 
-    public Buyer(String firstName, String lastName, String email) {
+    private Integer id;
+
+    @JsonCreator
+    public Buyer(@JsonProperty("id") Integer id, @JsonProperty("firstName") String firstName, @JsonProperty("lastName") String lastName, @JsonProperty("email") String email) {
         super(firstName, lastName, email);
+        this.id = id;
+        matchedSellQueries = new ArrayList<>();
     }
 
     /**
@@ -63,8 +70,12 @@ public class Buyer extends User implements SellQueryListener {
         matchedSellQueries.remove(expiredSellQuery);
     }
 
-    public ArrayList<SellQuery> getMatchedSellQueries() {
-        return matchedSellQueries;
+    /**
+     *  Clear the list of matched sell queries. Needed in case the
+     *  user changes their buy query.
+     */
+    public void clearMatchedSellQueries() {
+        matchedSellQueries.clear();
     }
 
     /**
@@ -73,18 +84,26 @@ public class Buyer extends User implements SellQueryListener {
      *  still active and associated with a Seller, add this Buyer to
      *  the said Seller's list of potential buyers.
      */
-    public void indicateInterestInOffer(SellQuery sellQuery) {
-        int userId = sellQuery.userId;
+    public void indicateInterestInOffer(SellQuery sellQuery, Seller seller) {
         long interestedOfferId = sellQuery.offerId;
         for (SellQuery sq : matchedSellQueries) {
             if (sq.offerId == interestedOfferId) {
-                Seller seller = (Seller) userRepository.findById(userId);
                 seller.addPotentialBuyer(this);
-                AverageSwipePrice.includeSellQuery(sellQuery);
                 return;
             }
         }
+        // Throw exception maybe. We're not looking to do complex logic for this
         tellUserSorrySellQueryNotFound(sellQuery);
+    }
+
+    public void cancelInterestInOffer(SellQuery sellQuery, Seller seller) {
+        long interestedOfferId = sellQuery.offerId;
+        for (SellQuery sq : matchedSellQueries) {
+            if (sq.offerId == interestedOfferId) {
+                seller.removePotentialBuyer(this);
+                return;
+            }
+        }
     }
 
     public void tellUserSorrySellQueryNotFound(SellQuery sellQuery) {

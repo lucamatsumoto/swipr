@@ -1,5 +1,8 @@
 package com.swipr.matcher;
 
+import lombok.Data;
+
+@Data
 public class Query {
     // User ID of the user that created this query. NOT boxed because we
     // want to at least pretend we care about performance.
@@ -16,7 +19,7 @@ public class Query {
     public final long diningHallBitfield;
 
     public static final long BPLATE = 1, COVEL = 2, DE_NEVE = 4, FEAST = 8;
-
+    
     public Query(
         int userId,
         long timeRangeStart,

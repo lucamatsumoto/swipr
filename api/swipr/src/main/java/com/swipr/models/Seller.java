@@ -1,16 +1,20 @@
 package com.swipr.models;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.Transient;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import com.swipr.matcher.BuyQuery;
 
 /**
  * Seller class that represents the provided user information from Google, and their venmo account. 
@@ -21,16 +25,20 @@ import com.swipr.matcher.BuyQuery;
 @EqualsAndHashCode(callSuper=true)
 @Entity
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties({"potentialBuyers"})
 public class Seller extends User {
 
     @Transient
-    private Offer offer;
-    @Transient
-    private List<Buyer> potentialBuyers;
+    private Set<Buyer> potentialBuyers;
 
-    public Seller(String firstName, String lastName, String email) {
+    private Integer id;
+
+    @JsonCreator
+    public Seller(@JsonProperty("id") Integer id, @JsonProperty("firstName") String firstName, @JsonProperty("lastName") String lastName, @JsonProperty("email") String email) {
         super(firstName, lastName, email);
-        this.potentialBuyers = new ArrayList<>();
+        this.potentialBuyers = new HashSet<>();
+        this.id = id;
     }
 
     //For unit tests, might be useful later on
@@ -44,6 +52,13 @@ public class Seller extends User {
      */
     public void addPotentialBuyer(Buyer buyer) {
         potentialBuyers.add(buyer);
-        // TODO: Send Information to Seller of interested Buyer.
+    }
+    
+    public void removePotentialBuyer(Buyer buyer) {
+        potentialBuyers.remove(buyer);
+    }
+
+    public void clearPotentialBuyers() {
+        potentialBuyers.clear();    
     }
 }

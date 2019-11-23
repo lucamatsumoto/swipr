@@ -171,6 +171,20 @@ public class Matchmaker {
         return didDelete;
     }
 
+    /**
+     *  Return the SellQuery that the seller with the given user id
+     *  offered, null if no such SellQuery is found. I'm not even
+     *  trying to follow the information hiding principle here.
+     */
+    public synchronized SellQuery sellQueryByUserId(int userId) {
+        int sz = sellQueryList.size();
+        for (int i = 0; i < sz; ++i) {
+            SellQuery sq = sellQueryList.get(i);
+            if (sq.userId == userId) return sq;
+        }
+        return null;
+    }
+
     // Returns true iff the buy query matches the sell query.
     private static boolean matches(SellQuery sellQuery, BuyQuery buyQuery) {
         // No overlapping dining halls?
@@ -189,7 +203,7 @@ public class Matchmaker {
             && buyQuery.timeRangeStart <= sellQuery.timeRangeEnd;
     }
 
-    // Hack.
+    // For tests to see if it's working properly
     public ArrayList<SellQuery> getActiveSellQueries() {
         return sellQueryList;
     }

@@ -5,6 +5,8 @@ WORKDIR /swipr
 
 COPY pom.xml /swipr
 
+COPY lombok.config /swipr
+
 RUN mvn dependency:go-offline
 
 COPY src /swipr/src
