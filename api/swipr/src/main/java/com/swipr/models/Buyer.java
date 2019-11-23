@@ -85,14 +85,10 @@ public class Buyer extends User implements SellQueryListener {
      *  the said Seller's list of potential buyers.
      */
     public void indicateInterestInOffer(SellQuery sellQuery, Seller seller) {
-        // int userId = sellQuery.userId;
         long interestedOfferId = sellQuery.offerId;
         for (SellQuery sq : matchedSellQueries) {
             if (sq.offerId == interestedOfferId) {
-                // Seller seller = (Seller) userRepository.findById(userId);
-                // Seller seller = (Seller) user;
                 seller.addPotentialBuyer(this);
-                AverageSwipePrice.includeSellQuery(sellQuery);
                 return;
             }
         }
@@ -104,11 +100,7 @@ public class Buyer extends User implements SellQueryListener {
         long interestedOfferId = sellQuery.offerId;
         for (SellQuery sq : matchedSellQueries) {
             if (sq.offerId == interestedOfferId) {
-                // Seller seller = (Seller) userRepository.findById(userId);
-                // Seller seller = (Seller) user;
                 seller.removePotentialBuyer(this);
-                AverageSwipePrice.excludeSellQuery(sellQuery);
-                // AverageSwipePrice.includeSellQuery(sellQuery);
                 return;
             }
         }

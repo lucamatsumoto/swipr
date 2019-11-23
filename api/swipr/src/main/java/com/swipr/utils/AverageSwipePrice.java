@@ -1,6 +1,7 @@
 package com.swipr.utils;
 
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.HashSet;
 
 import com.swipr.matcher.SellQuery;
 
@@ -14,10 +15,9 @@ public class AverageSwipePrice {
     // average.
     private static AtomicLong previousAverage = new AtomicLong(0);
 
-    // This is incremented each time the average is reset. This is
-    // used to avoid double-counting a SellQuery in the running
-    // average, but DO count a SellQuery again after a reset.
-    private static AtomicLong averageUniqueId = new AtomicLong(1);
+    // Set of SellQuery offer IDs already included in the average --
+    // used to avoid double counting.
+    private static HashSet<Long> includedOfferIds = new HashSet<Long>();
 
     /** Return, in cents, the average price of a swipe.
      */
@@ -25,7 +25,9 @@ public class AverageSwipePrice {
         // Conceptually, just divide total cents by total samples to
         // get average, unless we have 0 samples, in which case we
         // return the old average.  However, there's some rigamarole
-        // about thread safety -- totalCents and totalSamples
+        // about thread safety -- totalCents and totalSamples are
+        // atomic but not atomic together, so if we notice a change we
+        // have to retry the calculation.
         int maxTries = 40;
         for (int i = 0; ; ++i) {
             long cents = totalCents.get();
@@ -35,7 +37,7 @@ public class AverageSwipePrice {
             }
         }
     }
-    
+
     /** Return the previous average (before reset() called).
      */
     public static long getPrevious() {
@@ -50,27 +52,25 @@ public class AverageSwipePrice {
         previousAverage.set(getCents());
         totalCents.set(0);
         totalSamples.set(0);
-        averageUniqueId.incrementAndGet();
+        resetIncludedOfferIds();
+    }
+
+    private static synchronized void resetIncludedOfferIds() {
+        includedOfferIds.clear();
     }
 
     /** Add a new price sample to the running average (using the price
-     *  in the SellQuery). Avoids double counting using the magic
-     *  SellQuery.averageUniqueId field.
+     *  in the SellQuery). Avoids double counting using the set of
+     *  seen offer id's.
      */
     public static void includeSellQuery(SellQuery sq) {
-        if (sq.averageUniqueId == averageUniqueId.get()) return;
-        sq.averageUniqueId = averageUniqueId.get();
-
-        totalCents.addAndGet(sq.priceCents);
-        totalSamples.incrementAndGet();
+        if (includeOfferId(sq.offerId)) {
+            totalCents.addAndGet(sq.priceCents);
+            totalSamples.incrementAndGet();
+        }
     }
 
-    public static void excludeSellQuery(SellQuery sq) {
-        if (sq.averageUniqueId == averageUniqueId.get()) return;
-        sq.averageUniqueId = averageUniqueId.get();
-
-        totalCents.addAndGet(-1 * sq.priceCents);
-        totalSamples.decrementAndGet();
+    private static synchronized boolean includeOfferId(long offerId) {
+        return includedOfferIds.add(offerId);
     }
-
 }
