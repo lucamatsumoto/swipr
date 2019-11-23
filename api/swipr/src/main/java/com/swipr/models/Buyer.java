@@ -31,7 +31,7 @@ public class Buyer extends User implements SellQueryListener {
 
     @Transient
     private ArrayList<SellQuery> matchedSellQueries; // offer ids inside.
-    
+
     private Integer id;
 
     @JsonCreator
@@ -71,20 +71,24 @@ public class Buyer extends User implements SellQueryListener {
     }
 
     /**
+     *  Clear the list of matched sell queries. Needed in case the
+     *  user changes their buy query.
+     */
+    public void clearMatchedSellQueries() {
+        matchedSellQueries.clear();
+    }
+
+    /**
      *  Call this when the human buyer presses the "I'm interested"
      *  button for the given SellQuery. If the given SellQuery is
      *  still active and associated with a Seller, add this Buyer to
      *  the said Seller's list of potential buyers.
      */
     public void indicateInterestInOffer(SellQuery sellQuery, Seller seller) {
-        // int userId = sellQuery.userId;
         long interestedOfferId = sellQuery.offerId;
         for (SellQuery sq : matchedSellQueries) {
             if (sq.offerId == interestedOfferId) {
-                // Seller seller = (Seller) userRepository.findById(userId);
-                // Seller seller = (Seller) user;
                 seller.addPotentialBuyer(this);
-                AverageSwipePrice.includeSellQuery(sellQuery);
                 return;
             }
         }
@@ -96,11 +100,7 @@ public class Buyer extends User implements SellQueryListener {
         long interestedOfferId = sellQuery.offerId;
         for (SellQuery sq : matchedSellQueries) {
             if (sq.offerId == interestedOfferId) {
-                // Seller seller = (Seller) userRepository.findById(userId);
-                // Seller seller = (Seller) user;
                 seller.removePotentialBuyer(this);
-                AverageSwipePrice.excludeSellQuery(sellQuery);
-                // AverageSwipePrice.includeSellQuery(sellQuery);
                 return;
             }
         }

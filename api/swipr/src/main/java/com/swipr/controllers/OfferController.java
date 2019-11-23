@@ -26,7 +26,7 @@ import org.springframework.stereotype.Controller;
  */
 @Controller
 public class OfferController {
-      
+
     @Autowired
     private UserRepository userRepository;
 
@@ -55,11 +55,11 @@ public class OfferController {
      * @param headerAccessor header object that is sent with every request
      * @param query Offer query that the seller wants to update
      */
-    @MessageMapping("/updateOffer") 
+    @MessageMapping("/updateOffer")
     public void updateOffer(@Payload SellQuery query, SimpMessageHeaderAccessor headerAccessor) {
         // Update the offer / post a new offer
         User user = userRepository.findById(query.userId);
-        Seller seller = userSessionManager.getSellerFromSessionId(user, headerAccessor); 
+        Seller seller = userSessionManager.getSellerFromSessionId(user, headerAccessor);
         userSessionManager.addSellerSession(seller, headerAccessor);
         matchMaker.updateSellQuery(query);
         userSessionManager.sendToUser(headerAccessor, "/queue/sellerUpdate", "Offer successfully updated", messagingTemplate);
@@ -77,8 +77,10 @@ public class OfferController {
         User user = userRepository.findById(query.userId);
         // Need to rethink this because of cast exception from (Buyer) userRepository.findById(). A hack that'll work for now
         Buyer buyer = userSessionManager.getBuyerFromSessionId(user, headerAccessor);
-        userSessionManager.addBuyerSession(buyer, headerAccessor);    
-        // Add listener to the corresponding user ID
+        userSessionManager.addBuyerSession(buyer, headerAccessor);
+        // Use the Buyer object (for the corresponding user ID) as the listener.
+        // Remove stale matches first though.
+        buyer.clearMatchedSellQueries();
         matchMaker.updateBuyQuery(query, buyer);
         // Retrieve a list of all bids found and send to the user
         userSessionManager.sendToUser(headerAccessor, "/queue/buyerFind", buyer.getMatchedSellQueries(), messagingTemplate);
@@ -97,7 +99,7 @@ public class OfferController {
         // messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/reply", buyer.getMatchedSellQueries(), headerAccessor.getMessageHeaders());
     }
 
-    // Need logic for subscribing to multiple topics. Buyer should be notified in real time when a new sellquery is posted that matches their 
+    // Need logic for subscribing to multiple topics. Buyer should be notified in real time when a new sellquery is posted that matches their
     // buy parameters
 
     /**
@@ -125,7 +127,7 @@ public class OfferController {
     }
 
     /**
-     * 
+     *
      * @param buyerId the ID of the user (buyer) who wants to cancel interest in the purchase
      * @param query the offer that they want to cancel
      * @param headerAccessor headers as a part of the request
@@ -156,15 +158,17 @@ public class OfferController {
      */
     @MessageMapping("/confirmInterest")
     public void confirmInterest(@Payload Buyer buyer, SimpMessageHeaderAccessor headerAccessor) {
+        // TODO: Include in AverageSwipePrice statistics
         SimpMessageHeaderAccessor buyingUserHeaders = userSessionManager.getBuyerHeaders(buyer);
         // Also remove the buyer from the seller's list and notify the seller
         Seller seller = userSessionManager.getSellerFromSessionId(null, headerAccessor);
         seller.clearPotentialBuyers();
-        // Make sure to remove that offer from the list of active offers
-        matchMaker.deleteByUserId(seller.getId());
-        // We send back the buyer's information, including the venmo 
+        // We send back the buyer's information, including the venmo
         User boughtFrom = userRepository.findById(buyer.getId());
         userSessionManager.sendToUser(headerAccessor, "/queue/sellerInterest", boughtFrom, messagingTemplate);
+        // Include in the averaging statistics the seller's original SellQuery that led to this transaction.
+        SellQuery sq = matchMaker.sellQueryByUserId(seller.getId());
+        AverageSwipePrice.includeSellQuery(sq);
         // When the buyer confirms interest, send out the new average price to all users
         userSessionManager.sendToUser(buyingUserHeaders, "/queue/buyerInterest", seller, messagingTemplate);
         getAverageSellPrice();
@@ -191,7 +195,7 @@ public class OfferController {
     }
 
     /**
-     * 
+     *
      * @param user the user you will like to notify
      * @param headerAccessor header object that is sent with every request
      */

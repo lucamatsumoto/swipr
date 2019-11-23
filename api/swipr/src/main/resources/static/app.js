@@ -13,6 +13,7 @@ function setConnected(connected) {
     document.getElementById('showInterestDiv').style.visibility = connected ? 'visible' : 'hidden';
     document.getElementById('confirmInterestDiv').style.visibility = connected ? 'visible' : 'hidden';
     document.getElementById('cancelInterestDiv').style.visibility = connected ? 'visible' : 'hidden';
+    document.getElementById('requestAverageDiv').style.visibility = connected ? 'visible' : 'hidden';
     document.getElementById('cancelOfferDiv').style.visibility = connected ? 'visible' : 'hidden';
 }
 
@@ -23,15 +24,21 @@ function connect() {
     stompClient.connect({}, function(frame) {
         setConnected(true);
         console.log('Connected: ' + frame);
-        // Subscribe to the average price 
-        stompClient.subscribe('/user/queue/reply', function(message){
+        stompClient.subscribe('/user/queue/reply', function(message) {
             console.log(message)
+            showOutput(message)
         });
-        stompClient.subscribe('/topic/average', function(message){
+        stompClient.subscribe('/queue/buyerFind', function(message) {
             console.log(message)
+            showOutput(message)
+        });
+        stompClient.subscribe('/topic/average', function(message) {
+            console.log(message)
+            showOutput(message)
         });
         stompClient.subscribe('/user/queue/buyerInterest', function(message) {
             console.log(message)
+            showOutput(message)
         });
         stompClient.subscribe('/user/queue/sellerInterest', function(message) {
             console.log(message)
@@ -44,11 +51,26 @@ function connect() {
         });
         stompClient.subscribe('/user/queue/sellerUpdate', function(message) {
             console.log(message)
+            showOutput(message)
         })
         stompClient.subscribe('/user/queue/error', function(message) {
             console.log(message)
+            showOutput(message)
         })
     });
+}
+
+oldLastChild = null;
+
+function showOutput(message) {
+    last = document.getElementById("lastOutput");
+    if (oldLastChild != null) {
+        last.removeChild(oldLastChild);
+    }
+    oldLastChild = document.createTextNode(message);
+    last.appendChild(oldLastChild);
+    log = document.getElementById("logOutput");
+    log.appendChild(document.createTextNode(message));
 }
 
 function disconnect() {
@@ -102,6 +124,10 @@ function getActiveOffers() {
 
 function refreshOffers() {
     stompClient.send("/swipr/refreshOffers")
+}
+
+function requestAverage() {
+    stompClient.send("/swipr/averageOffer")
 }
 
 function postBuyQuery() {
