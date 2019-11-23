@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.List;
 
 public class Offer {
     private static final String TAG = "Offer";
@@ -29,7 +30,7 @@ public class Offer {
                     Instant.ofEpochSecond(temp.getLong("timeRangeEnd")),
                     ZoneId.systemDefault());
             price = temp.getLong("priceCents")/100.0;
-            //diningHallList = DiningHalls.getNameFromBitField(temp.getLong("diningHallBitfield"));
+            diningHallList = DiningHalls.getNameFromBitField(temp.getLong("diningHallBitfield"));
         } catch (Exception e)
         {
             Log.d(TAG, e.getMessage());
