@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Seller.SellerActivity">
+
+    <Button
+        android:id="@+id/s_buyer_tag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/s_seller_tag"
+        android:onClick="launchBuyerActivity"
+        android:text="BUYER" />
+
+    <Button
+        android:id="@+id/s_seller_tag"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        style="@style/Widget.AppCompat.Button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@color/colorPrimary"
+        android:textColor="@color/black"
+        android:text="@string/seller_button"/>
+
+
+    <SeekBar
+        android:id="@+id/s_price"
+        android:layout_width="350dp"
+        android:layout_height="43dp"
+        android:layout_marginTop="260dp"
+        android:background="@android:color/white"
+        android:clickable="true"
+        android:startColor="@android:color/white"
+        android:text="Price"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <SeekBar
+        android:id="@+id/s_time"
+        android:layout_width="350dp"
+        android:layout_height="43dp"
+        android:layout_marginTop="400dp"
+        android:background="@android:color/white"
+        android:clickable="true"
+        android:startColor="@android:color/white"
+        android:text="Time"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
