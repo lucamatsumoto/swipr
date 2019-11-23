@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.example.myapplication.Login;
 import com.example.myapplication.R;
+import com.example.myapplication.Seller.SellerActivity;
 import com.example.myapplication.Shared.DrawerBaseActivity;
 import com.example.myapplication.Shared.NetworkManager;
 import com.example.myapplication.Shared.SimpleSpinAdapter;
@@ -64,15 +65,15 @@ public class BuyerActivity extends DrawerBaseActivity implements AdapterView.OnI
         String option = intent.getExtras().getString("From");
         buyerBacker.setSignin(option);
 
-        resultRecycler = findViewById(R.id.resultRecycler);
+        resultRecycler = findViewById(R.id.b_resultRecycler);
         resultAdapter = new ResultAdapter(this, buyerBacker.getResults());
         resultRecycler.setAdapter(resultAdapter);
         resultRecycler.setLayoutManager(new LinearLayoutManager(this));
 
-        filterFrame = findViewById(R.id.filter_frame);
-        resultFrame = findViewById(R.id.result_frame);
+        filterFrame = findViewById(R.id.b_filter_frame);
+        resultFrame = findViewById(R.id.b_result_frame);
 
-        diningHallSpinner = (Spinner) findViewById(R.id.filter_dining_spinner);
+        diningHallSpinner = (Spinner) findViewById(R.id.b_filter_dining_spinner);
         diningHallSpinner.setOnItemSelectedListener(this);
         ArrayAdapter<String> diningHallAdapter = new SimpleSpinAdapter(this, buyerBacker.getDiningHalls());
         diningHallSpinner.setAdapter(diningHallAdapter);
@@ -99,7 +100,11 @@ public class BuyerActivity extends DrawerBaseActivity implements AdapterView.OnI
      * @param view      The java side representation of the UI button that triggered this function call.
      */
     public void launchSellerActivity(View view) {
-        //launch seller tab.
+        //launch login tab
+        Log.d("here", "3");
+        Intent intent = new Intent(this, SellerActivity.class);
+        Log.d("here", "4");
+        startActivity(intent);
     }
 
     /**
@@ -126,7 +131,7 @@ public class BuyerActivity extends DrawerBaseActivity implements AdapterView.OnI
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        if(parent.getId() == R.id.filter_dining_spinner)
+        if(parent.getId() == R.id.b_filter_dining_spinner)
             buyerBacker.setDiningHallIndex(parent.getSelectedItemPosition());
     }
 
