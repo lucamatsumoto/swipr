@@ -42,6 +42,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "Login";
     private static final String EMAIL = "email";
     private GoogleSignInClient mGoogleSignInClient;
+    private String from;
     // FOR FACEBOOK LOGIN
     CallbackManager callbackManager;
     LoginButton loginButton;
@@ -81,7 +82,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                         boolean loggedIn = AccessToken.getCurrentAccessToken() == null;
                         Log.d("API123", loggedIn + " ??");
                         handleSignInResult(at);
-                        UpdateUI(at);
+                        from = "fb";
                     }
 
                     @Override
@@ -111,9 +112,16 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         // the GoogleSignInAccount will be non-null.
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         if(account != null)
-            updateUI(account);
-
+        {
+            String firstName = account.getGivenName();
+            String lastName = account.getFamilyName();
+            String email = account.getEmail();
+            Uri profPicture = account.getPhotoUrl();
+            packageJSON(firstName, lastName, email, profPicture);
+            from = "google";
+        }
     }
+
 
     @Override
     public void onClick(View v) {
@@ -198,7 +206,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
             Uri profPicture = account.getPhotoUrl();
             packageJSON(firstName, lastName, email, profPicture);
             // Signed in successfully, show authenticated UI.
-            updateUI(account);
+            from = "google";
             //System.out.println(account.getDisplayName());
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
@@ -207,14 +215,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         }
     }
 
-    private void updateUI(GoogleSignInAccount account)
+    private void updateUI()
     {
-        profile.setSignin("google");
-        Intent intent = new Intent(this, BuyerActivity.class);
-        startActivity(intent);
-    }
-    private void UpdateUI(AccessToken at) {
-        profile.setSignin("fb");
+        profile.setSignin(from);
         Intent intent = new Intent(this, BuyerActivity.class);
         startActivity(intent);
     }
@@ -263,6 +266,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         @Override
         public void onMessageReceived(String json) {
             ProfileSingleton.setInstance(json);
+            updateUI();
         }
     }
 

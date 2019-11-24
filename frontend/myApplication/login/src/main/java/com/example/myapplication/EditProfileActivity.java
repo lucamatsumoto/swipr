@@ -12,9 +12,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.myapplication.Shared.DrawerBaseActivity;
 import com.example.myapplication.Shared.NetworkManager;
 import com.example.myapplication.Shared.NetworkResponder;
@@ -54,6 +57,12 @@ public class EditProfileActivity extends AppCompatActivity {
 
         getSupportActionBar().setTitle("Edit Swipr Account"); // for set actionbar title
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); // for add back arrow in action bar
+        ImageView imgView = (ImageView) findViewById(R.id.profilePic);
+        Glide.with(getApplicationContext()).load(profile.getProfilePicture())
+                .thumbnail(0.5f)
+                .crossFade()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(imgView);
 
         final Button button = findViewById(R.id.save_button);
         button.setOnClickListener(new View.OnClickListener() {
