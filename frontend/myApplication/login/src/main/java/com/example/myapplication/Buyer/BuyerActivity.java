@@ -25,6 +25,7 @@ import com.example.myapplication.R;
 import com.example.myapplication.Seller.SellerActivity;
 import com.example.myapplication.Shared.DrawerBaseActivity;
 import com.example.myapplication.Shared.NetworkManager;
+import com.example.myapplication.Shared.Offer;
 import com.example.myapplication.Shared.SimpleSpinAdapter;
 import com.example.myapplication.Buyer.Result.ResultAdapter;
 import com.facebook.login.LoginManager;
@@ -34,6 +35,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
+
+import java.util.ArrayList;
 
 public class BuyerActivity extends DrawerBaseActivity implements AdapterView.OnItemSelectedListener {
 
@@ -57,8 +60,8 @@ public class BuyerActivity extends DrawerBaseActivity implements AdapterView.OnI
         dl.addView(contentView, 0);
         //END
 
-        networkManager = NetworkManager.getInstance();
 
+        networkManager = NetworkManager.getInstance();
         buyerBacker = BuyerBacker.getInstance();
 
 
@@ -75,6 +78,13 @@ public class BuyerActivity extends DrawerBaseActivity implements AdapterView.OnI
         ArrayAdapter<String> diningHallAdapter = new SimpleSpinAdapter(this, buyerBacker.getDiningHalls());
         diningHallSpinner.setAdapter(diningHallAdapter);
 
+        Offer offer = new Offer();
+        offer.diningHallList = new ArrayList<>();
+        offer.diningHallList.add(true);
+        offer.diningHallList.add(false);
+        offer.diningHallList.add(true);
+        offer.diningHallList.add(false);
+        //offer.offerId = profile
     }
 
     @Override
@@ -98,9 +108,7 @@ public class BuyerActivity extends DrawerBaseActivity implements AdapterView.OnI
      */
     public void launchSellerActivity(View view) {
         //launch login tab
-        Log.d("here", "3");
         Intent intent = new Intent(this, SellerActivity.class);
-        Log.d("here", "4");
         startActivity(intent);
     }
 

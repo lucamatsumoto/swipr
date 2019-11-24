@@ -13,31 +13,32 @@ public class DiningHalls {
                 "Bruin Plate",
                 "Covel",
                 "De Neve",
-                "Feast",
-                "Bruin Cafe",
-                "Cafe 1919",
-                "Rendezvous",
-                "The Study"
+                "Feast"
+                //"Bruin Cafe",
+                //"Cafe 1919",
+                //"Rendezvous",
+                //"The Study"
         ));
         diningHallList = temp;
 
     }
     private DiningHalls() {}
     public static List<String> get(){return diningHallList;}
-    public static List<String> getNameFromBitField(long bitValue)
+    public static List<Boolean> getSelectedFromBitValue(long bitValue)
     {
-        if(bitValue < 0 || bitValue >= diningHallList.size())
-            return null;
         long tempBit = bitValue;
-        List<String> tempList = new ArrayList<>();
-        if((tempBit %= 2) == 1)
-            tempList.add(diningHallList.get(0));
-        if((tempBit %= 2) == 1)
-            tempList.add(diningHallList.get(0));
-        if((tempBit %= 2) == 1)
-            tempList.add(diningHallList.get(0));
-        if((tempBit %= 2) == 1)
-            tempList.add(diningHallList.get(0));
+        List<Boolean> tempList = new ArrayList<>(diningHallList.size());
+        for(int k = 0; k < diningHallList.size(); k++, tempBit /= 2)
+            tempList.set(k, (tempBit % 2) == 1);
         return tempList;
+    }
+    public static long getBitValueFromSelected(List<Boolean> selected)
+    {
+        long tempBit = 0;
+        long base = 1;
+        for(int k = 0; k < diningHallList.size(); k++, base *= 2)
+            if(selected.get(k))
+                tempBit += base;
+        return tempBit;
     }
 }

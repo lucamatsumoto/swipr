@@ -20,7 +20,7 @@ public class ResultAdapter extends SimpleRecyclerAdapter
 
     public void onBindViewHolder(@NonNull SimpleRecyclerAdapter.SimpleViewHolder simpleViewHolder, int i) {
         Offer offer = (Offer) mObjectList.get(i);
-        TextView statusChild = (TextView) simpleViewHolder.mItem.getChildAt(1);
+        //TextView statusChild = (TextView) simpleViewHolder.mItem.getChildAt(1);
         //statusChild.setText(offer.status);
     }
 }
