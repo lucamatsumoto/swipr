@@ -22,8 +22,12 @@ import android.widget.Toast;
 
 import com.example.myapplication.Login;
 import com.example.myapplication.R;
+import com.example.myapplication.Seller.SellerActivity;
 import com.example.myapplication.Shared.DrawerBaseActivity;
+import com.example.myapplication.Shared.DummyActivity;
 import com.example.myapplication.Shared.NetworkManager;
+import com.example.myapplication.Shared.NetworkResponder;
+import com.example.myapplication.Shared.Offer;
 import com.example.myapplication.Shared.SimpleSpinAdapter;
 import com.example.myapplication.Buyer.Result.ResultAdapter;
 import com.facebook.login.LoginManager;
@@ -33,6 +37,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 public class BuyerActivity extends DrawerBaseActivity implements AdapterView.OnItemSelectedListener {
 
@@ -59,6 +66,7 @@ public class BuyerActivity extends DrawerBaseActivity implements AdapterView.OnI
         networkManager = NetworkManager.getInstance();
 
         buyerBacker = BuyerBacker.getInstance();
+
 
         resultRecycler = findViewById(R.id.b_resultRecycler);
         resultAdapter = new ResultAdapter(this, buyerBacker.getResults());
@@ -95,7 +103,9 @@ public class BuyerActivity extends DrawerBaseActivity implements AdapterView.OnI
      * @param view      The java side representation of the UI button that triggered this function call.
      */
     public void launchSellerActivity(View view) {
-        //launch seller tab.
+        //launch login tab
+        Intent intent = new Intent(this, SellerActivity.class);
+        startActivity(intent);
     }
 
     /**
@@ -103,8 +113,9 @@ public class BuyerActivity extends DrawerBaseActivity implements AdapterView.OnI
      * @param view      The java side representation of the UI button that triggered this function call.
      */
     public void launchInterestsActivity(View view) {
-        //launch login tab
-        Intent intent = new Intent(this, InterestActivity.class);
+        //launch interest sub activity
+        //Intent intent = new Intent(this, InterestActivity.class);
+        Intent intent = new Intent(this, DummyActivity.class);
         startActivity(intent);
     }
 
@@ -136,4 +147,5 @@ public class BuyerActivity extends DrawerBaseActivity implements AdapterView.OnI
         if(index >= 0 && index < size)
             spinner.setSelection(index);
     }
+
 }

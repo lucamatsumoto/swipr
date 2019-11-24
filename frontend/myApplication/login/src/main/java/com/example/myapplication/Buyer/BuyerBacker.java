@@ -1,5 +1,7 @@
 package com.example.myapplication.Buyer;
 
+import android.util.Log;
+
 import com.example.myapplication.Shared.Offer;
 
 import java.util.ArrayList;
@@ -11,6 +13,7 @@ public class BuyerBacker {
     private int diningHallIndex;
     boolean isResults;
     boolean isFilter;
+    String mSignin;
     private static volatile BuyerBacker instance;
 
     private BuyerBacker()

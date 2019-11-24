@@ -71,8 +71,8 @@ public class NetworkManager {
         Disposable dispTopic = mStompClient.topic(topic)
                 .subscribeOn(Schedulers.io())
                 .subscribe(topicMessage -> {
-                    Log.d("SubSuccess", "Received " + topicMessage.getPayload());
-                    command.onMessageReceived(topicMessage.getPayload());
+                        Log.d("SubSuccess", "Received " + topicMessage.getPayload());
+                        command.onMessageReceived(topicMessage.getPayload());
                 }, throwable -> {
                     Log.e("SubFail", "Error on subscribe topic", throwable);
                 });
@@ -86,6 +86,15 @@ public class NetworkManager {
                     Log.d("SendSuccess", "STOMP echo send successfully");
                 }, throwable -> {
                     Log.e("SendFail", "Error send STOMP echo", throwable);
+                }));
+    }
+    public void send(String endPoint)
+    {
+        compositeDisposable.add(mStompClient.send(endPoint)
+                .subscribe(() -> {
+                    Log.d("SendSuccess", "STOMP echo send successfully (no second argument)");
+                }, throwable -> {
+                    Log.e("SendFail", "Error send STOMP echo (no second argument)", throwable);
                 }));
     }
 }
