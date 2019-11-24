@@ -42,7 +42,7 @@ public class Seller extends User {
     }
 
     //For unit tests, might be useful later on
-    public List<Buyer> getPotentialBuyers() {
+    public Set<Buyer> getPotentialBuyers() {
         return potentialBuyers;
     }
 

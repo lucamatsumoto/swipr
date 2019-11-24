@@ -8,14 +8,14 @@ public class SellQueryTests {
 
     @BeforeClass
     public static void setup() {
-        sq0 = new SellQuery(1, 0, 10, 500, Query.BPLATE|Query.COVEL, 101);
-        sq1 = new SellQuery(1, 0, 10, 500, Query.BPLATE|Query.COVEL, 102);
-        sq2 = new SellQuery(0, 0, 10, 500, Query.BPLATE|Query.COVEL, 103);
-        sq3 = new SellQuery(1, -5, 10, 500, Query.BPLATE|Query.COVEL, 104);
-        sq4 = new SellQuery(1, 0, 5, 500, Query.BPLATE|Query.COVEL, 105);
-        sq5 = new SellQuery(1, 0, 10, 400, Query.BPLATE|Query.COVEL, 106);
-        sq6 = new SellQuery(1, 0, 10, 500, Query.BPLATE, 107);
-        sq7 = new SellQuery(1, 0, 10, 500, Query.BPLATE|Query.COVEL|Query.DE_NEVE, 108);
+        sq0 = new SellQuery(1, 0, 10, 500, Query.BPLATE|Query.COVEL);
+        sq1 = new SellQuery(1, 0, 10, 500, Query.BPLATE|Query.COVEL);
+        sq2 = new SellQuery(0, 0, 10, 500, Query.BPLATE|Query.COVEL);
+        sq3 = new SellQuery(1, -5, 10, 500, Query.BPLATE|Query.COVEL);
+        sq4 = new SellQuery(1, 0, 5, 500, Query.BPLATE|Query.COVEL);
+        sq5 = new SellQuery(1, 0, 10, 400, Query.BPLATE|Query.COVEL);
+        sq6 = new SellQuery(1, 0, 10, 500, Query.BPLATE);
+        sq7 = new SellQuery(1, 0, 10, 500, Query.BPLATE|Query.COVEL|Query.DE_NEVE);
     }
 
     @Test

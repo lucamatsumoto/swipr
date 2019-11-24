@@ -56,7 +56,7 @@ public class SellQuery extends Query {
     {
         super(userId, timeRangeStart, timeRangeEnd, priceCents, diningHallBitfield);
     }
-    
+
     @Override
     public boolean equals(Object otherObject) {
         SellQuery other;

@@ -18,18 +18,18 @@ public class MatchmakerTests {
 
         bq1 = new BuyQuery(0, 0, 10, 500, Query.BPLATE|Query.COVEL);
 
-        sq1 = new SellQuery(1, 0, 10, 500, Query.BPLATE|Query.COVEL, 101);
-        sq2 = new SellQuery(2, 0, 10, 499, Query.BPLATE|Query.COVEL, 102);
-        sq3 = new SellQuery(3, 0, 10, 501, Query.BPLATE|Query.COVEL, 103);
-        sq4 = new SellQuery(4, 1, 9, 500, Query.BPLATE|Query.COVEL, 104);
-        sq5 = new SellQuery(5, -1, 9, 500, Query.BPLATE|Query.COVEL, 105);
-        sq6 = new SellQuery(6, -1, 11, 500, Query.BPLATE|Query.COVEL, 106);
-        sq7 = new SellQuery(7, 1, 11, 500, Query.BPLATE|Query.COVEL, 107);
-        sq8 = new SellQuery(8, 11, 20, 500, Query.BPLATE|Query.COVEL, 108);
-        sq9 = new SellQuery(9, -10, -1, 500, Query.BPLATE|Query.COVEL, 109);
-        sq10 = new SellQuery(10, 0, 10, 500, Query.COVEL, 110);
-        sq11 = new SellQuery(11, 0, 10, 500, Query.BPLATE|Query.COVEL|Query.DE_NEVE, 111);
-        sq12 = new SellQuery(12, 0, 10, 500, Query.DE_NEVE|Query.FEAST, 112);
+        sq1 = new SellQuery(1, 0, 10, 500, Query.BPLATE|Query.COVEL);
+        sq2 = new SellQuery(2, 0, 10, 499, Query.BPLATE|Query.COVEL);
+        sq3 = new SellQuery(3, 0, 10, 501, Query.BPLATE|Query.COVEL);
+        sq4 = new SellQuery(4, 1, 9, 500, Query.BPLATE|Query.COVEL);
+        sq5 = new SellQuery(5, -1, 9, 500, Query.BPLATE|Query.COVEL);
+        sq6 = new SellQuery(6, -1, 11, 500, Query.BPLATE|Query.COVEL);
+        sq7 = new SellQuery(7, 1, 11, 500, Query.BPLATE|Query.COVEL);
+        sq8 = new SellQuery(8, 11, 20, 500, Query.BPLATE|Query.COVEL);
+        sq9 = new SellQuery(9, -10, -1, 500, Query.BPLATE|Query.COVEL);
+        sq10 = new SellQuery(10, 0, 10, 500, Query.COVEL);
+        sq11 = new SellQuery(11, 0, 10, 500, Query.BPLATE|Query.COVEL|Query.DE_NEVE);
+        sq12 = new SellQuery(12, 0, 10, 500, Query.DE_NEVE|Query.FEAST);
 
         m.updateBuyQuery(bq1, l1);
 
