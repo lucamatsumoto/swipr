@@ -32,26 +32,26 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="29dp"
-        android:layout_marginBottom="484dp"
+        android:layout_marginStart="31dp"
+        android:layout_marginTop="204dp"
         android:text="@string/price"
         android:textColor="@color/black"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.006"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/price_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="36dp"
-        android:layout_marginBottom="484dp"
+        android:layout_marginTop="204dp"
+        android:layout_marginEnd="28dp"
+        android:layout_marginBottom="500dp"
         android:textColor="@color/black"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <SeekBar
         android:id="@+id/s_price"
@@ -60,8 +60,8 @@
         android:layout_marginTop="260dp"
         android:clickable="true"
         android:focusable="true"
-        android:max="15"
-        android:progress="15"
+        android:max="1500"
+        android:progress="1250"
         android:progressTint="@color/colorPrimary"
         android:text="Price"
         android:thumbTint="@color/black"

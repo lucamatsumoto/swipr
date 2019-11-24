@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.SeekBar;
-import android.widget.Toast;
 import android.widget.TextView;
 
 import com.example.myapplication.Buyer.BuyerActivity;
@@ -52,13 +51,13 @@ public class SellerActivity extends DrawerBaseActivity {
             }
 
             public void onStopTrackingTouch(SeekBar seekBar) {
-                Toast.makeText(SellerActivity.this, "Seek bar progress is :" + progressChangedValue,
-                        Toast.LENGTH_SHORT).show();
+
             }
         });
         setContentView(R.layout.activity_seller);
         TextView textView = findViewById(R.id.price_value);
-        textView.setText("text you want to display");
+        String display = "$" + String.format("%.2f", s_price.getProgress() / (float) 100);
+        textView.setText(display);
     }
 
     public void launchBuyerActivity(View view) {
