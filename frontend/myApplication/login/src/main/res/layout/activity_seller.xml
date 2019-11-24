@@ -60,7 +60,6 @@
         android:layout_marginTop="260dp"
         android:clickable="true"
         android:focusable="true"
-        android:max="1500"
         android:progress="1250"
         android:progressTint="@color/colorPrimary"
         android:text="Price"
