@@ -1,12 +1,13 @@
 package com.example.myapplication.Shared;
 
 import android.os.Bundle;
-import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.myapplication.Buyer.BuyerActivity;
+import com.example.myapplication.R;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -24,6 +25,19 @@ public class DummyActivity extends AppCompatActivity {
         networkManager = NetworkManager.getInstance();
         profile = ProfileSingleton.getInstance();
 
+        setContentView(R.layout.dummy);
+
+
+        networkManager.subscribe("/user/queue/error", new TempResponder(R.id.textView5));
+        networkManager.subscribe("/topic/average", new TempResponder(R.id.textView6));
+        networkManager.subscribe("/user/queue/buyerFind", new TempResponder(R.id.textView7));
+        networkManager.subscribe("/user/queue/buyerInterest", new TempResponder(R.id.textView8));
+        networkManager.subscribe("/user/queue/sellerUpdate", new TempResponder(R.id.textView9));
+        networkManager.subscribe("/user/queue/sellerInterest", new TempResponder(R.id.textView10));
+        networkManager.subscribe("/user/queue/sellerCancel", new TempResponder(R.id.textView11));
+    }
+
+    public void updateOffer(View view) {
         Offer offer = new Offer();
         offer.diningHallList = new ArrayList<>();
         offer.diningHallList.add(true);
@@ -34,15 +48,36 @@ public class DummyActivity extends AppCompatActivity {
         offer.startTime = LocalDateTime.now();
         offer.endTime = offer.startTime.plusHours(1);
         offer.price = 420;
-        networkManager.subscribe("/user/queue/sellerUpdate", new tempResponder());
         networkManager.send("/swipr/updateOffer", offer.generateQuery());
-        networkManager.subscribe("/user/queue/sellerCancel", new tempResponder());
     }
 
-    class tempResponder implements NetworkResponder{
+    public void findOffers(View view) {
+        Offer offer = new Offer();
+        offer.diningHallList = new ArrayList<>();
+        offer.diningHallList.add(true);
+        offer.diningHallList.add(false);
+        offer.diningHallList.add(false);
+        offer.diningHallList.add(false);
+        offer.userId = profile.getID();
+        offer.startTime = LocalDateTime.now();
+        offer.endTime = offer.startTime.plusHours(1);
+        offer.price = 420;
+        networkManager.send("/swipr/findOffers", offer.generateQuery());
+    }
+
+    public void cancelOffer(View view) {
+        networkManager.send("/swipr/cancelOffer");
+    }
+
+    class TempResponder implements NetworkResponder{
+        TextView textView;
+        public TempResponder(int id)
+        {
+            textView = findViewById(id);
+        }
         @Override
         public void onMessageReceived(String json) {
-            Log.d("here", json);
+            textView.setText(json);
         }
     }
 }
