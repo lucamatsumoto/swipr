@@ -28,6 +28,30 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="29dp"
+        android:layout_marginBottom="484dp"
+        android:text="@string/price"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.006"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/price_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="36dp"
+        android:layout_marginBottom="484dp"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <SeekBar
         android:id="@+id/s_price"
@@ -36,11 +60,11 @@
         android:layout_marginTop="260dp"
         android:clickable="true"
         android:focusable="true"
-        android:progressTint="@color/colorPrimary"
-        android:thumbTint="@color/black"
-        android:text="Price"
         android:max="15"
         android:progress="15"
+        android:progressTint="@color/colorPrimary"
+        android:text="Price"
+        android:thumbTint="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.508"
         app:layout_constraintStart_toStartOf="parent"
@@ -55,8 +79,8 @@
         android:clickable="true"
         android:focusable="true"
         android:progressTint="@color/colorPrimary"
-        android:thumbTint="@color/black"
         android:text="Time"
+        android:thumbTint="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
