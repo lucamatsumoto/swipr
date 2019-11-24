@@ -35,23 +35,48 @@ public class SellerActivity extends DrawerBaseActivity {
 
         // initiate  views
         setContentView(R.layout.activity_seller);
-        int step_value = 50; //Number of cents to change the total by
-        s_price.setMax(1500/step_value);
-        TextView textView = findViewById(R.id.price_value);
+        int step_value_price = 50; //Number of cents to change the total by
+        s_price.setMax(1500);
+        TextView textView_price = findViewById(R.id.price_value);
         s_price=findViewById(R.id.s_price);
         // perform seek bar change listener event used for getting the progress value
         s_price.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             int progressChangedValue;
             {
                 progressChangedValue = 0;
-                textView.setText("$" + String.format("%.2f", s_price.getProgress() / (float) 100));
+                textView_price.setText("$" + String.format("%.2f", s_price.getProgress() / (float) 100));
             }
 
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                progress = ((int)Math.round(progress/step_value )) * step_value;
+                progress = ((int)Math.round(progress/step_value_price )) * step_value_price;
                 seekBar.setProgress(progress);
-                textView.setText("$" + String.format("%.2f", s_price.getProgress() / (float) 100));
+                textView_price.setText("$" + String.format("%.2f", s_price.getProgress() / (float) 100));
 
+            }
+
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                // TODO Auto-generated method stub
+            }
+
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+        int step_value_time = 30; //Number of cents to change the total by
+        s_time.setMax(1440); //Minutes for 24 hours
+        TextView textView_time = findViewById(R.id.time_value);
+        s_time=findViewById(R.id.s_time);
+        // perform seek bar change listener event used for getting the progress value
+        s_price.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            int progressChangedValue;
+            {
+                progressChangedValue = 0;
+                textView_time.setText((String.format("%d", s_time.getProgress() / 60)) + ":" + (String.format("%2d", s_time.getProgress() % 60)));            }
+
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                progress = ((int)Math.round(progress/step_value_time )) * step_value_time;
+                seekBar.setProgress(progress);
+                textView_time.setText((String.format("%d", s_time.getProgress() / 60)) + ":" + (String.format("%2d", s_time.getProgress() % 60)));
             }
 
             public void onStartTrackingTouch(SeekBar seekBar) {
