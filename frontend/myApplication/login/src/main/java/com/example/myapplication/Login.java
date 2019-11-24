@@ -47,11 +47,16 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     LoginButton loginButton;
 
     NetworkManager networkManager;
+    ProfileSingleton profile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        profile = ProfileSingleton.getInstance();
+
+
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -164,7 +169,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                             String email = object.getString("email");
                             String id = object.getString("id");
                             //Uri profPic = "https://graph.facebook.com/"+id+"/picture?type=large";
-
                             packageJSON(firstName, lastName, email, null);
                         }
                         catch(JSONException e){
@@ -205,18 +209,13 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
     private void updateUI(GoogleSignInAccount account)
     {
+        profile.setSignin("google");
         Intent intent = new Intent(this, BuyerActivity.class);
-        String name = account.getDisplayName();
-        intent.putExtra("ID", name);
-        intent.putExtra("From", "google");
         startActivity(intent);
     }
     private void UpdateUI(AccessToken at) {
-
-        String ID = at.getUserId();
+        profile.setSignin("fb");
         Intent intent = new Intent(this, BuyerActivity.class);
-        intent.putExtra("ID", ID);
-        intent.putExtra("From", "fb");
         startActivity(intent);
     }
 
@@ -257,15 +256,13 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         networkManager.send("/swipr/create", json.toString());
    }
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
+    protected void onDestroy() { super.onDestroy(); }
 
     class LoginResponder implements NetworkResponder
     {
         @Override
         public void onMessageReceived(String json) {
-            ProfileSingleton.getInstance().setInstance(json);
+            ProfileSingleton.setInstance(json);
         }
     }
 

@@ -11,7 +11,6 @@ public class BuyerBacker {
     private int diningHallIndex;
     boolean isResults;
     boolean isFilter;
-    String mSignin;
     private static volatile BuyerBacker instance;
 
     private BuyerBacker()
@@ -45,6 +44,4 @@ public class BuyerBacker {
     public void setResults(List<Offer> aResults){resultsList = aResults;}
     public void addResults(Offer aOffer){resultsList.add(aOffer);}
     void swapView(){isResults = !isResults; isFilter = !isFilter;}
-    public void setSignin(String signin){mSignin = signin;}
-    public String getSignin(){return mSignin;}
 }

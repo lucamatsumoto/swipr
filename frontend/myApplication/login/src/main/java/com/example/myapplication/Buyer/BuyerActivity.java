@@ -60,10 +60,6 @@ public class BuyerActivity extends DrawerBaseActivity implements AdapterView.OnI
 
         buyerBacker = BuyerBacker.getInstance();
 
-        Intent intent = getIntent();
-        String option = intent.getExtras().getString("From");
-        buyerBacker.setSignin(option);
-
         resultRecycler = findViewById(R.id.resultRecycler);
         resultAdapter = new ResultAdapter(this, buyerBacker.getResults());
         resultRecycler.setAdapter(resultAdapter);
