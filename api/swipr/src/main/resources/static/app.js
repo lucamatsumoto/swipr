@@ -18,7 +18,7 @@ function setConnected(connected) {
 }
 
 function connect() {
-    stompClient = Stomp.client('ws://localhost:3000/index');
+    stompClient = Stomp.client('ws://157.245.235.19:3000/index');
     stompClient.debug = null;
     console.log("Hello")
     stompClient.connect({}, function(frame) {
