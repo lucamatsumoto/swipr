@@ -16,14 +16,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.myapplication.Shared.DrawerBaseActivity;
+import com.example.myapplication.Shared.NetworkManager;
+import com.example.myapplication.Shared.NetworkResponder;
 import com.example.myapplication.Shared.ProfileSingleton;
+
+import org.json.JSONObject;
 
 public class EditProfileActivity extends AppCompatActivity {
 
     ProfileSingleton profile;
+    NetworkManager networkManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        networkManager = NetworkManager.getInstance();
        // setContentView(R.layout.activity_edit_profile);
 
         //ADD THESE LINES TO ADD DRAWER FOR PROFILE INFO
@@ -60,6 +67,8 @@ public class EditProfileActivity extends AppCompatActivity {
                     saveProfile(venmoET.getText().toString());
             }
         });
+        //networkManager.subscribe("/user/queue/reply", new ProfileResponder());
+
     }
 
     @Override
@@ -77,7 +86,24 @@ public class EditProfileActivity extends AppCompatActivity {
     private void saveProfile(String newVenmo)
     {
         profile.setVenmo(newVenmo);
+        JSONObject json = profile.asJSON();
+        try {
+            json.put("venmo", newVenmo);
+        }
+        catch(Exception e)
+        {
+            Log.e("JSON", e.getMessage());
+        }
+        networkManager.send("/swipr/updateVenmo", json.toString());
         finish();
         Toast.makeText(this, "Profile Info Saved", Toast.LENGTH_SHORT).show();
+    }
+
+    class ProfileResponder implements NetworkResponder
+    {
+        @Override
+        public void onMessageReceived(String json) {
+            return;
+        }
     }
 }

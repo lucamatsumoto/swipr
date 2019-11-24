@@ -25,6 +25,7 @@ import com.example.myapplication.R;
 import com.example.myapplication.Seller.SellerActivity;
 import com.example.myapplication.Shared.DrawerBaseActivity;
 import com.example.myapplication.Shared.NetworkManager;
+import com.example.myapplication.Shared.NetworkResponder;
 import com.example.myapplication.Shared.Offer;
 import com.example.myapplication.Shared.SimpleSpinAdapter;
 import com.example.myapplication.Buyer.Result.ResultAdapter;
@@ -36,6 +37,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class BuyerActivity extends DrawerBaseActivity implements AdapterView.OnItemSelectedListener {
@@ -60,8 +62,8 @@ public class BuyerActivity extends DrawerBaseActivity implements AdapterView.OnI
         dl.addView(contentView, 0);
         //END
 
-
         networkManager = NetworkManager.getInstance();
+
         buyerBacker = BuyerBacker.getInstance();
 
 
@@ -84,7 +86,13 @@ public class BuyerActivity extends DrawerBaseActivity implements AdapterView.OnI
         offer.diningHallList.add(false);
         offer.diningHallList.add(true);
         offer.diningHallList.add(false);
-        //offer.offerId = profile
+        offer.userId = profile.getID();
+        offer.startTime = LocalDateTime.now();
+        offer.endTime = offer.startTime.plusHours(1);
+        offer.price = 420;
+        networkManager.subscribe("/user/queue/sellerUpdate", new tempResponder());
+        networkManager.send("/swipr/updateOffer", offer.generateQuery());
+        networkManager.subscribe("/user/queue/sellerCancel", new tempResponder());
     }
 
     @Override
@@ -117,9 +125,13 @@ public class BuyerActivity extends DrawerBaseActivity implements AdapterView.OnI
      * @param view      The java side representation of the UI button that triggered this function call.
      */
     public void launchInterestsActivity(View view) {
-        //launch login tab
+        //launch interest sub activity
+        /*
         Intent intent = new Intent(this, InterestActivity.class);
         startActivity(intent);
+         */
+
+        networkManager.send("/user/queue/sellerCancel", "");
     }
 
     public void search(View view) {
@@ -149,5 +161,12 @@ public class BuyerActivity extends DrawerBaseActivity implements AdapterView.OnI
     {
         if(index >= 0 && index < size)
             spinner.setSelection(index);
+    }
+
+    class tempResponder implements NetworkResponder{
+        @Override
+        public void onMessageReceived(String json) {
+            Log.d("here", json);
+        }
     }
 }

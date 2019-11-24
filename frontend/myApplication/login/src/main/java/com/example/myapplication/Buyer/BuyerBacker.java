@@ -46,11 +46,5 @@ public class BuyerBacker {
     void setDiningHallIndex(int newIndex){diningHallIndex = newIndex;}
     public void setResults(List<Offer> aResults){resultsList = aResults;}
     public void addResults(Offer aOffer){resultsList.add(aOffer);}
-    void swapView()
-    {
-        isResults = !isResults;
-        isFilter = !isFilter;
-    }
-    public void setSignin(String signin){mSignin = signin;}
-    public String getSignin(){return mSignin;}
+    void swapView(){isResults = !isResults; isFilter = !isFilter;}
 }
