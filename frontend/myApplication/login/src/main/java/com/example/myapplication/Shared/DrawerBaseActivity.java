@@ -1,6 +1,9 @@
 package com.example.myapplication.Shared;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +16,8 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.myapplication.Buyer.BuyerBacker;
 import com.example.myapplication.Buyer.MainActivity;
 import com.example.myapplication.EditProfileActivity;
@@ -26,13 +31,20 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+
 public class DrawerBaseActivity extends AppCompatActivity {
     protected DrawerLayout dl;
     protected NetworkManager networkManager;
     private ActionBarDrawerToggle t;
     private NavigationView nv;
     private GoogleSignInClient mGoogleSignInClient;
-    private ProfileSingleton profile;
+    protected ProfileSingleton profile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,12 +56,12 @@ public class DrawerBaseActivity extends AppCompatActivity {
 
         dl.addDrawerListener(t);
         t.syncState();
+        profile = ProfileSingleton.getInstance();
 
-        ImageView imgView = (ImageView) findViewById(R.id.profilePic);
-        if(profile.getProfilePicture() != null)
-            imgView.setImageURI(profile.getProfilePicture());
+        if(profile.getProfilePicture() == null)
+            Log.d("HERE", "NULL Picture");
         else
-            //imgView.setImageDrawable(R.drawable.swipr_logo);
+            Log.d("HERE", profile.getProfilePicture().toString());
 
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -76,6 +88,16 @@ public class DrawerBaseActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+        View hView =  nv.getHeaderView(0);
+        ImageView imgView = (ImageView) hView.findViewById(R.id.profilePic);
+        Glide.with(getApplicationContext()).load(profile.getProfilePicture())
+                .thumbnail(0.5f)
+                .crossFade()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(imgView);
+
+
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
@@ -136,5 +158,22 @@ public class DrawerBaseActivity extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), Login.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
+    }
+
+    private Bitmap getImageBitmap(String url) {
+        Bitmap bm = null;
+        try {
+            URL aURL = new URL(url);
+            URLConnection conn = aURL.openConnection();
+            conn.connect();
+            InputStream is = conn.getInputStream();
+            BufferedInputStream bis = new BufferedInputStream(is);
+            bm = BitmapFactory.decodeStream(bis);
+            bis.close();
+            is.close();
+        } catch (IOException e) {
+            Log.e("BITMAP", "Error getting bitmap", e);
+        }
+        return bm;
     }
 }

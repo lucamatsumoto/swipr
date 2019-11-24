@@ -18,11 +18,11 @@ public class ProfileSingleton {
     private static boolean matchedOffer;
     private static String mSignin; //sign in type (either "google" or "fb")
 
-
     private ProfileSingleton(){}
     public static ProfileSingleton getInstance(){
         if(instance == null)
             instance = new ProfileSingleton();
+
         return instance;
     }
     public static void setInstance(String json){
@@ -58,7 +58,6 @@ public class ProfileSingleton {
     public void setMatched(boolean b) {matchedOffer = b;}
     public void setSignin(String signin){mSignin = signin;}
     public String getSignin(){return mSignin;}
-
 
     private static String checkNull(String s)
     {
