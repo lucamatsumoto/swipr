@@ -63,5 +63,11 @@
         <activity android:name=".Seller.SellerActivity"
             android:launchMode="singleTop"
         />
+        <activity android:name=".Shared.DummyActivity"
+            android:parentActivityName=".Buyer.BuyerActivity">
+            <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value="com.example.myapplication.Buyer.MainActivity" />
+        </activity>
     </application>
 </manifest>
