@@ -37,11 +37,13 @@ public class SellerActivity extends DrawerBaseActivity {
         setContentView(R.layout.activity_seller);
         TextView textView = findViewById(R.id.price_value);
         s_price=findViewById(R.id.s_price);
+        s_price.incrementProgressBy(25);
         // perform seek bar change listener event used for getting the progress value
         s_price.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             int progressChangedValue;
             {
                 progressChangedValue = 0;
+                textView.setText("$" + String.format("%.2f", s_price.getProgress() / (float) 100));
             }
 
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
