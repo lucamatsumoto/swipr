@@ -36,9 +36,9 @@ public class SellerActivity extends DrawerBaseActivity {
         // initiate  views
         setContentView(R.layout.activity_seller);
         int step_value_price = 50; //Number of cents to change the total by
-        s_price.setMax(1500);
         TextView textView_price = findViewById(R.id.price_value);
         s_price=findViewById(R.id.s_price);
+        s_price.setMax(1500);
         // perform seek bar change listener event used for getting the progress value
         s_price.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             int progressChangedValue;
