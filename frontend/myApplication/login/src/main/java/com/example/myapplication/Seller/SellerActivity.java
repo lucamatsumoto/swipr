@@ -6,12 +6,17 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.SeekBar;
+import android.widget.Toast;
 
 import com.example.myapplication.Buyer.BuyerActivity;
 import com.example.myapplication.R;
 import com.example.myapplication.Shared.DrawerBaseActivity;
 
 public class SellerActivity extends DrawerBaseActivity {
+
+    SeekBar s_price;
+    SeekBar s_time;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +31,29 @@ public class SellerActivity extends DrawerBaseActivity {
         Log.d("here", "2");
         dl.addView(contentView, 0);
         //END
+
+        // initiate  views
+        s_price=findViewById(R.id.s_price);
+        // perform seek bar change listener event used for getting the progress value
+        s_price.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            int progressChangedValue;
+            {
+                progressChangedValue = 0;
+            }
+
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                progressChangedValue = progress;
+            }
+
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                // TODO Auto-generated method stub
+            }
+
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                Toast.makeText(SellerActivity.this, "Seek bar progress is :" + progressChangedValue,
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public void launchBuyerActivity(View view) {
