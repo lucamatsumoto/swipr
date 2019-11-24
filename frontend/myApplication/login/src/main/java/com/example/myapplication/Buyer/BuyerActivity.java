@@ -22,7 +22,6 @@ import android.widget.Toast;
 
 import com.example.myapplication.Login;
 import com.example.myapplication.R;
-import com.example.myapplication.Seller.SellerActivity;
 import com.example.myapplication.Shared.DrawerBaseActivity;
 import com.example.myapplication.Shared.NetworkManager;
 import com.example.myapplication.Shared.SimpleSpinAdapter;
@@ -61,10 +60,6 @@ public class BuyerActivity extends DrawerBaseActivity implements AdapterView.OnI
 
         buyerBacker = BuyerBacker.getInstance();
 
-        Intent intent = getIntent();
-        String option = intent.getExtras().getString("From");
-        buyerBacker.setSignin(option);
-
         resultRecycler = findViewById(R.id.b_resultRecycler);
         resultAdapter = new ResultAdapter(this, buyerBacker.getResults());
         resultRecycler.setAdapter(resultAdapter);
@@ -100,11 +95,7 @@ public class BuyerActivity extends DrawerBaseActivity implements AdapterView.OnI
      * @param view      The java side representation of the UI button that triggered this function call.
      */
     public void launchSellerActivity(View view) {
-        //launch login tab
-        Log.d("here", "3");
-        Intent intent = new Intent(this, SellerActivity.class);
-        Log.d("here", "4");
-        startActivity(intent);
+        //launch seller tab.
     }
 
     /**

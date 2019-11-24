@@ -1,10 +1,12 @@
 package com.example.myapplication.Shared;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -30,7 +32,7 @@ public class DrawerBaseActivity extends AppCompatActivity {
     private ActionBarDrawerToggle t;
     private NavigationView nv;
     private GoogleSignInClient mGoogleSignInClient;
-
+    private ProfileSingleton profile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +44,13 @@ public class DrawerBaseActivity extends AppCompatActivity {
 
         dl.addDrawerListener(t);
         t.syncState();
+
+        ImageView imgView = (ImageView) findViewById(R.id.profilePic);
+        if(profile.getProfilePicture() != null)
+            imgView.setImageURI(profile.getProfilePicture());
+        else
+            //imgView.setImageDrawable(R.drawable.swipr_logo);
+
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -95,7 +104,7 @@ public class DrawerBaseActivity extends AppCompatActivity {
      */
     public void launchLoginActivity() {
         //launch login tab;
-        String option = BuyerBacker.getInstance().getSignin();
+        String option = ProfileSingleton.getInstance().getSignin();
         if(option.equals("google"))
             signOutGoogle();
         else if(option.equals("fb"))
