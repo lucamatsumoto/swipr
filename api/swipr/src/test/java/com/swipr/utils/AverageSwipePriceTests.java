@@ -35,40 +35,40 @@ public class AverageSwipePriceTests {
     }
 
     @Test
-    public void A_getCentsInitial() {
+    public void A_getCents_Initial_Test() {
         //Checks initial value of the average swipe price
         Assert.assertEquals(0, asp.getCents());
     }
 
     @Test
-    public void B_getPreviousInitial() {
+    public void B_getPrevious_InitialTest() {
         //Checks initial value of the "previous" average swipe price
         Assert.assertEquals(0, asp.getPrevious());
     }
 
     @Test
-    public void C_getCentsAfterIncludingSQ1() {
+    public void C_getCents_AfterIncludingSQ1_Test() {
         //Checks value of the average swipe price after adding sq1
         asp.includeSellQuery(sq1);
         Assert.assertEquals(123, asp.getCents());
     }
 
     @Test
-    public void D_getCentsAfterIncludingSQ2() {
+    public void D_getCents_AfterIncludingSQ2_Test() {
         //Checks value of the average swipe price after adding sq2
         asp.includeSellQuery(sq2);
         Assert.assertEquals(289, asp.getCents());
     }
 
     @Test
-    public void E_getCentsAfterIncludingSQ3() {
+    public void E_getCents_AfterIncludingSQ3_Test() {
         //Checks value of the average swipe price after adding sq3
         asp.includeSellQuery(sq3);
         Assert.assertEquals(456, asp.getCents());
     }
 
     @Test
-    public void F_getCentsAfterIncludingSQ4() {
+    public void F_getCents_AfterIncludingSQ4_Test() {
         //Checks value of the average swipe price after adding sq4
         //Because sq4 has the same offerId as sq3, this includeSellQuery operation should not affect the average swipe price
         asp.includeSellQuery(sq4);
@@ -76,14 +76,14 @@ public class AverageSwipePriceTests {
     }
 
     @Test
-    public void G_getCentsAfterFirstReset() {
+    public void G_getCents_AfterFirstReset_Test() {
         //Checks if the average swipe price is equal to the "previous" average swipe price if there are currently no sell queries
         asp.reset();
         Assert.assertEquals(456, asp.getCents());
     }
 
     @Test
-    public void H_getCentsAfterIncludingSQ4567() {
+    public void H_getCents_AfterIncludingSQ4567_Test() {
         //Checks value of the average swipe price after adding sq5, sq6, and sq7
         asp.includeSellQuery(sq4);
         Assert.assertEquals(420, asp.getCents());
@@ -96,20 +96,20 @@ public class AverageSwipePriceTests {
     }
 
     @Test
-    public void I_getPreviousAfterFirstReset() {
+    public void I_getPrevious_AfterFirstReset_Test() {
         //Checks if the "previous" average swipe price is equal to the average swipe price right before the first reset
         Assert.assertEquals(456, asp.getPrevious());
     }
 
     @Test
-    public void J_getCentsAfterSecondReset() {
+    public void J_getCents_AfterSecondReset_Test() {
         //Checks if the average swipe price is equal to the "previous" average swipe price if there are currently no sell queries
         asp.reset();
         Assert.assertEquals(289, asp.getCents());
     }
 
     @Test
-    public void K_getPreviousAfterSecondReset() {
+    public void K_getPrevious_AfterSecondReset_Test() {
         //Checks if the "previous" average swipe price is equal to the average swipe price right before the second reset
         asp.includeSellQuery(sq1);
         asp.includeSellQuery(sq3);

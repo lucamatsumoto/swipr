@@ -78,6 +78,11 @@ public class Buyer extends User implements SellQueryListener {
         matchedSellQueries.clear();
     }
 
+    //For unit tests, might be useful later on
+    public ArrayList<SellQuery> getMatchedSellQueries() {
+        return matchedSellQueries;
+    }
+
     /**
      *  Call this when the human buyer presses the "I'm interested"
      *  button for the given SellQuery. If the given SellQuery is

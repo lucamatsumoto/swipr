@@ -1,7 +1,10 @@
 package com.swipr.matcher;
 
 import java.util.ArrayList;
-import org.junit.*;
+
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 public class MatchmakerTests {
     private static Matchmaker m;
@@ -11,7 +14,7 @@ public class MatchmakerTests {
     private static SellQuery sq1, sq2, sq3, sq4, sq5, sq6, sq7, sq8, sq9, sq10, sq11, sq12;
 
     @BeforeClass
-    public static void setup () {
+    public static void setup() {
         m = Matchmaker.getInstance();
 
         l1 = new DummyQueryListener();
@@ -50,25 +53,25 @@ public class MatchmakerTests {
     }
 
     @Test
-    public void exactSameQuery () {
+    public void exactSameQuery_Test() {
         //Checks if a SellQuery with the exact same parameters as a BuyQuery gets added to its sellQueryList
         Assert.assertTrue(sqList1.contains(sq1));
     }
 
     @Test
-    public void lowerPriceQuery () {
+    public void lowerPriceQuery_Test() {
         //Checks if a SellQuery with a lower price than the BuyQuery gets added to its sellQueryList
         Assert.assertTrue(sqList1.contains(sq2));
     }
 
     @Test
-    public void higherPriceQuery () {
+    public void higherPriceQuery_Test() {
         //Checks if a SellQuery with a higher price than the BuyQuery gets ignored
         Assert.assertFalse(sqList1.contains(sq3));
     }
 
     @Test
-    public void overlappingTimerange () {
+    public void overlappingTimerange_Test() {
         //Checks if a SellQuery and a BuyQuery with overlapping time ranges gets added to its sellQueryList
         Assert.assertTrue(sqList1.contains(sq4));
         Assert.assertTrue(sqList1.contains(sq5));
@@ -77,21 +80,21 @@ public class MatchmakerTests {
     }
 
     @Test
-    public void noOverlappingTimerange () {
+    public void noOverlappingTimerange_Test() {
         //Checks if a SellQuery and a BuyQuery with no overlapping time ranges gets ignored
         Assert.assertFalse(sqList1.contains(sq8));
         Assert.assertFalse(sqList1.contains(sq9));
     }
 
     @Test
-    public void OverlappingDiningHalls () {
+    public void OverlappingDiningHalls_Test() {
         //Checks if a SellQuery and a BuyQuery with no overlapping dining halls gets added to its sellQueryList
         Assert.assertTrue(sqList1.contains(sq10));
         Assert.assertTrue(sqList1.contains(sq11));
     }
 
     @Test
-    public void noOverlappingDiningHalls () {
+    public void noOverlappingDiningHalls_Test() {
         //Checks if a SellQuery and a BuyQuery with no overlapping dining halls gets ignored
         Assert.assertFalse(sqList1.contains(sq12));
     }
