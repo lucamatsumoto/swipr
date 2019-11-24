@@ -34,6 +34,8 @@ public class SellerActivity extends DrawerBaseActivity {
         //END
 
         // initiate  views
+        setContentView(R.layout.activity_seller);
+        TextView textView = findViewById(R.id.price_value);
         s_price=findViewById(R.id.s_price);
         // perform seek bar change listener event used for getting the progress value
         s_price.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -44,6 +46,8 @@ public class SellerActivity extends DrawerBaseActivity {
 
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 progressChangedValue = progress;
+                textView.setText("$" + String.format("%.2f", s_price.getProgress() / (float) 100));
+
             }
 
             public void onStartTrackingTouch(SeekBar seekBar) {
@@ -54,10 +58,6 @@ public class SellerActivity extends DrawerBaseActivity {
 
             }
         });
-        setContentView(R.layout.activity_seller);
-        TextView textView = findViewById(R.id.price_value);
-        String display = "$" + String.format("%.2f", s_price.getProgress() / (float) 100);
-        textView.setText(display);
     }
 
     public void launchBuyerActivity(View view) {
