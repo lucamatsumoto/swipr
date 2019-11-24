@@ -28,6 +28,34 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/filter_chip_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/s_buyer_tag"
+        android:layout_marginTop="72dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/filter_chip"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            android:layout_width="100dp"
+            android:layout_height="75dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:text="Dogs" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/filter_chip2"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            android:layout_width="100dp"
+            android:layout_height="75dp"
+            android:text="Cats" />
+    </com.google.android.material.chip.ChipGroup>
+
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
