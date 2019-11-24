@@ -63,9 +63,9 @@ public class SellerActivity extends DrawerBaseActivity {
             }
         });
         int step_value_time = 30; //Number of cents to change the total by
-        s_time.setMax(1439); //Minutes for 23:59 hours
-        TextView textView_time = findViewById(R.id.time_value);
         s_time=findViewById(R.id.s_time);
+        TextView textView_time = findViewById(R.id.time_value);
+        s_time.setMax(1439); //Minutes for 23:59 hours
         // perform seek bar change listener event used for getting the progress value
         s_price.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             int progressChangedValue;
