@@ -67,16 +67,16 @@ public class SellerActivity extends DrawerBaseActivity {
         TextView textView_time = findViewById(R.id.time_value);
         s_time.setMax(1439); //Minutes for 23:59 hours
         // perform seek bar change listener event used for getting the progress value
-        s_price.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        s_time.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             int progressChangedValue;
             {
                 progressChangedValue = 0;
-                textView_time.setText((String.format("%d", s_time.getProgress() / 60)) + ":" + (String.format("%2d", s_time.getProgress() % 60)));            }
+                textView_time.setText((String.format("%d", s_time.getProgress() / 60)) + ":" + (String.format("%02d", s_time.getProgress() % 60)));            }
 
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 progress = ((int)Math.round(progress/step_value_time )) * step_value_time;
                 seekBar.setProgress(progress);
-                textView_time.setText((String.format("%d", s_time.getProgress() / 60)) + ":" + (String.format("%2d", s_time.getProgress() % 60)));
+                textView_time.setText((String.format("%d", s_time.getProgress() / 60)) + ":" + (String.format("%02d", s_time.getProgress() % 60)));
             }
 
             public void onStartTrackingTouch(SeekBar seekBar) {
