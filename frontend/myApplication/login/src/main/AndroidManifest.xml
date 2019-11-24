@@ -60,5 +60,8 @@
         <activity android:name=".Buyer.BuyerActivity"
             android:launchMode="singleTop"
             />
+        <activity android:name=".Seller.SellerActivity"
+            android:launchMode="singleTop"
+        />
     </application>
 </manifest>
