@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.Toast;
+import android.widget.TextView;
 
 import com.example.myapplication.Buyer.BuyerActivity;
 import com.example.myapplication.R;
@@ -17,6 +18,7 @@ public class SellerActivity extends DrawerBaseActivity {
 
     SeekBar s_price;
     SeekBar s_time;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +56,9 @@ public class SellerActivity extends DrawerBaseActivity {
                         Toast.LENGTH_SHORT).show();
             }
         });
+        setContentView(R.layout.activity_seller);
+        TextView textView = findViewById(R.id.price_value);
+        textView.setText("text you want to display");
     }
 
     public void launchBuyerActivity(View view) {
