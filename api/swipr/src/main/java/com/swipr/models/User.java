@@ -63,7 +63,7 @@ public class User {
             return false;
         }
         User user = (User) o;
-        return user.id.equals(this.id);
+        return user.getId().equals(this.id);
     }
 
     @Override
