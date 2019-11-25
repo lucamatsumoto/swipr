@@ -1,0 +1,2 @@
+include ':login', ':buyer'
+rootProject.name='My Application'

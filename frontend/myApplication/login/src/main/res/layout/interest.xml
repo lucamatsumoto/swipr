@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <TextView
+        android:id="@+id/status_tag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/offer"
+        android:layout_marginLeft="@dimen/value_margin_start"
+        android:textSize="@dimen/status"
+        android:text="@string/status_tag" />
+
+    <TextView
+        android:id="@+id/status_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/offer"
+        android:layout_below="@id/status_tag"
+        android:layout_alignLeft="@+id/status_tag"
+        android:textSize="@dimen/status"
+        android:text="@string/initial_value"/>
+
+    <include
+        android:id="@+id/offer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        layout="@layout/offer" />
+
+</RelativeLayout>
