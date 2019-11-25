@@ -71,7 +71,7 @@ public class UserController {
     @MessageMapping("/delete")
     public void deleteUser(@Payload User user, SimpMessageHeaderAccessor headerAccessor) {
         try {
-            userRepository.delete(user);
+            userRepository.deleteById(user.getId());
             userSessionManager.sendToUser(headerAccessor, "/queue/reply", "deleted user with email " + user.getEmail(),  messagingTemplate);
         } catch(DataAccessException e) {
             userSessionManager.sendToUser(headerAccessor, "/queue/error", e.getLocalizedMessage(),  messagingTemplate);

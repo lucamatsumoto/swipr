@@ -94,10 +94,11 @@ function getUsers() {
 }
 
 function deleteUser() {
+    var userid = document.getElementById('userIdDelete').value;
     var firstName = document.getElementById('firstNameDelete').value;
     var lastName = document.getElementById('lastNameDelete').value;
     var email = document.getElementById('emailDelete').value;
-    stompClient.send("/swipr/delete", {}, JSON.stringify({ 'firstName': firstName, 'lastName': lastName, 'email': email }));
+    stompClient.send("/swipr/delete", {}, JSON.stringify({'id': parseInt(userid), 'firstName': firstName, 'lastName': lastName, 'email': email }));
 }
 
 function showGreeting(message) {
