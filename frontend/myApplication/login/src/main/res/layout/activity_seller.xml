@@ -46,14 +46,16 @@
             android:layout_height="75dp"
             android:layout_marginStart="10dp"
             android:layout_marginLeft="10dp"
-            android:text="Dogs" />
+            android:text="Dogs"
+            android:theme="@style/Theme.MaterialComponents.Light"/>
 
         <com.google.android.material.chip.Chip
             android:id="@+id/filter_chip2"
             style="@style/Widget.MaterialComponents.Chip.Filter"
             android:layout_width="100dp"
             android:layout_height="75dp"
-            android:text="Cats" />
+            android:text="Cats"
+            android:theme="@style/Theme.MaterialComponents.Light"/>
     </com.google.android.material.chip.ChipGroup>
 
     <TextView

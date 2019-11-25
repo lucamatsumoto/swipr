@@ -1,26 +1,25 @@
 package com.swipr.controllers;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TimeZone;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 
-import com.swipr.matcher.BidQueryListener;
 import com.swipr.matcher.BuyQuery;
 import com.swipr.matcher.Matchmaker;
 import com.swipr.matcher.SellQuery;
+import com.swipr.models.Buyer;
+import com.swipr.models.Interest;
+import com.swipr.models.Seller;
 import com.swipr.models.User;
 import com.swipr.repository.UserRepository;
+import com.swipr.utils.AverageSwipePrice;
 import com.swipr.utils.UserSessionManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
-import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
 
 
@@ -29,7 +28,7 @@ import org.springframework.stereotype.Controller;
  */
 @Controller
 public class OfferController {
-      
+
     @Autowired
     private UserRepository userRepository;
 
@@ -40,50 +39,43 @@ public class OfferController {
 
     private Matchmaker matchMaker = Matchmaker.getInstance();
 
-    // Map of UserID to listeners 
-    private Map<Integer, BidQueryListener> userListeners = new HashMap<>();
+    // Maintain a counter of how many offer ID's we have
+    private AtomicLong currentOfferId = new AtomicLong(0);
 
 
     /**
      * Gets the average daily price of the offers. Everytime a new offer is added, we update and broadcast to all clients
+     * All users, both buyers and sellers, must subscribe to this topic when a connection is opened
      * @param headerAccessor header object that is sent with every request
      */
     @MessageMapping("/averageOffer")
-    @SendTo("/topic/average")
-    public void getAverageSellPrice(SimpMessageHeaderAccessor headerAccessor) {
-        ArrayList<SellQuery> activeOffers = matchMaker.getActiveSellQueries();
-        ArrayList<Long> dailyPrices = new ArrayList<>();
-        // Figure out timestamps later
-        LocalDateTime date = LocalDateTime.now();
-        for (int i = 0; i < activeOffers.size(); i++) {
-            LocalDateTime offerDate = LocalDateTime.ofInstant(Instant.ofEpochSecond(activeOffers.get(i).timeRangeEnd), TimeZone.getTimeZone("America/Los_Angeles").toZoneId());
-            // If the day of the year and the year the offer is in are the same, then they exist on the same day
-            if (offerDate.getDayOfYear() == date.getDayOfYear() && offerDate.getYear() == date.getYear()) {
-                dailyPrices.add(new Long(activeOffers.get(i).priceCents));
-            }
-        }
-        long totalPrice = 0;
-        for (Long price: dailyPrices) {
-            totalPrice += price;
-        }
-        messagingTemplate.convertAndSend("/topic/average", totalPrice/dailyPrices.size());
+    public void getAverageSellPrice() {
+        long averagePrice = AverageSwipePrice.getCents();
+        userSessionManager.sendToMultipleUsers("/topic/average", averagePrice, messagingTemplate);
+        //messagingTemplate.convertAndSend("/topic/average", averagePrice);
     }
-
 
     /**
      * Update the offer corresponding to a particular seller
      * @param headerAccessor header object that is sent with every request
      * @param query Offer query that the seller wants to update
      */
-    @MessageMapping("/updateOffer") 
-    @SendToUser("/queue/reply")
-    public void updateOffer(SimpMessageHeaderAccessor headerAccessor, SellQuery query) {
+    @MessageMapping("/updateOffer")
+    public void updateOffer(@Payload SellQuery query, SimpMessageHeaderAccessor headerAccessor) {
         // Update the offer / post a new offer
-        // userSessionManager.addSession(offer.getUser(), headerAccessor);
-        matchMaker.updateSellQuery(query);
-        // Don't know if this works 
-        // getAverageSellPrice(headerAccessor);
-        messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/reply", "Offer successfully updated", headerAccessor.getMessageHeaders());
+        User user = userRepository.findById(query.userId);
+        // If the user is not found, then their account might have been deleted
+        if (user == null) {
+            userSessionManager.sendToUser(headerAccessor, "/queue/error", "queried user not found", messagingTemplate);
+        } else {
+            Seller seller = userSessionManager.getSellerFromSessionId(user, headerAccessor);
+            // Figure out error handling later
+            userSessionManager.addSellerSession(seller, headerAccessor);
+            query.offerId = currentOfferId.getAndIncrement();
+            matchMaker.updateSellQuery(query);
+            userSessionManager.sendToUser(headerAccessor, "/queue/sellerUpdate", "Offer successfully updated", messagingTemplate);
+        }
+        // messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/reply", "Offer successfully updated", headerAccessor.getMessageHeaders());
     }
 
     /**
@@ -92,26 +84,42 @@ public class OfferController {
      * @param query Offer query that the seller wants to update
      */
     @MessageMapping("/findOffers")
-    @SendToUser("/queue/reply")
-    public void findOffers(SimpMessageHeaderAccessor headerAccessor, BuyQuery query) {
-        BidQueryListener listener = new BidQueryListener();
-        // Add listener to the corresponding user ID
-        userListeners.put(query.userId, listener);
-        matchMaker.updateBuyQuery(query, listener);
-        // Retrieve a list of all bids found and send to the user
-        messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/reply", listener.getSellQueryList(), headerAccessor.getMessageHeaders());
+    public void findOffers(@Payload BuyQuery query, SimpMessageHeaderAccessor headerAccessor) {
+        // Find the buyer that matches the query id
+        User user = userRepository.findById(query.userId);
+        if (user == null) {
+            userSessionManager.sendToUser(headerAccessor, "/queue/error", "queried user not found", messagingTemplate);
+        } else {
+            Buyer buyer = userSessionManager.getBuyerFromSessionId(user, headerAccessor);
+            userSessionManager.addBuyerSession(buyer, headerAccessor);
+            // Use the Buyer object (for the corresponding user ID) as the listener.
+            // Remove stale matches first though.
+            buyer.clearMatchedSellQueries();
+            matchMaker.updateBuyQuery(query, buyer);
+            List<SellQuery> matchedSellQueries = buyer.getMatchedSellQueries();
+            // Retrieve a list of all bids found and send to the user
+            userSessionManager.sendToUser(headerAccessor, "/queue/buyerFind", matchedSellQueries, messagingTemplate);
+        }
     }
 
+    /**
+     * Refresh the offer without sending extra parameters
+     * @param headerAccessor header object that is sent with every request
+     */
     @MessageMapping("/refreshOffers")
-    @SendToUser("/queue/reply")
     public void refreshOffers(SimpMessageHeaderAccessor headerAccessor) {
         // Retrieve user based on the session ID
-        User user = userSessionManager.getUserFromSessionId(headerAccessor);
-        BidQueryListener listener = userListeners.get(user.getId());
-        messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/reply", listener.getSellQueryList(), headerAccessor.getMessageHeaders());
+        Buyer buyer = userSessionManager.getBuyerFromSessionId(null, headerAccessor);
+        // Make the frontend handle 
+        List<SellQuery> matchedSellQueries = buyer.getMatchedSellQueries();
+        if (matchedSellQueries.isEmpty()) {
+            userSessionManager.sendToUser(headerAccessor, "/queue/error", "No matches found!", messagingTemplate);
+        } else {
+            userSessionManager.sendToUser(headerAccessor, "/queue/buyerFind", buyer.getMatchedSellQueries(), messagingTemplate);
+        }
     }
 
-    // Need logic for subscribing to multiple topics. Buyer should be notified in real time when a new sellquery is posted that matches their 
+    // Need logic for subscribing to multiple topics. Buyer should be notified in real time when a new sellquery is posted that matches their
     // buy parameters
 
     /**
@@ -119,15 +127,71 @@ public class OfferController {
      * @param headerAccessor header object that is sent with every request
      */
     @MessageMapping("/showInterest")
-    @SendToUser
-    public void showInterest(SimpMessageHeaderAccessor headerAccessor) {
-
+    public void showInterest(@Payload Interest interest, SimpMessageHeaderAccessor headerAccessor) {
+        // Retrieve the buyer from the sessionId
+        User interestedUser = userRepository.findById(interest.getBuyerId());
+        Buyer buyer = userSessionManager.getBuyerFromSessionId(interestedUser, headerAccessor);
+        // Assuming that the seller is still active
+        SellQuery sellQuery = interest.getSellquery();
+        User sellingUser = userRepository.findById(sellQuery.userId);
+        SimpMessageHeaderAccessor sellingUserHeaders = userSessionManager.getSellerHeaders(sellingUser);
+        Seller seller = userSessionManager.getSellerFromSessionId(sellingUser, sellingUserHeaders);
+        // userSessionManager.addSellerSession(seller, headerAccessor);
+        buyer.indicateInterestInOffer(sellQuery, seller);
+        // Re-update buyer and seller sessions
+        userSessionManager.addBuyerSession(buyer, headerAccessor);
+        userSessionManager.addSellerSession(seller, sellingUserHeaders);
+        Set<Buyer> potentialBuyers = seller.getPotentialBuyers();
+        // Batch a list of potential buyers and send them to seller
+        userSessionManager.sendToUser(sellingUserHeaders, "/queue/sellerInterest", potentialBuyers, messagingTemplate);
     }
 
+    /**
+     *
+     * @param buyerId the ID of the user (buyer) who wants to cancel interest in the purchase
+     * @param query the offer that they want to cancel
+     * @param headerAccessor headers as a part of the request
+     */
     @MessageMapping("/cancelInterest")
-    @SendToUser
-    public void cancelInterest(SimpMessageHeaderAccessor headerAccessor) {
+    public void cancelInterest(@Payload Interest interest, SimpMessageHeaderAccessor headerAccessor) {
+        // We need to remove the SellQuery corresponding to the user from the AveragePrice
+        User interestedUser = userRepository.findById(interest.getBuyerId());
+        Buyer buyer = userSessionManager.getBuyerFromSessionId(interestedUser, headerAccessor);
+        // Assuming that the seller is still active
+        SellQuery query = interest.getSellquery();
+        User sellingUser = userRepository.findById(query.userId);
+        SimpMessageHeaderAccessor sellingUserHeaders = userSessionManager.getSellerHeaders(sellingUser);
+        Seller seller = userSessionManager.getSellerFromSessionId(sellingUser, sellingUserHeaders);
+        // userSessionManager.addSellerSession(seller, headerAccessor);
+        buyer.cancelInterestInOffer(query, seller);
+        // Re-update buyer and seller sessions
+        userSessionManager.addBuyerSession(buyer, headerAccessor);
+        userSessionManager.addSellerSession(seller, sellingUserHeaders);
+        // Batch a list of potential buyers and send them to seller
+        userSessionManager.sendToUser(sellingUserHeaders, "/queue/sellerInterest", seller.getPotentialBuyers(), messagingTemplate);
+    }
 
+    /**
+     * Seller confirms interest and agrees to sell the swipe
+     * @param buyer the buyer that they want to buy from
+     * @param headerAccessor the headers that are sent along with the request
+     */
+    @MessageMapping("/confirmInterest")
+    public void confirmInterest(@Payload Buyer buyer, SimpMessageHeaderAccessor headerAccessor) {
+        // TODO: Include in AverageSwipePrice statistics
+        SimpMessageHeaderAccessor buyingUserHeaders = userSessionManager.getBuyerHeaders(buyer);
+        // Also remove the buyer from the seller's list and notify the seller
+        Seller seller = userSessionManager.getSellerFromSessionId(null, headerAccessor);
+        seller.clearPotentialBuyers();
+        // We send back the buyer's information, including the venmo
+        User boughtFrom = userRepository.findById(buyer.getId());
+        userSessionManager.sendToUser(headerAccessor, "/queue/sellerInterest", boughtFrom, messagingTemplate);
+        // Include in the averaging statistics the seller's original SellQuery that led to this transaction.
+        SellQuery sq = matchMaker.sellQueryByUserId(seller.getId());
+        AverageSwipePrice.includeSellQuery(sq);
+        // When the buyer confirms interest, send out the new average price to all users
+        userSessionManager.sendToUser(buyingUserHeaders, "/queue/buyerInterest", seller, messagingTemplate);
+        getAverageSellPrice();
     }
 
     /**
@@ -135,11 +199,29 @@ public class OfferController {
      * @param headerAccessor header object that is sent with every request
      */
     @MessageMapping("/cancelOffer")
-    @SendToUser("/queue/reply")
     public void cancelOffer(SimpMessageHeaderAccessor headerAccessor) {
-        User user = userSessionManager.getUserFromSessionId(headerAccessor);
-        matchMaker.deleteByUserId(user.getId());
-        messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/reply", "Your offer has been cancelled", headerAccessor.getMessageHeaders());
+        Seller seller = userSessionManager.getSellerFromSessionId(null, headerAccessor);
+        matchMaker.deleteByUserId(seller.getId());
+        messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/sellerCancel", "Your offer has been cancelled", headerAccessor.getMessageHeaders());
+    }
+
+    /**
+     * Dummy endpoint for testing
+     * @param headerAccessor dummy header
+     */
+    @MessageMapping("/getAllOffers")
+    public void getAllOffers(SimpMessageHeaderAccessor headerAccessor) {
+        messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), "/queue/reply", matchMaker.getActiveSellQueries(), headerAccessor.getMessageHeaders());
+    }
+
+    /**
+     *
+     * @param user the user you will like to notify
+     * @param headerAccessor header object that is sent with every request
+     */
+    @MessageMapping("/here")
+    public void notifyHere(@Payload User user, SimpMessageHeaderAccessor headerAccessor) {
+
     }
 
 }

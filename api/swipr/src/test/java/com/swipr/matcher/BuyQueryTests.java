@@ -1,59 +1,65 @@
 package com.swipr.matcher;
 
-import org.junit.*;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 public class BuyQueryTests {
-    int intOne = 1;
+    int ONE = 1;
+    private static BuyQuery bq0, bq1, bq2, bq3, bq4, bq5, bq6, bq7;
 
-    BuyQuery buyQueryZero = new BuyQuery(1, 0, 10, 500, Query.BPLATE|Query.COVEL);
-    BuyQuery buyQueryOne = new BuyQuery(1, 0, 10, 500, Query.BPLATE|Query.COVEL);
-    BuyQuery buyQueryTwo = new BuyQuery(2, 0, 10, 500, Query.BPLATE|Query.COVEL);
-    BuyQuery buyQueryThree = new BuyQuery(1, 5, 10, 500, Query.BPLATE|Query.COVEL);
-    BuyQuery buyQueryFour = new BuyQuery(1, 0, 15, 500, Query.BPLATE|Query.COVEL);
-    BuyQuery buyQueryFive = new BuyQuery(1, 0, 10, 600, Query.BPLATE|Query.COVEL);
-    BuyQuery buyQuerySix = new BuyQuery(1, 0, 10, 500, Query.BPLATE);
-    BuyQuery buyQuerySeven = new BuyQuery(1, 0, 10, 500, Query.BPLATE|Query.COVEL|Query.DE_NEVE);
+    @BeforeClass
+    public static void setup() {
+        bq0 = new BuyQuery(1, 0, 10, 500, Query.BPLATE | Query.COVEL);
+        bq1 = new BuyQuery(1, 0, 10, 500, Query.BPLATE | Query.COVEL);
+        bq2 = new BuyQuery(2, 0, 10, 500, Query.BPLATE | Query.COVEL);
+        bq3 = new BuyQuery(1, 5, 10, 500, Query.BPLATE | Query.COVEL);
+        bq4 = new BuyQuery(1, 0, 15, 500, Query.BPLATE | Query.COVEL);
+        bq5 = new BuyQuery(1, 0, 10, 600, Query.BPLATE | Query.COVEL);
+        bq6 = new BuyQuery(1, 0, 10, 500, Query.BPLATE);
+        bq7 = new BuyQuery(1, 0, 10, 500, Query.BPLATE | Query.COVEL | Query.DE_NEVE);
+    }
 
     @Test
-    public void equals_SameBuyQuery () {
+    public void equals_SameBuyQuery_Test() {
         //Tests if calling BuyQuery.equals on another BuyQuery object with the same values for all fields returns true
-        Assert.assertTrue(buyQueryOne.equals(buyQueryZero));
+        Assert.assertTrue(bq1.equals(bq0));
     }
 
     @Test
-    public void equals_DifferentObjects () {
+    public void equals_DifferentObjects_Test() {
         //Tests if calling BuyQuery.equals on a non BuyQuery object returns false
-        Assert.assertFalse(buyQueryOne.equals(intOne));
+        Assert.assertFalse(bq1.equals(ONE));
     }
 
     @Test
-    public void equals_DifferentUserId () {
+    public void equals_DifferentUserId_Test() {
         //Tests if calling BuyQuery.equals on another BuyQuery object with a different userId field returns false
-        Assert.assertFalse(buyQueryOne.equals(buyQueryTwo));
+        Assert.assertFalse(bq1.equals(bq2));
     }
 
     @Test
-    public void equals_DifferentTimeRangeStart () {
+    public void equals_DifferentTimeRangeStart_Test() {
         //Tests if calling BuyQuery.equals on another BuyQuery object with a different timeRangeStart field returns false
-        Assert.assertFalse(buyQueryOne.equals(buyQueryThree));
+        Assert.assertFalse(bq1.equals(bq3));
     }
 
     @Test
-    public void equals_DifferentTimeRangeEnd () {
+    public void equals_DifferentTimeRangeEnd_Test() {
         //Tests if calling BuyQuery.equals on another BuyQuery object with a different timeRangeEnd field returns false
-        Assert.assertFalse(buyQueryOne.equals(buyQueryFour));
+        Assert.assertFalse(bq1.equals(bq4));
     }
 
     @Test
-    public void equals_DifferentPriceCents () {
+    public void equals_DifferentPriceCents_Test() {
         //Tests if calling BuyQuery.equals on another BuyQuery object with a different priceCents field returns false
-        Assert.assertFalse(buyQueryOne.equals(buyQueryFive));
+        Assert.assertFalse(bq1.equals(bq5));
     }
 
     @Test
-    public void equals_DifferentDiningHallBitfield () {
+    public void equals_DifferentDiningHallBitfield_Test() {
         //Tests if calling BuyQuery.equals on another BuyQuery object with a different diningHallBitfield field returns false
-        Assert.assertFalse(buyQueryOne.equals(buyQuerySix));
-        Assert.assertFalse(buyQueryOne.equals(buyQuerySeven));
+        Assert.assertFalse(bq1.equals(bq6));
+        Assert.assertFalse(bq1.equals(bq7));
     }
 }

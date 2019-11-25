@@ -3,9 +3,6 @@ package com.swipr.models;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,7 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 
 /**
@@ -43,30 +39,38 @@ public class User {
 
     private String venmo;
 
-    // Mark some properties with @transient so that they aren't stored in the DB
-    @Transient
-    private boolean here;
-
-    @Transient
-    private boolean matchedOffer;
-
-    @Transient
-    private Set<String> preferredDiningHalls;
+    private String profilePicUrl; 
 
     public User(String firstName, String lastName, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.here = false;
-        this.matchedOffer = false;
-        this.preferredDiningHalls = new HashSet<>();
     }
 
-    /**
-     * Helper method for adding/updating the preferred dining hall of the user
-     * @param diningHall dininghall that the user is looking for
-     */
-    public void addPreferredDiningHall(String diningHall) {
-        preferredDiningHalls.add(diningHall);
+    public User(String firstName, String lastName, String email, String profilePicUrl) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.profilePicUrl = profilePicUrl;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof User)) {
+            return false;
+        }
+        User user = (User) o;
+        return user.getId().equals(this.id);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 3;
+        result = 31 * result + firstName.hashCode();
+        result = 31 * result + email.hashCode();
+        return result;
     }
 }
