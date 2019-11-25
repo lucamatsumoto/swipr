@@ -97,12 +97,8 @@ public class OfferController {
             buyer.clearMatchedSellQueries();
             matchMaker.updateBuyQuery(query, buyer);
             List<SellQuery> matchedSellQueries = buyer.getMatchedSellQueries();
-            if (matchedSellQueries.isEmpty()) {
-                userSessionManager.sendToUser(headerAccessor, "/queue/error", "No matches found!", messagingTemplate);
-            } else {
-                userSessionManager.sendToUser(headerAccessor, "/queue/buyerFind", matchedSellQueries, messagingTemplate);
-            }
             // Retrieve a list of all bids found and send to the user
+            userSessionManager.sendToUser(headerAccessor, "/queue/buyerFind", matchedSellQueries, messagingTemplate);
         }
     }
 
