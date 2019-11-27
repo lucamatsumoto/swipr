@@ -6,12 +6,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import com.innovattic.rangeseekbar.RangeSeekBar;
 
-import com.google.android.material.chip.ChipGroup;
-import com.google.android.material.chip.Chip;
 import com.example.myapplication.Buyer.BuyerActivity;
 import com.example.myapplication.R;
 import com.example.myapplication.Shared.DrawerBaseActivity;
@@ -22,6 +22,11 @@ public class SellerActivity extends DrawerBaseActivity {
     RangeSeekBar s_time;
     RangeSeekBar.SeekBarChangeListener L;
     String TAG;
+
+    private Button post;
+    private ViewGroup buyerFrame;
+    private ViewGroup sellerFrame;
+    boolean seller_flag = false; // 1 if on Buyer section, 0 else
 
 
     @Override
@@ -37,6 +42,17 @@ public class SellerActivity extends DrawerBaseActivity {
         Log.d("here", "2");
         dl.addView(contentView, 0);
         //END
+
+        //Filters
+        buyerFrame = findViewById(R.id.buyer_tags);
+        sellerFrame = findViewById(R.id.seller_tags);
+        post = findViewById(R.id.post_swipe);
+        if (seller_flag) {
+            post.setText(R.string.post_button);
+        }
+        else {
+            post.setText(R.string.search_button);
+        }
 
         // Sliders
         int step_value_price = 50; //Number of cents to change the total by
@@ -99,10 +115,33 @@ public class SellerActivity extends DrawerBaseActivity {
         };
         s_time.setSeekBarChangeListener(L);
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (seller_flag) {
+            sellerFrame.setVisibility(View.VISIBLE);
+            buyerFrame.setVisibility(View.GONE);
+            post.setText(R.string.post_button);
+        }
+        else {
+            sellerFrame.setVisibility(View.GONE);
+            buyerFrame.setVisibility(View.VISIBLE);
+            post.setText(R.string.search_button);
+        }
+    }
+
+    public void launchSellerActivity(View view) {
+        sellerFrame.setVisibility(View.VISIBLE);
+        buyerFrame.setVisibility(View.GONE);
+        seller_flag = true;
+        post.setText(R.string.post_button);
+    }
 
     public void launchBuyerActivity(View view) {
-        //launch buyer tab
-        Intent intent = new Intent(this, BuyerActivity.class);
-        startActivity(intent);
+        sellerFrame.setVisibility(View.GONE);
+        buyerFrame.setVisibility(View.VISIBLE);
+        seller_flag = false;
+        post.setText(R.string.search_button);
     }
+
 }

@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.example.myapplication.Buyer.BuyerActivity;
+import com.example.myapplication.Seller.SellerActivity;
 import com.example.myapplication.Shared.NetworkManager;
 import com.example.myapplication.Shared.NetworkResponder;
 import com.example.myapplication.Shared.ProfileSingleton;
@@ -227,7 +228,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     private void updateUI()
     {
         profile.setSignin(from);
-        Intent intent = new Intent(this, BuyerActivity.class);
+        Intent intent = new Intent(this, SellerActivity.class);
         startActivity(intent);
     }
 

@@ -31,45 +31,94 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/s_buyer_tag"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:onClick="launchBuyerActivity"
-        android:text="@string/buyer_button"
-        app:layout_constraintEnd_toStartOf="@id/center_line"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <RelativeLayout
+        android:id="@+id/buyer_tags"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="69dp">
 
-    <TextView
-        android:id="@+id/s_seller_tag"
-        style="@style/Widget.AppCompat.Button"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:background="@color/colorPrimary"
-        android:text="@string/seller_button"
-        android:textColor="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/center_line"
-        app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/b_buyer_button"
+            android:layout_width="205dp"
+            android:layout_height="50dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="205dp"
+            android:text="@string/buyer_button"
+            app:layout_constraintStart_toStartOf="parent"
+            android:textColor="@color/black"
+            android:background="@color/colorPrimary"
+            style="@style/Widget.AppCompat.Button"/>
+
+        <Button
+            android:id="@+id/b_seller_tag"
+            android:layout_width="205dp"
+            android:layout_height="50dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="0dp"
+            android:onClick="launchSellerActivity"
+            android:text="@string/seller_button" />
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/seller_tags"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        tools:layout_editor_absoluteX="69dp">
+
+        <Button
+            android:id="@+id/s_buyer_tag"
+            android:layout_width="205dp"
+            android:layout_height="50dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="205dp"
+            android:onClick="launchBuyerActivity"
+            android:text="@string/buyer_button"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/seller_button"
+            style="@style/Widget.AppCompat.Button"
+            android:layout_width="205dp"
+            android:layout_height="50dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="0dp"
+            android:background="@color/colorPrimary"
+            android:text="@string/seller_button"
+            android:textColor="@color/black" />
+
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/dining_hall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="82dp"
         android:text="@string/dining_hall"
         android:textColor="@color/black"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="@+id/left_margin"
-        app:layout_constraintTop_toBottomOf="@+id/s_buyer_tag" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.chip.ChipGroup
         android:id="@+id/dining_hall_group"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/s_buyer_tag"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
         app:layout_constraintEnd_toStartOf="@+id/right_margin"
         app:layout_constraintStart_toStartOf="@+id/left_margin"
         app:layout_constraintTop_toBottomOf="@+id/dining_hall"
@@ -187,7 +236,6 @@
         android:layout_height="89dp"
         android:layout_marginBottom="20dp"
         android:backgroundTint="@color/colorPrimary"
-        android:text="@string/post_button"
         android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
