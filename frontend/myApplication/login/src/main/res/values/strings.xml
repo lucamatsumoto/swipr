@@ -10,6 +10,7 @@
     <string name="end_time_tag">End Time: </string>
     <string name="dining_hall_tag">Dining Hall: </string>
     <string name="logout_button">LOGOUT</string>
+    <string name="buyer_button">BUYER</string>
     <string name="seller_button">SELLER</string>
     <string name="remove_button">Remove</string>
     <string name="status_tag">Status:</string>
@@ -18,4 +19,7 @@
     <string name="Open">Open</string>
     <string name="price">Price:</string>
     <string name="time">Time:</string>
+    <string name="dining_hall">Dining Hall Selection</string>
+    <string name="post_button">Find me a hungry single!</string>
+    <string name="search_button">Find me a Swipe daddy!</string>
 </resources>
