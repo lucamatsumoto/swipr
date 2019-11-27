@@ -61,4 +61,10 @@ public class Offer {
             return null;
         }
     }
+
+    @Override
+    public String toString()
+    {
+        return "User_ID: " + userId + " start_time: " + startTime + " end_time: " + endTime + " price: " + price + " dining_hall_list: " + diningHallList;
+    }
 }

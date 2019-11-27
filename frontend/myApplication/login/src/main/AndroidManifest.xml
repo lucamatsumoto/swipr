@@ -13,6 +13,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".Buyer.Result.ResultActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.myapplication.Seller.SellerActivity" />
+        </activity>
         <activity android:name=".EditProfileActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -57,17 +62,19 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.myapplication.Buyer.MainActivity" />
         </activity>
-        <activity android:name=".Buyer.BuyerActivity"
-            android:launchMode="singleTop"
-            />
-        <activity android:name=".Seller.SellerActivity"
-            android:launchMode="singleTop"
-        />
-        <activity android:name=".Shared.DummyActivity"
+        <activity
+            android:name=".Buyer.BuyerActivity"
+            android:launchMode="singleTop" />
+        <activity
+            android:name=".Seller.SellerActivity"
+            android:launchMode="singleTop" />
+        <activity
+            android:name=".Shared.DummyActivity"
             android:parentActivityName=".Buyer.BuyerActivity">
             <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value="com.example.myapplication.Buyer.MainActivity" />
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.myapplication.Buyer.MainActivity" />
         </activity>
     </application>
+
 </manifest>

@@ -1,6 +1,7 @@
 package com.example.myapplication.Shared;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -70,24 +71,26 @@ public class DummyActivity extends AppCompatActivity {
     }
 
     public void resetViews(View view) {
-        ( (TextView) findViewById(R.id.textView5)).setText("here");
-        ( (TextView) findViewById(R.id.textView6)).setText("here");
-        ( (TextView) findViewById(R.id.textView11)).setText("here");
-        ( (TextView) findViewById(R.id.textView8)).setText("here");
-        ( (TextView) findViewById(R.id.textView9)).setText("here");
-        ( (TextView) findViewById(R.id.textView10)).setText("here");
-        ( (TextView) findViewById(R.id.textView12)).setText("here");
+        ((TextView) findViewById(R.id.textView5)).setText("here");
+        ((TextView) findViewById(R.id.textView6)).setText("here");
+        ((TextView) findViewById(R.id.textView11)).setText("here");
+        ((TextView) findViewById(R.id.textView8)).setText("here");
+        ((TextView) findViewById(R.id.textView9)).setText("here");
+        ((TextView) findViewById(R.id.textView10)).setText("here");
+        ((TextView) findViewById(R.id.textView12)).setText("here");
     }
 
-    class TempResponder implements NetworkResponder{
+    class TempResponder implements NetworkResponder {
         TextView textView;
-        public TempResponder(int id)
-        {
+
+        public TempResponder(int id) {
             textView = findViewById(id);
         }
+
         @Override
         public void onMessageReceived(String json) {
             textView.setText(json);
         }
     }
+
 }
