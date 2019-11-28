@@ -2,6 +2,8 @@ package com.swipr.controllers;
 
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import com.swipr.models.User;
 import com.swipr.repository.UserRepository;
 import com.swipr.utils.UserSessionManager;
@@ -27,7 +29,13 @@ public class UserController {
     @Autowired
     private SimpMessageSendingOperations messagingTemplate;
 
-    private UserSessionManager userSessionManager = UserSessionManager.getInstance();
+    private UserSessionManager userSessionManager;
+
+
+    @PostConstruct
+    private void postConstruct() {
+        userSessionManager = UserSessionManager.getInstance(messagingTemplate);
+    }
 
     /**
      * Retrieves all users that have been created. Use for debugging
@@ -37,9 +45,9 @@ public class UserController {
     public void getUsers(SimpMessageHeaderAccessor headerAccessor) {
         try {
             List<User> allUsers = userRepository.findAll();
-            userSessionManager.sendToUser(headerAccessor, "/queue/reply", allUsers, messagingTemplate);
+            userSessionManager.sendToUser(headerAccessor, "/queue/reply", allUsers);
         } catch(DataAccessException e) {
-            userSessionManager.sendToUser(headerAccessor, "/queue/error", e.getLocalizedMessage(), messagingTemplate);
+            userSessionManager.sendToUser(headerAccessor, "/queue/error", e.getLocalizedMessage());
         }
     }
 
@@ -57,9 +65,9 @@ public class UserController {
             } 
             user = userRepository.findByEmail(user.getEmail()).get(0);
             // Keep track of a map of users to sessionId in RAM
-            userSessionManager.sendToUser(headerAccessor, "/queue/reply", user, messagingTemplate);
+            userSessionManager.sendToUser(headerAccessor, "/queue/reply", user);
         } catch (DataAccessException e) {
-            userSessionManager.sendToUser(headerAccessor, "/queue/error", e.getLocalizedMessage(), messagingTemplate);
+            userSessionManager.sendToUser(headerAccessor, "/queue/error", e.getLocalizedMessage());
         }
     } 
 
@@ -72,9 +80,9 @@ public class UserController {
     public void deleteUser(@Payload User user, SimpMessageHeaderAccessor headerAccessor) {
         try {
             userRepository.deleteById(user.getId());
-            userSessionManager.sendToUser(headerAccessor, "/queue/reply", "deleted user with email " + user.getEmail(),  messagingTemplate);
+            userSessionManager.sendToUser(headerAccessor, "/queue/reply", "deleted user with email " + user.getEmail());
         } catch(DataAccessException e) {
-            userSessionManager.sendToUser(headerAccessor, "/queue/error", e.getLocalizedMessage(),  messagingTemplate);
+            userSessionManager.sendToUser(headerAccessor, "/queue/error", e.getLocalizedMessage());
         }
     }
 
@@ -89,12 +97,12 @@ public class UserController {
         if (!users.isEmpty()) {
             try {
                 userRepository.updateUserByEmail(user.getVenmo(), user.getEmail());
-                userSessionManager.sendToUser(headerAccessor, "/queue/reply", user,  messagingTemplate);
+                userSessionManager.sendToUser(headerAccessor, "/queue/reply", user);
             } catch(DataAccessException e) {
-                userSessionManager.sendToUser(headerAccessor, "/queue/error", e.getLocalizedMessage(),  messagingTemplate);
+                userSessionManager.sendToUser(headerAccessor, "/queue/error", e.getLocalizedMessage());
             }
         } else {
-            userSessionManager.sendToUser(headerAccessor, "/queue/error", "The user you looked for doesn't exist", messagingTemplate);
+            userSessionManager.sendToUser(headerAccessor, "/queue/error", "The user you looked for doesn't exist");
         }
     }
 

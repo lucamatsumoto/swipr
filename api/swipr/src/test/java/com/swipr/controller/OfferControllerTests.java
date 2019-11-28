@@ -34,7 +34,7 @@ public class OfferControllerTests {
     private static final String WS_URL = "ws://localhost:3000/index";
     private static final String UPDATE_OFFER_TOPIC = "/user/queue/sellerUpdate";
     private static final String UPDATE_OFFER_ENDPOINT = "/swipr/updateOffer";
-    private UserSessionManager userSessionManager = UserSessionManager.getInstance();
+   //  private UserSessionManager userSessionManager = UserSessionManager.getInstance();
 
     private CompletableFuture<String> messageCompletableFuture;
 

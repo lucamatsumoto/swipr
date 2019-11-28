@@ -7,7 +7,7 @@ class DummyQueryListener implements SellQueryListener {
     public final ArrayList<SellQuery> sellQueryList = new ArrayList<SellQuery>();
 
     @Override
-    public void onMatchFound(SellQuery foundSellQuery) {
+    public void onMatchFound(SellQuery foundSellQuery, boolean update) {
         sellQueryList.add(foundSellQuery);
     }
 

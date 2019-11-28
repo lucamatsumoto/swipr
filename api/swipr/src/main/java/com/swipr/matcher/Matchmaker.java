@@ -65,7 +65,7 @@ public class Matchmaker {
         for (int i = 0; i < sz; ++i) {
             SellQuery thisSellQuery = sellQueryList.get(i);
             if (matches(thisSellQuery, newBuyQuery)) {
-                newBuyQuery.listener.onMatchFound(thisSellQuery);
+                newBuyQuery.listener.onMatchFound(thisSellQuery, false);
             }
         }
 
@@ -114,7 +114,7 @@ public class Matchmaker {
             BuyQuery thisBuyQuery = buyQueryList.get(i);
             if (matches(newSellQuery, thisBuyQuery)) {
                 SellQueryListener listener = thisBuyQuery.listener;
-                listener.onMatchFound(newSellQuery);
+                listener.onMatchFound(newSellQuery, true);
                 // Optimization possibility: Instead of calling
                 // listener.onMatchFound now (potentially expensive),
                 // make a list of SellQueryListeners to notify and
