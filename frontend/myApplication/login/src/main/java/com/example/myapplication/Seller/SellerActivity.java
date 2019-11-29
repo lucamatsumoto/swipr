@@ -92,6 +92,7 @@ public class SellerActivity extends DrawerBaseActivity {
         post = findViewById(R.id.post_swipe);
         if (seller_flag) {
             post.setText(R.string.post_button);
+
         }
         else {
             post.setText(R.string.search_button);
@@ -266,6 +267,7 @@ public class SellerActivity extends DrawerBaseActivity {
         Log.d("Post", "Launching Post Activity");
         networkManager.send("/swipr/updateOffer", createOffer().generateQuery());
     }
+
 
     private Offer createOffer()
     {

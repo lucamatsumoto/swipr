@@ -1,6 +1,7 @@
 package com.example.myapplication.Buyer.Result;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -8,11 +9,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 
 import com.example.myapplication.Buyer.BuyerBacker;
+import com.example.myapplication.Buyer.Interest.InterestDialog;
 import com.example.myapplication.R;
 import com.example.myapplication.Shared.NetworkManager;
 import com.example.myapplication.Shared.SimpleSpinAdapter;
@@ -40,5 +44,6 @@ public class ResultActivity extends AppCompatActivity {
         resultRecycler.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         resultRecycler.setItemAnimator(new DefaultItemAnimator());
         Log.d("RESULTS", resultBacker.getResults().toString());
+
     }
 }
