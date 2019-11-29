@@ -1,12 +1,16 @@
 package com.swipr.models;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -30,7 +34,11 @@ import lombok.NoArgsConstructor;
 public class Seller extends User {
 
     @Transient
-    private Set<Buyer> potentialBuyers;
+    private Set<Information> potentialBuyers;
+
+    @JsonIgnore
+    @Transient
+    private Map<Buyer, Information> buyerMap; 
 
     private Integer id;
 
@@ -39,26 +47,36 @@ public class Seller extends User {
         super(firstName, lastName, email);
         this.potentialBuyers = new HashSet<>();
         this.id = id;
+        this.buyerMap = new HashMap<>();
     }
 
     //For unit tests, might be useful later on
-    public Set<Buyer> getPotentialBuyers() {
+    public Set<Information> getPotentialBuyersInformation() {
         return potentialBuyers;
+    }
+
+    public Set<Buyer> getPotentialBuyers() {
+        return buyerMap.keySet();
     }
 
     /**
      * Adds the potential matched buyer to this seller
      * @param buyer Matched buyer
      */
-    public void addPotentialBuyer(Buyer buyer) {
-        potentialBuyers.add(buyer);
+    public void addPotentialBuyer(Buyer buyer,long meetTime, long preferredDiningHall) {
+        Information newInfo = new Information(meetTime, preferredDiningHall, buyer);
+        buyerMap.put(buyer, newInfo);
+        potentialBuyers.add(newInfo);
     }
     
     public void removePotentialBuyer(Buyer buyer) {
-        potentialBuyers.remove(buyer);
+        Information infoToRemove = buyerMap.get(buyer);
+        buyerMap.remove(buyer);
+        potentialBuyers.remove(infoToRemove);
     }
 
     public void clearPotentialBuyers() {
+        buyerMap.clear();
         potentialBuyers.clear();    
     }
 }

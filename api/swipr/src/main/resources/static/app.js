@@ -141,13 +141,15 @@ function postBuyQuery() {
 
 function showInterest() {
     var buyerId = document.getElementById('interestUserId').value;
+    var meetTime = document.getElementById('interestMeetTime').value;
+    var preferredDiningHall = document.getElementById('interestPreferredDiningHall').value
     var userId = document.getElementById('sellInterestUserId').value;
     var startTime = document.getElementById('sellInterestStartTime').value;
     var endTime = document.getElementById('sellInterestEndTime').value;
     var price = document.getElementById('sellInterestPrice').value;
     var diningHall = document.getElementById('sellInterestDiningHall').value;
     var offerId = document.getElementById('sellInterestOfferId').value;
-    stompClient.send("/swipr/showInterest", {}, JSON.stringify({'buyerId': parseInt(buyerId), 'sellQuery': {'userId': parseInt(userId), 'timeRangeStart': parseInt(startTime), 'timeRangeEnd': parseInt(endTime), 'priceCents': parseInt(price), 'diningHallBitfield': parseInt(diningHall), 'offerId': parseInt(offerId)}}))
+    stompClient.send("/swipr/showInterest", {}, JSON.stringify({'buyerId': parseInt(buyerId), 'meetTime': parseInt(meetTime), 'preferredDiningHall': parseInt(preferredDiningHall), 'sellQuery': {'userId': parseInt(userId), 'timeRangeStart': parseInt(startTime), 'timeRangeEnd': parseInt(endTime), 'priceCents': parseInt(price), 'diningHallBitfield': parseInt(diningHall), 'offerId': parseInt(offerId)}}))
 }
 
 function cancelInterest() {

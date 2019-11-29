@@ -3,7 +3,6 @@ package com.swipr.controllers;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.IntStream;
 
 import javax.annotation.PostConstruct;
 
@@ -11,6 +10,7 @@ import com.swipr.matcher.BuyQuery;
 import com.swipr.matcher.Matchmaker;
 import com.swipr.matcher.SellQuery;
 import com.swipr.models.Buyer;
+import com.swipr.models.Information;
 import com.swipr.models.Interest;
 import com.swipr.models.Seller;
 import com.swipr.models.User;
@@ -140,11 +140,11 @@ public class OfferController {
                 SimpMessageHeaderAccessor sellingUserHeaders = userSessionManager.getSellerHeaders(sellingUser);
                 Seller seller = userSessionManager.getSellerFromSessionId(sellingUser, sellingUserHeaders);
                 // userSessionManager.addSellerSession(seller, headerAccessor);
-                buyer.indicateInterestInOffer(sellQuery, seller);
+                buyer.indicateInterestInOffer(sellQuery, seller, interest.getTimeToMeet(), interest.getPreferredDiningHallBit());
                 // Re-update buyer and seller sessions
                 userSessionManager.addBuyerSession(buyer, headerAccessor);
                 userSessionManager.addSellerSession(seller, sellingUserHeaders);
-                Set<Buyer> potentialBuyers = seller.getPotentialBuyers();
+                Set<Information> potentialBuyers = seller.getPotentialBuyersInformation();
                 // Batch a list of potential buyers and send them to seller
                 userSessionManager.sendToUser(sellingUserHeaders, "/queue/sellerInterest", potentialBuyers);
             }
@@ -185,19 +185,23 @@ public class OfferController {
      */
     @MessageMapping("/confirmInterest")
     public void confirmInterest(@Payload Buyer buyer, SimpMessageHeaderAccessor headerAccessor) {
-        SimpMessageHeaderAccessor buyingUserHeaders = userSessionManager.getBuyerHeaders(buyer);
-        // Also remove the buyer from the seller's list and notify the seller
-        Seller seller = userSessionManager.getSellerFromSessionId(null, headerAccessor);
-        seller.clearPotentialBuyers();
-        // We send back the buyer's information, including the venmo
-        User boughtFrom = userRepository.findById(buyer.getId());
-        userSessionManager.sendToUser(headerAccessor, "/queue/sellerInterest", boughtFrom);
-        // Include in the averaging statistics the seller's original SellQuery that led to this transaction.
-        SellQuery sq = matchMaker.sellQueryByUserId(seller.getId());
-        AverageSwipePrice.includeSellQuery(sq);
-        // When the buyer confirms interest, send out the new average price to all users
-        userSessionManager.sendToUser(buyingUserHeaders, "/queue/buyerInterest", seller);
-        getAverageSellPrice();
+        try {
+            SimpMessageHeaderAccessor buyingUserHeaders = userSessionManager.getBuyerHeaders(buyer);
+            // Also remove the buyer from the seller's list and notify the seller
+            Seller seller = userSessionManager.getSellerFromSessionId(null, headerAccessor);
+            seller.clearPotentialBuyers();
+            // We send back the buyer's information, including the venmo
+            User boughtFrom = userRepository.findById(buyer.getId());
+            userSessionManager.sendToUser(headerAccessor, "/queue/sellerInterest", boughtFrom);
+            // Include in the averaging statistics the seller's original SellQuery that led to this transaction.
+            SellQuery sq = matchMaker.sellQueryByUserId(seller.getId());
+            AverageSwipePrice.includeSellQuery(sq);
+            // When the buyer confirms interest, send out the new average price to all users
+            userSessionManager.sendToUser(buyingUserHeaders, "/queue/buyerInterest", seller);
+            getAverageSellPrice();
+        } catch(NullPointerException e) {
+            userSessionManager.sendToUser(headerAccessor, "/queue/error", "Seller does not exist anymore");
+        }
     }
 
     /**

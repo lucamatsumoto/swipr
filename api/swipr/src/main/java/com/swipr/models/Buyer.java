@@ -11,8 +11,6 @@ import lombok.NoArgsConstructor;
 import com.swipr.matcher.SellQueryListener;
 import com.swipr.utils.UserSessionManager;
 
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -34,6 +32,7 @@ import java.util.ArrayList;
 @JsonIgnoreProperties({"matchedSellQueries, userSessionManager"})
 public class Buyer extends User implements SellQueryListener {
 
+    @JsonIgnore
     @Transient
     private ArrayList<SellQuery> matchedSellQueries; // offer ids inside.
 
@@ -96,12 +95,14 @@ public class Buyer extends User implements SellQueryListener {
      */
     @Override
     public void onMatchCancelled(SellQuery expiredSellQuery) {
-        matchedSellQueries.remove(expiredSellQuery);
-    }
-
-
-    private void notifyOnMatchFound() {
-
+        try {
+            // Let buyers know that the offer is not on the table anymore
+            matchedSellQueries.remove(expiredSellQuery);
+            userSessionManager.sendToUser(userSessionManager.getBuyerHeaders(this), "/queue/buyerFind", matchedSellQueries);
+        } catch (NullPointerException e) {
+            // Should not happen but catch for now
+            System.out.println(e.getLocalizedMessage());
+        }
     }
 
     /**
@@ -123,11 +124,11 @@ public class Buyer extends User implements SellQueryListener {
      *  still active and associated with a Seller, add this Buyer to
      *  the said Seller's list of potential buyers.
      */
-    public void indicateInterestInOffer(SellQuery sellQuery, Seller seller) {
+    public void indicateInterestInOffer(SellQuery sellQuery, Seller seller, long meetTime, long preferredDiningHall) {
         long interestedOfferId = sellQuery.offerId;
         for (SellQuery sq : matchedSellQueries) {
             if (sq.offerId == interestedOfferId) {
-                seller.addPotentialBuyer(this);
+                seller.addPotentialBuyer(this, meetTime, preferredDiningHall);
                 return;
             }
         }

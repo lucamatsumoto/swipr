@@ -95,7 +95,7 @@ public class BuyerTests {
         //Checks if Buyer's cannot express interest in expired SellQuery objects (indicated by a change in offerId)
         Assert.assertFalse(eggert.getPotentialBuyers().contains(alice));
         alice.onMatchFound(sq1, false);
-        alice.indicateInterestInOffer(sq4, eggert);
+        alice.indicateInterestInOffer(sq4, eggert, 0, 0);
         Assert.assertFalse( eggert.getPotentialBuyers().contains(alice));
     }
 
@@ -113,12 +113,12 @@ public class BuyerTests {
         eve.onMatchFound(sq2, false);
         eve.onMatchFound(sq3, false);
 
-        alice.indicateInterestInOffer(sq1, eggert);
-        bob.indicateInterestInOffer(sq1, eggert);
-        bob.indicateInterestInOffer(sq2, kampe);
-        eve.indicateInterestInOffer(sq1, eggert);
-        eve.indicateInterestInOffer(sq2, kampe);
-        eve.indicateInterestInOffer(sq3, campbell);
+        alice.indicateInterestInOffer(sq1, eggert, 0, 0);
+        bob.indicateInterestInOffer(sq1, eggert, 0, 0);
+        bob.indicateInterestInOffer(sq2, kampe, 0, 0);
+        eve.indicateInterestInOffer(sq1, eggert, 0, 0);
+        eve.indicateInterestInOffer(sq2, kampe, 0, 0);
+        eve.indicateInterestInOffer(sq3, campbell, 0, 0);
 
         Assert.assertTrue(eggert.getPotentialBuyers().contains(alice));
         Assert.assertTrue(eggert.getPotentialBuyers().contains(bob));

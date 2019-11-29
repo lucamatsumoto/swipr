@@ -23,9 +23,9 @@ public class SellerTests {
 
     @Test
     public void A_addPotentialBuyer_Test() {
-        eggert.addPotentialBuyer(alice);
-        eggert.addPotentialBuyer(bob);
-        eggert.addPotentialBuyer(eve);
+        eggert.addPotentialBuyer(alice, 0, 0);
+        eggert.addPotentialBuyer(bob, 0, 0);
+        eggert.addPotentialBuyer(eve, 0, 0);
 
         Assert.assertTrue(eggert.getPotentialBuyers().contains(alice));
         Assert.assertTrue(eggert.getPotentialBuyers().contains(bob));
