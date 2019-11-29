@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,59 +8,60 @@
 
     <TextView
         android:id="@+id/b_buyer_tag"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
         style="@style/Widget.AppCompat.Button"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/b_seller_tag"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
         android:background="@color/colorPrimary"
+        android:text="BUYER"
         android:textColor="@color/black"
-        android:text="BUYER" />
+        app:layout_constraintBottom_toBottomOf="@id/b_seller_tag"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/b_seller_tag"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
         android:onClick="launchSellerActivity"
         android:text="@string/seller_button"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/b_buyer_tag"
         app:layout_constraintTop_toTopOf="parent" />
 
     <RelativeLayout
         android:id="@+id/b_result_frame"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/b_buyer_tag"
-        app:layout_constraintBottom_toTopOf="@id/b_guideline">
+        app:layout_constraintBottom_toTopOf="@id/b_guideline"
+        app:layout_constraintTop_toBottomOf="@id/b_buyer_tag">
+
         <TextView
             android:id="@+id/b_result_main_tag"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:text="Available Offers:"
-            />
+            android:text="Available Offers:" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/b_resultRecycler"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@id/b_result_main_tag"
             android:layout_above="@id/b_set_filters"
-            />
+            android:layout_below="@id/b_result_main_tag"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true" />
 
         <Button
             android:id="@+id/b_set_filters"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:text="Set Filters"
-            android:onClick="setFilters"/>
+            android:onClick="setFilters"
+            android:text="Set Filters" />
 
     </RelativeLayout>
 
@@ -69,24 +69,23 @@
         android:id="@+id/b_filter_frame"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/b_buyer_tag"
-        app:layout_constraintBottom_toTopOf="@id/b_guideline">
+        app:layout_constraintBottom_toTopOf="@id/b_guideline"
+        app:layout_constraintTop_toBottomOf="@id/b_buyer_tag">
+
         <TextView
             android:id="@+id/b_filter_main_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:text="Filter Search Results:"
-            />
+            android:text="Filter Search Results:" />
 
         <TextView
             android:id="@+id/b_filter_dining_tag"
             style="@style/filter_parameter"
             android:layout_below="@id/b_filter_main_tag"
-            android:text="Select Dining Hall:"
-            />
+            android:text="Select Dining Hall:" />
 
         <Spinner
             android:id="@+id/b_filter_dining_spinner"
@@ -95,15 +94,15 @@
 
         <TextView
             android:id="@+id/b_filter_price_tag"
+            style="@style/filter_parameter"
             android:layout_below="@id/b_filter_dining_spinner"
-            android:text="Select Maximum Price:"
-            style="@style/filter_parameter" />
+            android:text="Select Maximum Price:" />
 
         <EditText
             android:id="@+id/b_filter_price_edit"
             style="@style/filter_edit"
-            android:inputType="numberDecimal"
-            android:layout_below="@id/b_filter_price_tag"/>
+            android:layout_below="@id/b_filter_price_tag"
+            android:inputType="numberDecimal" />
 
         <TextView
             android:id="@+id/b_filter_start_tag"
@@ -114,8 +113,8 @@
         <EditText
             android:id="@+id/b_filter_start_edit"
             style="@style/filter_edit"
-            android:inputType="time"
-            android:layout_below="@id/b_filter_start_tag"/>
+            android:layout_below="@id/b_filter_start_tag"
+            android:inputType="time" />
 
         <TextView
             android:id="@+id/b_filter_end_tag"
@@ -126,16 +125,16 @@
         <EditText
             android:id="@+id/b_filter_end_edit"
             style="@style/filter_edit"
-            android:inputType="time"
-            android:layout_below="@id/b_filter_end_tag"/>
+            android:layout_below="@id/b_filter_end_tag"
+            android:inputType="time" />
 
         <Button
             android:id="@+id/b_search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:text="search"
-            android:onClick="search"/>
+            android:onClick="search"
+            android:text="search" />
 
     </RelativeLayout>
 
@@ -150,10 +149,20 @@
         android:id="@+id/b_Interests"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:onClick="launchInterestsActivity"
         android:text="Interests"
-        app:layout_constraintTop_toBottomOf="@id/b_guideline"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:onClick="launchInterestsActivity"/>
+        app:layout_constraintTop_toBottomOf="@id/b_guideline" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintGuide_end="205dp"
+        app:layout_constraintHorizontal_bias="0.50"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

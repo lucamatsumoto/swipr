@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.example.myapplication.Buyer.BuyerActivity;
+import com.example.myapplication.Seller.SellerActivity;
 import com.example.myapplication.Shared.NetworkManager;
 import com.example.myapplication.Shared.NetworkResponder;
 import com.example.myapplication.Shared.ProfileSingleton;
@@ -19,6 +21,7 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.Profile;
@@ -119,6 +122,13 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
             Uri profPicture = account.getPhotoUrl();
             packageJSON(firstName, lastName, email, profPicture);
             from = "google";
+            return;
+        }
+        AccessToken at = AccessToken.getCurrentAccessToken();
+        if (at != null && Profile.getCurrentProfile() != null)
+        {
+            from = "fb";
+            handleSignInResult(at);
         }
     }
 
@@ -176,8 +186,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                             String lastName = object.getString("last_name");
                             String email = object.getString("email");
                             String id = object.getString("id");
-                            //Uri profPic = "https://graph.facebook.com/"+id+"/picture?type=large";
-                            packageJSON(firstName, lastName, email, null);
+                            Uri profPic = Uri.parse("https://graph.facebook.com/"+id+"/picture?type=large");
+                            packageJSON(firstName, lastName, email, profPic);
                         }
                         catch(JSONException e){
                             e.printStackTrace();
@@ -218,7 +228,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     private void updateUI()
     {
         profile.setSignin(from);
-        Intent intent = new Intent(this, BuyerActivity.class);
+        Intent intent = new Intent(this, SellerActivity.class);
         startActivity(intent);
     }
 

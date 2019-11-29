@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -51,14 +52,14 @@ public class DrawerBaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        dl = (DrawerLayout)findViewById(R.id.activity_main);
-        t = new ActionBarDrawerToggle(this, dl,R.string.Open, R.string.Close);
+        dl = (DrawerLayout) findViewById(R.id.activity_main);
+        t = new ActionBarDrawerToggle(this, dl, R.string.Open, R.string.Close);
 
         dl.addDrawerListener(t);
         t.syncState();
         profile = ProfileSingleton.getInstance();
 
-        if(profile.getProfilePicture() == null)
+        if (profile.getProfilePicture() == null)
             Log.d("HERE", "NULL Picture");
         else
             Log.d("HERE", profile.getProfilePicture().toString());
@@ -71,8 +72,7 @@ public class DrawerBaseActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int id = item.getItemId();
-                switch(id)
-                {
+                switch (id) {
                     case R.id.profile:
                         launchProfileActivity();
                         break;
@@ -89,7 +89,8 @@ public class DrawerBaseActivity extends AppCompatActivity {
             }
         });
 
-        View hView =  nv.getHeaderView(0);
+
+        View hView = nv.getHeaderView(0);
         ImageView imgView = (ImageView) hView.findViewById(R.id.profilePic);
         Glide.with(getApplicationContext()).load(profile.getProfilePicture())
                 .thumbnail(0.5f)
@@ -97,7 +98,8 @@ public class DrawerBaseActivity extends AppCompatActivity {
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(imgView);
 
-
+        TextView TV = (TextView) hView.findViewById(R.id.Drawer_name);
+        TV.setText(profile.getFirstName() + " " + profile.getLastName());
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()

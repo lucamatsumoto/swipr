@@ -1,5 +1,7 @@
 package com.example.myapplication.Shared;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,7 +22,6 @@ public class DiningHalls {
                 //"The Study"
         ));
         diningHallList = temp;
-
     }
     private DiningHalls() {}
     public static List<String> get(){return diningHallList;}
@@ -29,7 +30,8 @@ public class DiningHalls {
         long tempBit = bitValue;
         List<Boolean> tempList = new ArrayList<>(diningHallList.size());
         for(int k = 0; k < diningHallList.size(); k++, tempBit /= 2)
-            tempList.set(k, (tempBit % 2) == 1);
+            tempList.add(k, (tempBit % 2) == 1);
+
         return tempList;
     }
     public static long getBitValueFromSelected(List<Boolean> selected)

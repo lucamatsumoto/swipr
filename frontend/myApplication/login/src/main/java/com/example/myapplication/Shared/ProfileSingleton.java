@@ -35,7 +35,13 @@ public class ProfileSingleton {
             m_venmo = checkNull(reader.getString("venmo"));
             //here = Boolean.valueOf(reader.getString("here"));
             //matchedOffer = Boolean.valueOf(reader.getString("matchedOffer"));
-            m_profPicUri = Uri.parse(reader.getString("profilePicUrl"));
+            String profPicString = checkNull(reader.getString("profilePicUrl"));
+            if(profPicString != null )
+                m_profPicUri = Uri.parse(profPicString);
+            else {
+                m_profPicUri = Uri.parse("android.resource://com.example.myapplication/drawable/swipr_square");
+            }
+
             Log.d("URI TEST", m_profPicUri.toString());
             Log.d("Here", "profile created");
         }
