@@ -107,13 +107,13 @@ public class SellerActivity extends DrawerBaseActivity {
         s_price.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             {
                 s_price.setProgress(800);
-                textView_price.setText("$" + String.format("%.2f", s_price.getProgress() / (float) 100));
+                textView_price.setText("$" + String.format("%.02f", s_price.getProgress() / (float) 100));
             }
 
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 progress = ((int)Math.round(progress/step_value_price )) * step_value_price;
                 seekBar.setProgress(progress);
-                textView_price.setText("$" + String.format("%.2f", s_price.getProgress() / (float) 100));
+                textView_price.setText("$" + String.format("%.02f", s_price.getProgress() / (float) 100));
             }
 
             public void onStartTrackingTouch(SeekBar seekBar) {
@@ -123,7 +123,7 @@ public class SellerActivity extends DrawerBaseActivity {
             public void onStopTrackingTouch(SeekBar seekBar) {
                 int progress = seekBar.getProgress();
                 Log.d("PRICE", Integer.toString(progress));
-                priceCents = progress;
+
             }
         });
 
