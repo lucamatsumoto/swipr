@@ -14,6 +14,11 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity android:name=".Shared.HereActivity"></activity>
+        <activity android:name=".Buyer.Interest.RefineInterestActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.myapplication.Buyer.InterestActivity" />
+        </activity>
         <activity android:name=".Buyer.Result.ResultActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

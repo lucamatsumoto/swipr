@@ -30,14 +30,14 @@ public class InterestActivity extends AppCompatActivity {
         interestAdapter = new InterestAdapter(this, interestBacker.getInterests());
         interestRecycler.setAdapter(interestAdapter);
         interestRecycler.setLayoutManager(new LinearLayoutManager(this));
-        interestButton = findViewById(R.id.interest_button);
-        interestButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("Interested Button", "clicked");
-                showInterestDialog();
-            }
-        });
+//        interestButton = findViewById(R.id.interest_button);
+//        interestButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Log.d("Interested Button", "clicked");
+//                showInterestDialog();
+//            }
+//        });
     }
 
     public void showInterestDialog() {
