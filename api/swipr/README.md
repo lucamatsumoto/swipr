@@ -126,6 +126,8 @@ Here are the primary objects that you will need to know (for JSON).
 ```json
 {
     "buyerId": "int", 
+    "meetTime": "long",
+    "preferredDiningHall": "long",
     "sellQuery": {
         "userId": "int", 
         "timeRangeStart": "long", 
