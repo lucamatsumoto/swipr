@@ -42,12 +42,12 @@ public class BuyerTests {
     @Test
     public void A_onMatchFound_Test() {
         //Checks if SellQuery objects gets added to a Buyer object's matchedSellQueries
-        alice.onMatchFound(sq1);
-        bob.onMatchFound(sq1);
-        bob.onMatchFound(sq2);
-        eve.onMatchFound(sq1);
-        eve.onMatchFound(sq2);
-        eve.onMatchFound(sq3);
+        alice.onMatchFound(sq1, false);
+        bob.onMatchFound(sq1, false);
+        bob.onMatchFound(sq2, false);
+        eve.onMatchFound(sq1, false);
+        eve.onMatchFound(sq2, false);
+        eve.onMatchFound(sq3, false);
 
         Assert.assertTrue(alice.getMatchedSellQueries().contains(sq1));
         Assert.assertFalse(alice.getMatchedSellQueries().contains(sq2));
@@ -94,7 +94,7 @@ public class BuyerTests {
     public void D_indicateInterestInOffer_ExpiredSellQuery_Test() {
         //Checks if Buyer's cannot express interest in expired SellQuery objects (indicated by a change in offerId)
         Assert.assertFalse(eggert.getPotentialBuyers().contains(alice));
-        alice.onMatchFound(sq1);
+        alice.onMatchFound(sq1, false);
         alice.indicateInterestInOffer(sq4, eggert);
         Assert.assertFalse( eggert.getPotentialBuyers().contains(alice));
     }
@@ -106,12 +106,12 @@ public class BuyerTests {
         Assert.assertTrue(kampe.getPotentialBuyers().isEmpty());
         Assert.assertTrue(campbell.getPotentialBuyers().isEmpty());
 
-        alice.onMatchFound(sq1);
-        bob.onMatchFound(sq1);
-        bob.onMatchFound(sq2);
-        eve.onMatchFound(sq1);
-        eve.onMatchFound(sq2);
-        eve.onMatchFound(sq3);
+        alice.onMatchFound(sq1, false);
+        bob.onMatchFound(sq1, false);
+        bob.onMatchFound(sq2, false);
+        eve.onMatchFound(sq1, false);
+        eve.onMatchFound(sq2, false);
+        eve.onMatchFound(sq3, false);
 
         alice.indicateInterestInOffer(sq1, eggert);
         bob.indicateInterestInOffer(sq1, eggert);

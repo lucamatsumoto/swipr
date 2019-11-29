@@ -1,5 +1,6 @@
 package com.swipr.models;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
 
@@ -8,8 +9,12 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import com.swipr.matcher.SellQueryListener;
+import com.swipr.utils.UserSessionManager;
+
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -26,19 +31,30 @@ import java.util.ArrayList;
 @Entity
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties({"matchedSellQueries, matchedSellers"})
+@JsonIgnoreProperties({"matchedSellQueries, userSessionManager"})
 public class Buyer extends User implements SellQueryListener {
 
     @Transient
     private ArrayList<SellQuery> matchedSellQueries; // offer ids inside.
 
+    // At this point the userSessionManager must already exist 
+    @JsonIgnore
+    @Transient
+    private UserSessionManager userSessionManager = null;
+
     private Integer id;
+
+    /* @PostConstruct
+    private void postConstruct() {
+        userSessionManager = UserSessionManager.getInstance(null);
+    } */
 
     @JsonCreator
     public Buyer(@JsonProperty("id") Integer id, @JsonProperty("firstName") String firstName, @JsonProperty("lastName") String lastName, @JsonProperty("email") String email) {
         super(firstName, lastName, email);
         this.id = id;
         matchedSellQueries = new ArrayList<>();
+        userSessionManager = UserSessionManager.getInstance(null);
     }
 
     /**
@@ -57,8 +73,21 @@ public class Buyer extends User implements SellQueryListener {
      *  add the SellQuery to the list of matched sell queries.
      */
     @Override
-    public void onMatchFound(SellQuery sellQuery) {
-        matchedSellQueries.add(sellQuery);
+    public void onMatchFound(SellQuery sellQuery, boolean update) {
+        try {
+            // Check if the session manager has already been built. Otherwise we build it.
+            if (update) {
+                matchedSellQueries.add(sellQuery);
+                userSessionManager.sendToUser(userSessionManager.getBuyerHeaders(this), "/queue/buyerFind", matchedSellQueries);
+    
+            } else {
+                matchedSellQueries.add(sellQuery);
+            }
+        } catch (NullPointerException e) {
+            // Should not happen but catch for now
+            System.out.println(e.getLocalizedMessage());
+        }
+
     }
 
     /**
@@ -68,6 +97,11 @@ public class Buyer extends User implements SellQueryListener {
     @Override
     public void onMatchCancelled(SellQuery expiredSellQuery) {
         matchedSellQueries.remove(expiredSellQuery);
+    }
+
+
+    private void notifyOnMatchFound() {
+
     }
 
     /**

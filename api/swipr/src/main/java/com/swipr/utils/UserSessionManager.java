@@ -19,20 +19,24 @@ public class UserSessionManager {
 
     private static volatile UserSessionManager helperInstance;
 
+    private final SimpMessageSendingOperations messagingTemplate;
+
+
     private Map<Buyer, SimpMessageHeaderAccessor> buyerSessions;
     private Map<Seller, SimpMessageHeaderAccessor> sellerSessions;
 
-    
-    private UserSessionManager() {
+
+    private UserSessionManager(SimpMessageSendingOperations messageTemplate) {
+        this.messagingTemplate = messageTemplate;
         this.buyerSessions = new HashMap<>();
         this.sellerSessions = new HashMap<>();
     }
 
-    public static UserSessionManager getInstance() {
+    public static UserSessionManager getInstance(SimpMessageSendingOperations messageTemplate) {
         if (helperInstance == null) {
             synchronized(UserSessionManager.class) {
                 if (helperInstance == null) {
-                    helperInstance = new UserSessionManager();
+                    helperInstance = new UserSessionManager(messageTemplate);
                 }
             }
         }
@@ -97,11 +101,11 @@ public class UserSessionManager {
         return null;   
     }
 
-    public void sendToUser(SimpMessageHeaderAccessor headerAccessor, String topic, Object message, SimpMessageSendingOperations messagingTemplate) {
+    public void sendToUser(SimpMessageHeaderAccessor headerAccessor, String topic, Object message) {
         messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), topic, message, createHeaders(headerAccessor.getSessionId()));
     }
 
-    public void sendToMultipleUsers(String topic, Object message, SimpMessageSendingOperations messagingTemplate) {
+    public void sendToMultipleUsers(String topic, Object message) {
         messagingTemplate.convertAndSend(topic, message);
     }
 

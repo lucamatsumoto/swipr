@@ -60,6 +60,7 @@ public class SellerActivity extends DrawerBaseActivity {
     List<Boolean> diningHalls;
 
     long average_price = 800;
+
     ResultBacker results;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -195,8 +196,6 @@ public class SellerActivity extends DrawerBaseActivity {
         Chip feast = findViewById(R.id.feast);
         feast.setOnCheckedChangeListener(filterChipListener);
 
-
-
         //Networking
         networkManager = NetworkManager.getInstance();
         networkManager.subscribe("/user/queue/sellerUpdate", new PostResponder());
@@ -206,7 +205,7 @@ public class SellerActivity extends DrawerBaseActivity {
         networkManager.subscribe("/topic/average", new AverageOfferResponder());
     }
 
-    public LocalDateTime convertTime(int hour, int minute)
+    LocalDateTime convertTime(int hour, int minute)
     {
         return today.atTime(hour, minute);
     }
@@ -297,6 +296,7 @@ public class SellerActivity extends DrawerBaseActivity {
         public void onMessageReceived(String json)
         {
             Log.d("Find Offer Received: ", json);
+            Log.d("Received", json);
             try {
                 JSONArray jsonarray = new JSONArray(json);
                 for (int i = 0; i < jsonarray.length(); i++) {

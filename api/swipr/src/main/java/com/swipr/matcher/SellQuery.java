@@ -40,7 +40,6 @@ public class SellQuery extends Query {
         this.offerId = offerId;
     } */ 
 
-    // temp, for tests to compile.
     @JsonCreator
     public SellQuery(
         @JsonProperty("userId")
@@ -67,6 +66,7 @@ public class SellQuery extends Query {
         }
 
         return
+            offerId == other.offerId &&
             userId == other.userId &&
             timeRangeStart == other.timeRangeStart &&
             timeRangeEnd == other.timeRangeEnd &&
