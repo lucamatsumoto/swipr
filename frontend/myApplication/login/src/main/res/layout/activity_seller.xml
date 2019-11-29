@@ -18,6 +18,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="30dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/right_margin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
         app:layout_constraintGuide_end="30dp" />
 
     <androidx.constraintlayout.widget.Guideline
@@ -35,6 +45,14 @@
         android:id="@+id/buyer_tags"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <TextView
+            android:id="@+id/b_buyer_button"
+            style="@style/Widget.AppCompat.Button"
         tools:layout_editor_absoluteX="69dp">
 
         <TextView
@@ -47,6 +65,10 @@
             android:layout_marginStart="0dp"
             android:layout_marginTop="0dp"
             android:layout_marginEnd="205dp"
+            android:background="@color/colorPrimary"
+            android:text="@string/buyer_button"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="parent" />
             android:text="@string/buyer_button"
             app:layout_constraintStart_toStartOf="parent"
             android:textColor="@color/black"
@@ -158,10 +180,70 @@
             style="@style/Widget.MaterialComponents.Chip.Filter"
             android:layout_width="85dp"
             android:layout_height="75dp"
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/b_plate"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            android:layout_width="85dp"
+            android:layout_height="75dp"
+            android:text="B Plate"
+            android:textAlignment="center"
+            android:theme="@style/Theme.MaterialComponents.Light"
+            app:chipIcon="@drawable/com_facebook_auth_dialog_cancel_background"
+            app:chipIconVisible="false" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/covel"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            android:layout_width="85dp"
+            android:layout_height="75dp"
+            android:text="Covel"
+            android:textAlignment="center"
+            android:theme="@style/Theme.MaterialComponents.Light" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/de_neve"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            android:layout_width="85dp"
+            android:layout_height="75dp"
+            android:text="De Neve"
+            android:textAlignment="center"
+            android:theme="@style/Theme.MaterialComponents.Light" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/feast"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            android:layout_width="85dp"
+            android:layout_height="75dp"
             android:text="Feast"
             android:textAlignment="center"
             android:theme="@style/Theme.MaterialComponents.Light" />
     </com.google.android.material.chip.ChipGroup>
+
+
+    <TextView
+        android:id="@+id/average_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="32dp"
+        android:text="Today's Average Price:"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/left_margin"
+        app:layout_constraintTop_toBottomOf="@+id/s_time" />
+
+    <TextView
+        android:id="@+id/average_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="$8"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/average_text"
+        app:layout_constraintStart_toEndOf="@id/average_text" />
 
     <TextView
         android:id="@+id/price_text"
