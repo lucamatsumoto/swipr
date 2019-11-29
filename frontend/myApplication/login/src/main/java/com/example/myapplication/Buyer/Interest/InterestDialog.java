@@ -10,6 +10,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
+import java.util.List;
 
 
 public class InterestDialog extends DialogFragment {
@@ -48,6 +49,20 @@ public class InterestDialog extends DialogFragment {
                 });
 
         return builder.create();
+    }
+
+    public void setDiningHalls(List<Boolean> diningHallBooleans)
+    {
+        String[] temp_dining_halls = new String[4];
+        int j = 0;
+        for(int i = 0; i < diningHallBooleans.size(); i++) {
+            if (diningHallBooleans.get(i))
+            {
+                temp_dining_halls[j] = diningHalls[i];
+                j++;
+            }
+        }
+        diningHalls = temp_dining_halls;
     }
 
 }
