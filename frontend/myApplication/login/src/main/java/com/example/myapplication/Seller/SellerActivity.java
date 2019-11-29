@@ -1,3 +1,4 @@
+
 package com.example.myapplication.Seller;
 
 import android.content.Context;
@@ -323,6 +324,3 @@ public class SellerActivity extends DrawerBaseActivity {
         }
     }
 }
-
-
-

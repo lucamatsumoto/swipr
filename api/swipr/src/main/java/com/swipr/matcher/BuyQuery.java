@@ -6,14 +6,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 
+/**
+ * Class that represents a buyer's query to look for a matching offer 
+ */
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BuyQuery extends Query {
-    /** This is the SellQueryListener that notified by the Matchmaker
-     * of SellQuery matches on this BuyQuery. See Matchmaker class for
-     * fuller explanation.
-     */
+
     public final SellQueryListener listener;
 
     public BuyQuery(

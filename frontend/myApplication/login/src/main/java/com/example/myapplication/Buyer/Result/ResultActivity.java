@@ -1,6 +1,8 @@
 package com.example.myapplication.Buyer.Result;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -34,6 +36,9 @@ public class ResultActivity extends AppCompatActivity {
         resultAdapter = new ResultAdapter(this, resultBacker.getResults());
         resultRecycler.setAdapter(resultAdapter);
         resultRecycler.setLayoutManager(new LinearLayoutManager(this));
+        // Add dividers
+        resultRecycler.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+        resultRecycler.setItemAnimator(new DefaultItemAnimator());
         Log.d("RESULTS", resultBacker.getResults().toString());
     }
 }

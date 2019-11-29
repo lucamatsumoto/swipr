@@ -1,6 +1,5 @@
 package com.swipr.models;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -50,11 +49,18 @@ public class Seller extends User {
         this.buyerMap = new HashMap<>();
     }
 
-    //For unit tests, might be useful later on
+    /**
+     * Retrieve information about a buyer's interest for an offer
+     * @return a set of potential buyer's information regarding queries
+     */
     public Set<Information> getPotentialBuyersInformation() {
         return potentialBuyers;
     }
 
+    /**
+     * Return a set of buyers that were matched to the sellers
+     * @return set of buyers that were matched 
+     */
     public Set<Buyer> getPotentialBuyers() {
         return buyerMap.keySet();
     }
@@ -62,6 +68,8 @@ public class Seller extends User {
     /**
      * Adds the potential matched buyer to this seller
      * @param buyer Matched buyer
+     * @param meetTime the preferred meetup time of the buyer
+     * @param preferredDiningHall the preferred dining hall of a particular buyer
      */
     public void addPotentialBuyer(Buyer buyer,long meetTime, long preferredDiningHall) {
         Information newInfo = new Information(meetTime, preferredDiningHall, buyer);
@@ -69,12 +77,19 @@ public class Seller extends User {
         potentialBuyers.add(newInfo);
     }
     
+    /**
+     * Remove a potential buyer if they have cancelled interest
+     * @param buyer the buyer to remove from the list of matched sellers
+     */
     public void removePotentialBuyer(Buyer buyer) {
         Information infoToRemove = buyerMap.get(buyer);
         buyerMap.remove(buyer);
         potentialBuyers.remove(infoToRemove);
     }
 
+    /**
+     * Clear all of the potential buyers attached to this seller x
+     */
     public void clearPotentialBuyers() {
         buyerMap.clear();
         potentialBuyers.clear();    

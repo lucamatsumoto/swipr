@@ -7,6 +7,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 
+/**
+ * Represents an Offer that was posted by a particular seller.
+ * Buyers will be matched to a user with a particular sell query if there parameters match. 
+ */
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties({"averageUniqueId"})
@@ -18,27 +22,6 @@ public class SellQuery extends Query {
     // someone indicated interest in. Think twice before piggybacking
     // on this for other purposes.
     public long averageUniqueId = -1;
-
-    /*
-    @JsonCreator
-    public SellQuery(
-        @JsonProperty("userId")
-        int userId,
-        @JsonProperty("timeRangeStart")
-        long timeRangeStart,
-        @JsonProperty("timeRangeEnd")
-        long timeRangeEnd,
-        @JsonProperty("priceCents")
-        long priceCents,
-        @JsonProperty("diningHallBitfield")
-        long diningHallBitfield,
-        // Check if this is optional
-        @JsonProperty("offerId")
-        long offerId)
-    {
-        super(userId, timeRangeStart, timeRangeEnd, priceCents, diningHallBitfield);
-        this.offerId = offerId;
-    } */ 
 
     @JsonCreator
     public SellQuery(

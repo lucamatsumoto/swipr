@@ -1,6 +1,5 @@
 package com.swipr.models;
 
-import javax.annotation.PostConstruct;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
 
@@ -43,10 +42,6 @@ public class Buyer extends User implements SellQueryListener {
 
     private Integer id;
 
-    /* @PostConstruct
-    private void postConstruct() {
-        userSessionManager = UserSessionManager.getInstance(null);
-    } */
 
     @JsonCreator
     public Buyer(@JsonProperty("id") Integer id, @JsonProperty("firstName") String firstName, @JsonProperty("lastName") String lastName, @JsonProperty("email") String email) {
@@ -70,6 +65,8 @@ public class Buyer extends User implements SellQueryListener {
     /**
      *  When the matchmaker finds a matching SellQuery for this Buyer,
      *  add the SellQuery to the list of matched sell queries.
+     * @param sellQuery the sellquery to add to the list of matched sellqueries for this buyer
+     * @param update indicate whether or not a new offer was found for a particular buyer 
      */
     @Override
     public void onMatchFound(SellQuery sellQuery, boolean update) {
@@ -92,6 +89,7 @@ public class Buyer extends User implements SellQueryListener {
     /**
      *  When a SellQuery gets cancelled, Matchmaker calls this
      *  function to remove the SellQuery from the list.
+     * @param expiredSellQuery the sellQuery to remove from the list 
      */
     @Override
     public void onMatchCancelled(SellQuery expiredSellQuery) {
@@ -113,7 +111,10 @@ public class Buyer extends User implements SellQueryListener {
         matchedSellQueries.clear();
     }
 
-    //For unit tests, might be useful later on
+    /**
+     * Get a list of matched offers 
+     * @return a list of matched offers for a particular buyer
+     */
     public ArrayList<SellQuery> getMatchedSellQueries() {
         return matchedSellQueries;
     }
@@ -123,6 +124,10 @@ public class Buyer extends User implements SellQueryListener {
      *  button for the given SellQuery. If the given SellQuery is
      *  still active and associated with a Seller, add this Buyer to
      *  the said Seller's list of potential buyers.
+     * @param sellQuery the sellquery to indicate interest in 
+     * @param seller the seller that holds a particular sellquery
+     * @param meetTime the preferred meet time of a particular buyer
+     * @param preferredDiningHall the preferred dining hall of a particular buyer
      */
     public void indicateInterestInOffer(SellQuery sellQuery, Seller seller, long meetTime, long preferredDiningHall) {
         long interestedOfferId = sellQuery.offerId;
@@ -132,10 +137,13 @@ public class Buyer extends User implements SellQueryListener {
                 return;
             }
         }
-        // Throw exception maybe. We're not looking to do complex logic for this
-        tellUserSorrySellQueryNotFound(sellQuery);
     }
 
+    /**
+     * Called when a user wants to cancel their interest in a particular offer
+     * @param sellQuery the offer that they would like to cancel interest in 
+     * @param seller the seller that holds the particular offer
+     */
     public void cancelInterestInOffer(SellQuery sellQuery, Seller seller) {
         long interestedOfferId = sellQuery.offerId;
         for (SellQuery sq : matchedSellQueries) {
@@ -144,10 +152,5 @@ public class Buyer extends User implements SellQueryListener {
                 return;
             }
         }
-    }
-
-    public void tellUserSorrySellQueryNotFound(SellQuery sellQuery) {
-        // TODO: send notification to user that the SellQuery they were
-        // interested in is no longer with us.
     }
 }

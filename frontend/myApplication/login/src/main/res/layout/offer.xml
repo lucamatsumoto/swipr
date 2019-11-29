@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/offer_size"
         android:text="@string/dining_hall_tag"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -22,6 +23,7 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/offer_size"
         android:text="@string/start_time_tag"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dining_hall_tag" />
 
@@ -31,6 +33,7 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/offer_size"
         android:text="@string/end_time_tag"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/start_time_tag" />
 
@@ -40,6 +43,7 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/offer_size"
         android:text="@string/price_tag"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/end_time_tag" />
 

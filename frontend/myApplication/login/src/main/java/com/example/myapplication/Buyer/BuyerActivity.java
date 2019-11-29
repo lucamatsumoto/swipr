@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -72,6 +74,7 @@ public class BuyerActivity extends DrawerBaseActivity implements AdapterView.OnI
         resultAdapter = new ResultAdapter(this, buyerBacker.getResults());
         resultRecycler.setAdapter(resultAdapter);
         resultRecycler.setLayoutManager(new LinearLayoutManager(this));
+
 
         filterFrame = findViewById(R.id.b_filter_frame);
         resultFrame = findViewById(R.id.b_result_frame);

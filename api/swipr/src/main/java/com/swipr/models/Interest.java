@@ -9,6 +9,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+/**
+ * Interest JSON object used to indicate interest from a buyer to a seller.
+ * Includes both the buyer and seller ID so the API knows which user to send the information to. 
+ */
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode

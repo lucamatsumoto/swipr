@@ -2,6 +2,10 @@ package com.swipr.matcher;
 
 import lombok.Data;
 
+/**
+ * The Query class is used for storing basic information about the time ranges of interests and offers, ID of the user, preferred dining hall, 
+ * and the price in     
+ */
 @Data
 public class Query {
     // User ID of the user that created this query. NOT boxed because we

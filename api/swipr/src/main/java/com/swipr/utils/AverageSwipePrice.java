@@ -5,7 +5,9 @@ import java.util.HashSet;
 
 import com.swipr.matcher.SellQuery;
 
-/** Functions for maintaining a global average swipe price. */
+/** 
+ * Functions for maintaining a global average swipe price. 
+ */
 public class AverageSwipePrice {
     // Average (mean) equals total cents divided by sample count.
     private static AtomicLong totalCents = new AtomicLong(0);
@@ -20,6 +22,7 @@ public class AverageSwipePrice {
     private static HashSet<Long> includedOfferIds = new HashSet<Long>();
 
     /** Return, in cents, the average price of a swipe.
+     * @return the average daily price of a swipe 
      */
     public static long getCents() {
         // Conceptually, just divide total cents by total samples to
@@ -39,6 +42,7 @@ public class AverageSwipePrice {
     }
 
     /** Return the previous average (before reset() called).
+     * @return the previous average price 
      */
     public static long getPrevious() {
         return previousAverage.get();
@@ -62,6 +66,7 @@ public class AverageSwipePrice {
     /** Add a new price sample to the running average (using the price
      *  in the SellQuery). Avoids double counting using the set of
      *  seen offer id's.
+     *  @param sq the sellQuery to include in calculating the daily average price 
      */
     public static void includeSellQuery(SellQuery sq) {
         if (includeOfferId(sq.offerId)) {

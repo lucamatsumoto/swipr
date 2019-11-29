@@ -53,7 +53,6 @@ public class OfferController {
     /**
      * Gets the average daily price of the offers. Everytime a new offer is added, we update and broadcast to all clients
      * All users, both buyers and sellers, must subscribe to this topic when a connection is opened
-     * @param headerAccessor header object that is sent with every request
      */
     @MessageMapping("/averageOffer")
     public void getAverageSellPrice() {
@@ -123,6 +122,7 @@ public class OfferController {
 
     /**
      * Endpoint for a buyer to indicate interest in a seller's offer
+     * @param interest a combination of a buyer ID and a sellquery object to indicate interest in a particular offer
      * @param headerAccessor header object that is sent with every request
      */
     @MessageMapping("/showInterest")
@@ -154,9 +154,8 @@ public class OfferController {
     }
 
     /**
-     *
-     * @param buyerId the ID of the user (buyer) who wants to cancel interest in the purchase
-     * @param query the offer that they want to cancel
+     * Endpoint to hit when user wants to cancel interest in a particular offer
+     * @param interest  a combination of a buyer ID and a sellquery object to cancel
      * @param headerAccessor headers as a part of the request
      */
     @MessageMapping("/cancelInterest")

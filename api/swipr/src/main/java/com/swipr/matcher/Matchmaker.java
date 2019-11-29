@@ -27,7 +27,10 @@ public class Matchmaker {
     private final ArrayList<BuyQuery> buyQueryList =
         new ArrayList<BuyQuery>();
 
-    /** Return the singleton instance of Matchmaker. */
+    /** 
+     * Return the singleton instance of Matchmaker. 
+     * @return the matchmaker instance 
+     * */
     public static Matchmaker getInstance() {
         if (theInstance != null) return theInstance;
         return getInstanceSynchronized();
@@ -48,6 +51,8 @@ public class Matchmaker {
      *  as some other active query stored in this Matchmaker. In this
      *  case, the old BuyQuery's associated SellQueryListener is
      *  deregistered, and updateBuyQuery returns true.
+     * @param newBuyQuery the new bid to add 
+     * @return whether a buyquery was deleted because a bid corresponding to the user already exists
      */
     public synchronized boolean updateBuyQuery(BuyQuery newBuyQuery)
     {
@@ -75,6 +80,9 @@ public class Matchmaker {
     /** Like updateBuyQuery(BuyQuery), but the given SellQueryListener
      *  is registered with the Matchmaker instead of the given
      *  BuyQuery's listener.
+     *  @param newBuyQuery the new bid to add to the matchmaker 
+     *  @param listener a listener that will be used to be notify a buyer when changes occur to sell queries 
+     *  @return whether a buyquery was deleted because a bid corresponding to the user already exists
      */
     public boolean updateBuyQuery(
         BuyQuery newBuyQuery,
@@ -100,6 +108,8 @@ public class Matchmaker {
      *  Replacement occurs iff this SellQuery has the same user id as
      *  some other active query stored in this Matchmaker --
      *  updateSellQuery returns true iff this replacement occurs.
+     *  @param newSellQuery the new sell query/offer to add to the matchmaker
+     *  @return whether the sell query was deleted because the seller already posted a sell query 
      */
     public synchronized boolean updateSellQuery(SellQuery newSellQuery) {
         boolean didDelete = deleteByUserId(newSellQuery.userId);
@@ -132,6 +142,8 @@ public class Matchmaker {
      *  deleted offer/bid.
      *
      *  Returns true iff any such deletion occured.
+     *  @param userId the userId of the query to delete 
+     *  @return whether the query was deleted or not
      */
     public synchronized boolean deleteByUserId(int userId) {
         // Since there should only ever be 1 query (buy or sell) for a
@@ -175,6 +187,8 @@ public class Matchmaker {
      *  Return the SellQuery that the seller with the given user id
      *  offered, null if no such SellQuery is found. I'm not even
      *  trying to follow the information hiding principle here.
+     *  @param userId the userId of the sellquery to search for
+     *  @return SellQuery object corresponding to the searched user id. 
      */
     public synchronized SellQuery sellQueryByUserId(int userId) {
         int sz = sellQueryList.size();

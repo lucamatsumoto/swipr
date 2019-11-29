@@ -44,8 +44,8 @@ public class UserSessionManager {
     }
 
     /**
-     * Add a session ID associated to a particular user
-     * @param user the user that sent the request
+     * Add a session ID associated to a particular buyer
+     * @param buyer the buyer that sent the request
      * @param headerAccessor header attached to the request to retrieve session ID from 
      */
     public void addBuyerSession(Buyer buyer, SimpMessageHeaderAccessor headerAccessor) {
@@ -53,11 +53,22 @@ public class UserSessionManager {
         buyerSessions.put(buyer, headerAccessor);
     }
 
+    /**
+     * Add a session ID associated to a particular seller
+     * @param seller the seller buyer that sent the request
+     * @param headerAccessor header attached to the request to retrieve session ID from 
+     */
     public void addSellerSession(Seller seller, SimpMessageHeaderAccessor headerAccessor) {
         sellerExists(seller);
         sellerSessions.put(seller, headerAccessor);
     }
 
+    /**
+     * Get the buyer from a particular session id and user object from the database
+     * @param user the user object found from the database
+     * @param headerAccessor header attached to the request to retrieve session ID from 
+     * @return the buyer that was found
+     */
     public Buyer getBuyerFromSessionId(User user, SimpMessageHeaderAccessor headerAccessor) {
         for (Map.Entry<Buyer, SimpMessageHeaderAccessor> entry: buyerSessions.entrySet()) {
             if (entry.getValue().getSessionId().equals(headerAccessor.getSessionId())) {
@@ -71,6 +82,12 @@ public class UserSessionManager {
         return buyer;
     }
 
+    /**
+     * Get the seller from a particular session id and user object from the database
+     * @param user the user object found from the databases
+     * @param headerAccessor header attached to the request to retrieve session ID from 
+     * @return the seller that was found
+     */
     public Seller getSellerFromSessionId(User user, SimpMessageHeaderAccessor headerAccessor) {
         for (Map.Entry<Seller, SimpMessageHeaderAccessor> entry: sellerSessions.entrySet()) {
             if (entry.getValue().getSessionId().equals(headerAccessor.getSessionId())) {
@@ -83,6 +100,11 @@ public class UserSessionManager {
         return seller;
     }
 
+    /**
+     * Get the header information of a particular seller
+     * @param seller the seller information from the database
+     * @return the headers attached to a particular user
+     */
     public SimpMessageHeaderAccessor getSellerHeaders(User seller) {
         for (Map.Entry<Seller, SimpMessageHeaderAccessor> entry: sellerSessions.entrySet()) {
             if (entry.getKey().getEmail().equals(seller.getEmail())) {
@@ -92,6 +114,11 @@ public class UserSessionManager {
         return null;
     }
 
+    /**
+     * Get the header information of a particular buyer
+     * @param buyer the buyer information from the database
+     * @return the headers attached to a particular user
+     */
     public SimpMessageHeaderAccessor getBuyerHeaders(User buyer) {
         for (Map.Entry<Buyer, SimpMessageHeaderAccessor> entry: buyerSessions.entrySet()) {
             if (entry.getKey().getEmail().equals(buyer.getEmail())) {
@@ -101,10 +128,21 @@ public class UserSessionManager {
         return null;   
     }
 
+    /**
+     * Wrapper method to interface sending a particular object to a particular user
+     * @param headerAccessor the headers of the user to send the information to 
+     * @param topic the topic that the message should be sent to
+     * @param message the message that should be sent to the user
+     */
     public void sendToUser(SimpMessageHeaderAccessor headerAccessor, String topic, Object message) {
         messagingTemplate.convertAndSendToUser(headerAccessor.getSessionId(), topic, message, createHeaders(headerAccessor.getSessionId()));
     }
 
+    /**
+     * Wrapper method to interface sending a particular object to all users that are subscribed to a topic
+     * @param topic the topic that the message should be sent to 
+     * @param message the message that should be sent to the user
+     */
     public void sendToMultipleUsers(String topic, Object message) {
         messagingTemplate.convertAndSend(topic, message);
     }

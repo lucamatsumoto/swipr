@@ -35,14 +35,15 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     /**
      * Delete a user from the database
-     * @param user the user to delete from the database
+     * @param id the userId to delete from the database
      */
     @Transactional
     void deleteById(Integer id);
 
     /**
-     * Find a User/Buyer/Seller object based on their User ID. Returns a list of 1 user.
-     * @param id the id of the users
+     * Find a User/Buyer/Seller object based on their User ID.
+     * @param id the id of the user
+     * @return the user object corresponding to the ID
      */
     User findById(Integer id);
 }

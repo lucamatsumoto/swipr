@@ -8,6 +8,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+/**
+ * JSON Object for buyer to send which includes preferred meetup time and preferred dining hall 
+ * in case the offer contains more than one dining hall
+ */
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode
