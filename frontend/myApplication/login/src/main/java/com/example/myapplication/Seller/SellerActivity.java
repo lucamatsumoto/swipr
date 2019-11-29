@@ -59,6 +59,7 @@ public class SellerActivity extends DrawerBaseActivity {
     LocalDate today = LocalDate.now();
     List<Boolean> diningHalls;
 
+    long average_price = 800;
     ResultBacker results;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -194,15 +195,18 @@ public class SellerActivity extends DrawerBaseActivity {
         Chip feast = findViewById(R.id.feast);
         feast.setOnCheckedChangeListener(filterChipListener);
 
+
+
         //Networking
         networkManager = NetworkManager.getInstance();
         networkManager.subscribe("/user/queue/sellerUpdate", new PostResponder());
         networkManager.subscribe("/user/queue/buyerFind", new FindOfferResponder());
         networkManager.subscribe("/user/queue/sellerInterest", new ConcreteNetworkResponder());
-
+        //TODO: FIX UNSUBSCRIBE ERROR
+        networkManager.subscribe("/topic/average", new AverageOfferResponder());
     }
 
-    LocalDateTime convertTime(int hour, int minute)
+    public LocalDateTime convertTime(int hour, int minute)
     {
         return today.atTime(hour, minute);
     }
@@ -211,6 +215,8 @@ public class SellerActivity extends DrawerBaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        //networkManager.subscribe("/topic/average", new AverageOfferResponder());
+        networkManager.send("/swipr/averageOffer");
         if (seller_flag) {
             sellerFrame.setVisibility(View.VISIBLE);
             buyerFrame.setVisibility(View.GONE);
@@ -276,6 +282,7 @@ public class SellerActivity extends DrawerBaseActivity {
     public class PostResponder implements NetworkResponder {
         public void onMessageReceived(String json)
         {
+            Log.d("Post Received: ", json);
             runOnUiThread(new Runnable() {
                 public void run() {
                     Toast toast = Toast.makeText(getApplicationContext(), "Swipe Offer Posted! We'll notify you when you've been matched.", Toast.LENGTH_LONG);
@@ -289,7 +296,7 @@ public class SellerActivity extends DrawerBaseActivity {
     public class FindOfferResponder implements NetworkResponder {
         public void onMessageReceived(String json)
         {
-            Log.d("Received", json);
+            Log.d("Find Offer Received: ", json);
             try {
                 JSONArray jsonarray = new JSONArray(json);
                 for (int i = 0; i < jsonarray.length(); i++) {
@@ -306,6 +313,15 @@ public class SellerActivity extends DrawerBaseActivity {
     }
 
 
+    private class AverageOfferResponder implements NetworkResponder {
+        public void onMessageReceived(String value)
+        {
+            Log.d("Average Received: ", value);
+            average_price = Long.valueOf(value);
+            TextView average=findViewById(R.id.average_value);
+            average.setText("$" + String.format("%.2f", Long.valueOf(average_price) / (float) 100));
+        }
+    }
 }
 
 

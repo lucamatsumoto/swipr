@@ -35,10 +35,14 @@
         android:id="@+id/buyer_tags"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="69dp">
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
 
         <TextView
             android:id="@+id/b_buyer_button"
+            style="@style/Widget.AppCompat.Button"
             android:layout_width="205dp"
             android:layout_height="50dp"
             android:layout_alignParentStart="true"
@@ -47,11 +51,10 @@
             android:layout_marginStart="0dp"
             android:layout_marginTop="0dp"
             android:layout_marginEnd="205dp"
-            android:text="@string/buyer_button"
-            app:layout_constraintStart_toStartOf="parent"
-            android:textColor="@color/black"
             android:background="@color/colorPrimary"
-            style="@style/Widget.AppCompat.Button"/>
+            android:text="@string/buyer_button"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <Button
             android:id="@+id/b_seller_tag"
@@ -163,6 +166,31 @@
             android:theme="@style/Theme.MaterialComponents.Light" />
     </com.google.android.material.chip.ChipGroup>
 
+
+    <TextView
+        android:id="@+id/average_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="32dp"
+        android:text="Today's Average Price:"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/left_margin"
+        app:layout_constraintTop_toBottomOf="@+id/s_time" />
+
+    <TextView
+        android:id="@+id/average_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="$8"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/average_text"
+        app:layout_constraintStart_toEndOf="@id/average_text" />
+
     <TextView
         android:id="@+id/price_text"
         android:layout_width="wrap_content"
@@ -243,5 +271,7 @@
         app:layout_constraintHorizontal_bias="0.551"
         app:layout_constraintStart_toStartOf="parent"
         />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
