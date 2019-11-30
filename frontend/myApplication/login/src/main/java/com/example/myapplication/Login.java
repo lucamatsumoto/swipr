@@ -52,6 +52,13 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
     NetworkManager networkManager;
     ProfileSingleton profile;
+    private NetworkResponder loginResponder = new NetworkResponder() {
+        @Override
+        public void onMessageReceived(String json) {
+            ProfileSingleton.setInstance(json);
+            updateUI();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,7 +110,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         networkManager = NetworkManager.getInstance();
         networkManager.connect();
 
-        networkManager.subscribe("/user/queue/reply", new LoginResponder());
+        networkManager.subscribe("/user/queue/reply", loginResponder);
     }
 
 
@@ -269,15 +276,11 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         networkManager.send("/swipr/create", json.toString());
    }
     @Override
-    protected void onDestroy() { super.onDestroy(); }
-
-    class LoginResponder implements NetworkResponder
-    {
-        @Override
-        public void onMessageReceived(String json) {
-            ProfileSingleton.setInstance(json);
-            updateUI();
-        }
+    protected void onDestroy() {
+        networkManager.unsubscribe("/user/queue/reply", loginResponder);
+        super.onDestroy();
     }
+
+
 
 }

@@ -200,11 +200,10 @@ public class SellerActivity extends DrawerBaseActivity {
 
         //Networking
         networkManager = NetworkManager.getInstance();
-        networkManager.subscribe("/user/queue/sellerUpdate", new PostResponder());
-        networkManager.subscribe("/user/queue/buyerFind", new FindOfferResponder());
-        networkManager.subscribe("/user/queue/sellerInterest", new ConcreteNetworkResponder());
-        //TODO: FIX UNSUBSCRIBE ERROR
-        networkManager.subscribe("/topic/average", new AverageOfferResponder());
+        networkManager.subscribe("/user/queue/sellerUpdate", postOfferResponder);
+        networkManager.subscribe("/user/queue/buyerFind", findOfferResponder);
+        //networkManager.subscribe("/user/queue/sellerInterest", somesortofrespondergoeshere);
+        networkManager.subscribe("/topic/average", averageOfferResponder);
     }
 
     LocalDateTime convertTime(int hour, int minute)
@@ -288,7 +287,8 @@ public class SellerActivity extends DrawerBaseActivity {
     }
 
 
-    public class PostResponder implements NetworkResponder {
+    private NetworkResponder postOfferResponder = new NetworkResponder() {
+        @Override
         public void onMessageReceived(String json)
         {
             Log.d("Post Received: ", json);
@@ -300,9 +300,10 @@ public class SellerActivity extends DrawerBaseActivity {
                 }
             });
         }
-    }
+    };
 
-    public class FindOfferResponder implements NetworkResponder {
+    private NetworkResponder findOfferResponder = new NetworkResponder() {
+        @Override
         public void onMessageReceived(String json)
         {
             Log.d("Find Offer Received: ", json);
@@ -320,10 +321,11 @@ public class SellerActivity extends DrawerBaseActivity {
                 Log.e("JSON", e.getMessage());
             }
         }
-    }
+    };
 
 
-    private class AverageOfferResponder implements NetworkResponder {
+    private NetworkResponder averageOfferResponder = new NetworkResponder(){
+        @Override
         public void onMessageReceived(String value)
         {
             Log.d("Average Received: ", value);
@@ -331,5 +333,15 @@ public class SellerActivity extends DrawerBaseActivity {
             TextView average=findViewById(R.id.average_value);
             average.setText("$" + String.format("%.2f", Long.valueOf(average_price) / (float) 100));
         }
+    };
+
+    @Override
+    protected void onDestroy()
+    {
+        networkManager.unsubscribe("/user/queue/sellerUpdate", postOfferResponder);
+        networkManager.unsubscribe("/user/queue/buyerFind", findOfferResponder);
+        //networkManager.unsubscribe("/user/queue/sellerInterest", somesortofrespondergoeshere);
+        networkManager.unsubscribe("/topic/average", averageOfferResponder);
+        super.onDestroy();
     }
 }

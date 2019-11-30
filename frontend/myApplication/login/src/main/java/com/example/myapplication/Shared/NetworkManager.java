@@ -2,6 +2,11 @@ package com.example.myapplication.Shared;
 
 import android.util.Log;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -12,6 +17,20 @@ public class NetworkManager {
     private String TAG = "NetworkManager";
     private StompClient mStompClient;
     private CompositeDisposable compositeDisposable;
+
+    private static final Map<String, Set<NetworkResponder>> topicToSubset;
+    static {
+        Map<String, Set<NetworkResponder>> temp = new HashMap<>();
+        temp.put("/user/queue/reply", new HashSet<>());
+        temp.put("/user/queue/error", new HashSet<>());
+        temp.put("/topic/average", new HashSet<>());
+        temp.put("/user/queue/buyerFind", new HashSet<>());
+        temp.put("/user/queue/buyerInterest", new HashSet<>());
+        temp.put("/user/queue/sellerUpdate", new HashSet<>());
+        temp.put("/user/queue/sellerInterest", new HashSet<>());
+        temp.put("/user/queue/sellerCancel", new HashSet<>());
+        topicToSubset = temp;
+    }
 
     private boolean isConnected;
     private static NetworkManager instance;
@@ -52,6 +71,8 @@ public class NetworkManager {
                     }
                 });
         compositeDisposable.add(dispLifecycle);
+        for ( String topic : topicToSubset.keySet() )
+            stompSubscribe(topic);
         isConnected = true;
         return true;
     }
@@ -66,18 +87,30 @@ public class NetworkManager {
         isConnected = false;
     }
     public boolean isConnected(){return isConnected;}
-    public void subscribe(String topic, NetworkResponder command)
+    private void stompSubscribe(String topic)
     {
         Disposable dispTopic = mStompClient.topic(topic)
                 .subscribeOn(Schedulers.io())
                 .subscribe(topicMessage -> {
-                        Log.d("SubSuccess", "Received " + topicMessage.getPayload());
-                        command.onMessageReceived(topicMessage.getPayload());
+                        Log.d("SubSuccess", "Received " + topicMessage.getPayload() + " Size of hash set:" + String.valueOf(topicToSubset.get(topic).size()));
+                        for(NetworkResponder command : topicToSubset.get(topic))
+                            command.onMessageReceived(topicMessage.getPayload());
                 }, throwable -> {
                     Log.e("SubFail", "Error on subscribe topic", throwable);
                 });
 
         compositeDisposable.add(dispTopic);
+    }
+    public void subscribe(String topic, NetworkResponder command)
+    {
+        topicToSubset.get(topic).add(command);
+        Log.d("here", "added to hash set for " + topic);
+    }
+
+    public void unsubscribe(String topic, NetworkResponder command)
+    {
+        topicToSubset.get(topic).remove(command);
+        Log.d("here", "removed from hash set for " + topic);
     }
     public void send(String endPoint, String payload)
     {
