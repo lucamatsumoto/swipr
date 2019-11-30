@@ -156,7 +156,7 @@ public class DrawerBaseActivity extends AppCompatActivity {
     private void returnToLogin()
     {
         if(networkManager != null)
-            networkManager.disconnect();
+            networkManager.disconnect(this);
         Intent intent = new Intent(getApplicationContext(), Login.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);

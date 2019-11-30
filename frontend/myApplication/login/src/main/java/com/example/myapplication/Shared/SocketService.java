@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
 import com.example.myapplication.R;
+import com.example.myapplication.Seller.SellerActivity;
 
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -30,9 +31,8 @@ public class SocketService extends Service {
     private StompClient mStompClient;
     private CompositeDisposable compositeDisposable;
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
+    public void initialize()
+    {
         if(compositeDisposable == null)
             compositeDisposable = new CompositeDisposable();
         try {
@@ -61,23 +61,21 @@ public class SocketService extends Service {
         compositeDisposable.add(dispLifecycle);
     }
 
-
-    @Override
-    public void onDestroy() {
+    public void terminate()
+    {
         if(mStompClient !=  null)
-            mStompClient.disconnect();
+        mStompClient.disconnect();
         if (compositeDisposable != null) {
             compositeDisposable.dispose();
             compositeDisposable = null;
-        }
-        super.onDestroy();
-    }
+        }}
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         String input = intent.getStringExtra("inputExtra");
         createNotificationChannel();
-        Intent notificationIntent = new Intent(this, DummyActivity.class);
+        Intent notificationIntent = new Intent(this, SellerActivity.class); //Apparently this is where we get taken
+                                                                                           //Open clicking the notification
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("Foreground Service")
@@ -120,7 +118,7 @@ public class SocketService extends Service {
         SocketService getService(){return SocketService.this;}
     }
 
-    public void subscribe(String topic, NetworkResponder command)
+    public void stompSubscribe(String topic, NetworkResponder command)
     {
         Disposable dispTopic = mStompClient.topic(topic)
                 .subscribeOn(Schedulers.io())

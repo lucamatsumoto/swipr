@@ -108,9 +108,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
 
         networkManager = NetworkManager.getInstance();
-        networkManager.connect();
 
-        networkManager.subscribe("/user/queue/reply", loginResponder);
+        //networkManager.connect();
+        //networkManager.subscribe("/user/queue/reply", loginResponder);
     }
 
 
@@ -272,8 +272,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
             e.printStackTrace();
         }
 
-
-        networkManager.send("/swipr/create", json.toString());
+        networkManager.connect(this, loginResponder, json.toString());
    }
     @Override
     protected void onDestroy() {
