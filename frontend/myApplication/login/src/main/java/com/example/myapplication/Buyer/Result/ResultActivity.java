@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -26,6 +27,7 @@ public class ResultActivity extends AppCompatActivity {
     private RecyclerView resultRecycler;
     private ResultAdapter resultAdapter;
     private ResultBacker resultBacker;
+    private String BuyerQuery;
 
     private NetworkManager networkManager;
     @Override
@@ -45,5 +47,16 @@ public class ResultActivity extends AppCompatActivity {
         resultRecycler.setItemAnimator(new DefaultItemAnimator());
         Log.d("RESULTS", resultBacker.getResults().toString());
 
+        BuyerQuery = getIntent().getStringExtra("BuyerQuery");
+        Log.d("BuyerQuery", BuyerQuery);
+    }
+
+    public void refresh(View view)
+    {
+        ResultBacker.getInstance().clearOffers();
+        networkManager.send("/swipr/refreshOffers", BuyerQuery);
+        Intent intent = new Intent(this, ResultActivity.class);
+        intent.putExtra("BuyerQuery", BuyerQuery);
+        startActivity(intent);
     }
 }

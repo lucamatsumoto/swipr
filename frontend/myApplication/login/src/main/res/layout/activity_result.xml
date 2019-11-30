@@ -10,29 +10,33 @@
         android:id="@+id/b_result_main_tag"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentLeft="false"
         android:layout_alignParentTop="true"
-        android:layout_marginBottom="16dp"
         android:text="Available Offers:"
         android:textColor="@color/black"
         android:textSize="24dp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/b_resultRecycler"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="3dp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/b_resultRecycler"
-        android:layout_width="406dp"
-        android:layout_height="704dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@id/b_result_main_tag"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/b_result_main_tag" />
+
+    <Button
+        android:id="@+id/refresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="16dp"
+        android:onClick="refresh"
+        android:text="Refresh"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

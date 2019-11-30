@@ -35,7 +35,6 @@ public class RefineInterestActivity extends AppCompatActivity {
     Offer m_offer;
     private Spinner diningHallSpinner;
     SeekBar s_time;
-    int buyerId;
     LocalDateTime preferredTime;
     String preferredDiningHallString;
     NetworkManager networkManager;
@@ -65,11 +64,7 @@ public class RefineInterestActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view,
                                        int position, long id) {
                 Object item = adapterView.getItemAtPosition(position);
-                if (item != null) {
-                    Toast.makeText(getApplicationContext(), "Selected " + item.toString(),
-                            Toast.LENGTH_SHORT).show();
-                    preferredDiningHallString = item.toString();
-                }
+                preferredDiningHallString = item.toString();
             }
 
             @Override
@@ -189,13 +184,13 @@ public class RefineInterestActivity extends AppCompatActivity {
             interestJSON.put("meetTime", preferredTimeEpoch);
             interestJSON.put("preferredDiningHall", preferredDiningHallLong);
             interestJSON.put("sellQuery", sellquery);
-
         }
         catch (JSONException e)
         {
             Log.d("JSON ERROR", e.getMessage());
         }
 
+        Log.d("JSON from buyer", interestJSON.toString());
         networkManager.send("/swipr/showInterest", interestJSON.toString());
     }
 }
