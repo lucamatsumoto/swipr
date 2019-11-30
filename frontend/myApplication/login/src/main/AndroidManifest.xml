@@ -3,6 +3,7 @@
     package="com.example.myapplication">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:allowBackup="true"
@@ -81,6 +82,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.myapplication.Buyer.MainActivity" />
         </activity>
+
+        <service
+            android:name=".Shared.SocketService"
+            android:enabled = "true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

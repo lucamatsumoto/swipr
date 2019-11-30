@@ -237,18 +237,19 @@ public class SellerActivity extends DrawerBaseActivity {
         post.setText(R.string.post_button);
     }
 
+
     public void launchBuyerActivity(View view) {
         sellerFrame.setVisibility(View.GONE);
         buyerFrame.setVisibility(View.VISIBLE);
         seller_flag = false;
         post.setText(R.string.search_button);
     }
-
     public void launchButtonAcvitity(View view)
     {
         if(seller_flag)
             launchPostActivity();
         else
+            //launchDummyActivity();
             launchSearchResultActivity();
 
     }
@@ -266,6 +267,12 @@ public class SellerActivity extends DrawerBaseActivity {
     {
         Log.d("Post", "Launching Post Activity");
         networkManager.send("/swipr/updateOffer", createOffer().generateQuery());
+    }
+
+
+    public void launchDummyActivity() {
+        Intent intent = new Intent(this, DummyActivity.class);
+        startActivity(intent);
     }
 
 
