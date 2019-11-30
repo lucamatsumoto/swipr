@@ -3,8 +3,12 @@ package com.example.myapplication.Shared;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 
 import com.example.myapplication.R;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class Popup extends Activity {
 
@@ -18,6 +22,17 @@ public class Popup extends Activity {
         int width = dm.widthPixels;
         int height = dm.heightPixels;
         getWindow().setLayout( (int) (width * .5), (int) (height * .5));
+
+        String jsonString = getIntent().getStringExtra("Offer");
+        try {
+            JSONObject json = new JSONObject(jsonString);
+        }
+        catch (JSONException e)
+        {
+            Log.e("JSONERROR", e.getMessage());
+        }
+
+
 
     }
 

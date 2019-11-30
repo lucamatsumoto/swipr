@@ -28,5 +28,7 @@
     <style name="popupTheme">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowCloseOnTouchOutside">true</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">18dp</item>
     </style>
 </resources>

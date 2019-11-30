@@ -26,6 +26,7 @@ import com.example.myapplication.Shared.DummyActivity;
 import com.example.myapplication.Shared.NetworkManager;
 import com.example.myapplication.Shared.NetworkResponder;
 import com.example.myapplication.Shared.Offer;
+import com.example.myapplication.Shared.Popup;
 import com.example.myapplication.Shared.ProfileSingleton;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -202,7 +203,7 @@ public class SellerActivity extends DrawerBaseActivity {
         networkManager = NetworkManager.getInstance();
         networkManager.subscribe("/user/queue/sellerUpdate", new PostResponder());
         networkManager.subscribe("/user/queue/buyerFind", new FindOfferResponder());
-        networkManager.subscribe("/user/queue/sellerInterest", new ConcreteNetworkResponder());
+        networkManager.subscribe("/user/queue/sellerInterest", new SellerConfirmResponder());
         //TODO: FIX UNSUBSCRIBE ERROR
         networkManager.subscribe("/topic/average", new AverageOfferResponder());
     }
@@ -218,6 +219,7 @@ public class SellerActivity extends DrawerBaseActivity {
         super.onResume();
         //networkManager.subscribe("/topic/average", new AverageOfferResponder());
         networkManager.send("/swipr/averageOffer");
+        Log.d("seller flag", Boolean.toString(seller_flag));
         if (seller_flag) {
             sellerFrame.setVisibility(View.VISIBLE);
             buyerFrame.setVisibility(View.GONE);
@@ -260,12 +262,13 @@ public class SellerActivity extends DrawerBaseActivity {
         results.clearOffers();
         networkManager.send("/swipr/findOffers", createOffer().generateQuery());
         Intent intent = new Intent(this, ResultActivity.class);
+        intent.putExtra("BuyerQuery", createOffer().generateQuery());
         startActivity(intent);
     }
 
     public void launchPostActivity()
     {
-        Log.d("Post", "Launching Post Activity");
+        Log.d("Post", "Posting " + createOffer().generateQuery());
         networkManager.send("/swipr/updateOffer", createOffer().generateQuery());
     }
 
@@ -323,13 +326,24 @@ public class SellerActivity extends DrawerBaseActivity {
     }
 
 
-    private class AverageOfferResponder implements NetworkResponder {
+    public class AverageOfferResponder implements NetworkResponder {
         public void onMessageReceived(String value)
         {
             Log.d("Average Received: ", value);
             average_price = Long.valueOf(value);
             TextView average=findViewById(R.id.average_value);
             average.setText("$" + String.format("%.2f", Long.valueOf(average_price) / (float) 100));
+        }
+    }
+
+    public class SellerConfirmResponder implements NetworkResponder
+    {
+        public void onMessageReceived(String json)
+        {
+            Log.d("Seller Received From Buyer",json);
+            Intent i = new Intent(getApplicationContext(), Popup.class);
+            i.putExtra("Offer", json);
+            startActivity(i);
         }
     }
 }
