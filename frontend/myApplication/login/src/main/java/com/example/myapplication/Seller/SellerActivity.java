@@ -26,7 +26,6 @@ import com.example.myapplication.Shared.DummyActivity;
 import com.example.myapplication.Shared.NetworkManager;
 import com.example.myapplication.Shared.NetworkResponder;
 import com.example.myapplication.Shared.Offer;
-import com.example.myapplication.Shared.Popup;
 import com.example.myapplication.Shared.ProfileSingleton;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -204,10 +203,8 @@ public class SellerActivity extends DrawerBaseActivity {
         networkManager.subscribe("/user/queue/sellerUpdate", new PostResponder());
         networkManager.subscribe("/user/queue/buyerFind", new FindOfferResponder());
         networkManager.subscribe("/user/queue/sellerInterest", new ConcreteNetworkResponder());
-        networkManager.subscribe("/user/queue/error", new ConcreteNetworkResponder());
-
         //TODO: FIX UNSUBSCRIBE ERROR
-       // networkManager.subscribe("/topic/average", new AverageOfferResponder());
+        networkManager.subscribe("/topic/average", new AverageOfferResponder());
     }
 
     LocalDateTime convertTime(int hour, int minute)
@@ -220,7 +217,7 @@ public class SellerActivity extends DrawerBaseActivity {
     protected void onResume() {
         super.onResume();
         //networkManager.subscribe("/topic/average", new AverageOfferResponder());
-        //networkManager.send("/swipr/averageOffer");
+        networkManager.send("/swipr/averageOffer");
         if (seller_flag) {
             sellerFrame.setVisibility(View.VISIBLE);
             buyerFrame.setVisibility(View.GONE);
@@ -263,7 +260,6 @@ public class SellerActivity extends DrawerBaseActivity {
         results.clearOffers();
         networkManager.send("/swipr/findOffers", createOffer().generateQuery());
         Intent intent = new Intent(this, ResultActivity.class);
-        intent.putExtra("BuyerQuery", createOffer().generateQuery());
         startActivity(intent);
     }
 
@@ -335,14 +331,5 @@ public class SellerActivity extends DrawerBaseActivity {
             TextView average=findViewById(R.id.average_value);
             average.setText("$" + String.format("%.2f", Long.valueOf(average_price) / (float) 100));
         }
-    }
-
-    private class SellerNetworkResponder implements NetworkResponder{
-        public void onMessageReceived(String json)
-        {
-            Log.d("Received Interest from Buyer", json);
-            //startActivity(new Intent(getApplicationContext(), Popup.class));
-        }
-
     }
 }

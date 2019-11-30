@@ -121,7 +121,7 @@ public class OfferController {
     }   
 
     /**
-     * Endpoint for a buyer to indicate interest in a seller's offer
+     * Endpoint for a buyer to indicate interest in a seller's offer. Will send updated list of Information objects to the seller's /user/queue/sellerInterest topic. 
      * @param interest a combination of a buyer ID and a sellquery object to indicate interest in a particular offer
      * @param headerAccessor header object that is sent with every request
      */
@@ -154,7 +154,7 @@ public class OfferController {
     }
 
     /**
-     * Endpoint to hit when user wants to cancel interest in a particular offer
+     * Endpoint to hit when user wants to cancel interest in a particular offer. Will send a list of updated Information objects to the seller's /user/queue/sellerInterest topic. 
      * @param interest  a combination of a buyer ID and a sellquery object to cancel
      * @param headerAccessor headers as a part of the request
      */
@@ -174,11 +174,12 @@ public class OfferController {
         userSessionManager.addBuyerSession(buyer, headerAccessor);
         userSessionManager.addSellerSession(seller, sellingUserHeaders);
         // Batch a list of potential buyers and send them to seller
-        userSessionManager.sendToUser(sellingUserHeaders, "/queue/sellerInterest", seller.getPotentialBuyers());
+        userSessionManager.sendToUser(sellingUserHeaders, "/queue/sellerInterest", seller.getPotentialBuyersInformation());
     }
 
     /**
-     * Seller confirms interest and agrees to sell the swipe
+     * Seller confirms interest and agrees to sell the swipe. Returns to the buyer's /user/queue/buyerInterest topic the seller that confirmed the interest
+     * , and the buyer to the seller's /user/queue/sellerInterest
      * @param buyer the buyer that they want to buy from
      * @param headerAccessor the headers that are sent along with the request
      */
@@ -204,7 +205,7 @@ public class OfferController {
     }
 
     /**
-     * Cancel an offer if expired or if user cancels
+     * Cancel an offer if expired or if user cancels. Returns a cancellation message to the /user/queue/sellerCancel top
      * @param headerAccessor header object that is sent with every request
      */
     @MessageMapping("/cancelOffer")
@@ -224,7 +225,7 @@ public class OfferController {
     }
 
     /**
-     *
+     * Returns an I'm here message to the /user/queue/here topic of the user that you want this message to go to
      * @param user the user you will like to notify
      * @param headerAccessor header object that is sent with every request
      */
