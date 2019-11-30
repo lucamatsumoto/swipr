@@ -83,6 +83,9 @@
                 android:value="com.example.myapplication.Buyer.MainActivity" />
         </activity>
 
+        <activity android:name=".Shared.Popup">
+        </activity>
+
         <service
             android:name=".Shared.SocketService"
             android:enabled = "true"
