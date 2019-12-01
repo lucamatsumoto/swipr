@@ -54,6 +54,7 @@ public class SellerActivity extends DrawerBaseActivity {
     private ViewGroup buyerFrame;
     private ViewGroup sellerFrame;
     boolean seller_flag = false; // 1 if on Buyer section, 0 else
+    boolean seller_post_flag = false; // 1 if Seller has posted an offer, 0 else
 
     long priceCents;
     LocalDateTime startTime, endTime;
@@ -90,9 +91,11 @@ public class SellerActivity extends DrawerBaseActivity {
         buyerFrame = findViewById(R.id.buyer_tags);
         sellerFrame = findViewById(R.id.seller_tags);
         post = findViewById(R.id.post_swipe);
-        if (seller_flag) {
+        if (seller_flag && seller_post_flag) {
+            post.setText(R.string.cancel_button);
+        }
+        else if (seller_flag) {
             post.setText(R.string.post_button);
-
         }
         else {
             post.setText(R.string.search_button);
@@ -205,6 +208,7 @@ public class SellerActivity extends DrawerBaseActivity {
         networkManager.subscribe("/user/queue/sellerInterest", sellerConfirmResponder);
         //TODO: FIX UNSUBSCRIBE ERROR
         networkManager.subscribe("/topic/average", averageOfferResponder);
+        networkManager.subscribe("/user/queue/sellerCancel", cancelOfferResponder);
     }
 
     LocalDateTime convertTime(int hour, int minute)
@@ -222,7 +226,10 @@ public class SellerActivity extends DrawerBaseActivity {
         if (seller_flag) {
             sellerFrame.setVisibility(View.VISIBLE);
             buyerFrame.setVisibility(View.GONE);
-            post.setText(R.string.post_button);
+            if (seller_post_flag)
+                post.setText(R.string.cancel_button);
+            else
+                post.setText(R.string.post_button);
         }
         else {
             sellerFrame.setVisibility(View.GONE);
@@ -235,7 +242,10 @@ public class SellerActivity extends DrawerBaseActivity {
         sellerFrame.setVisibility(View.VISIBLE);
         buyerFrame.setVisibility(View.GONE);
         seller_flag = true;
-        post.setText(R.string.post_button);
+        if (seller_post_flag)
+            post.setText(R.string.cancel_button);
+        else
+            post.setText(R.string.post_button);
     }
 
 
@@ -245,14 +255,14 @@ public class SellerActivity extends DrawerBaseActivity {
         seller_flag = false;
         post.setText(R.string.search_button);
     }
-    public void launchButtonAcvitity(View view)
+    public void launchButtonActivity(View view)
     {
-        if(seller_flag)
+        if (seller_flag && seller_post_flag)
+            launchCancelActivity();
+        else if (seller_flag)
             launchPostActivity();
         else
-            //launchDummyActivity();
             launchSearchResultActivity();
-
     }
 
     public void launchSearchResultActivity()
@@ -265,8 +275,18 @@ public class SellerActivity extends DrawerBaseActivity {
         startActivity(intent);
     }
 
+    public void launchCancelActivity()
+    {
+        seller_post_flag = false;
+        post.setText(R.string.post_button);
+        Log.d("Cancel", "Cancelling the offer");
+        networkManager.send("/swipr/cancelOffer");
+    }
+
     public void launchPostActivity()
     {
+        seller_post_flag = true;
+        post.setText(R.string.cancel_button);
         Log.d("Post", "Posting " + createOffer().generateQuery());
         networkManager.send("/swipr/updateOffer", createOffer().generateQuery());
     }
@@ -297,6 +317,21 @@ public class SellerActivity extends DrawerBaseActivity {
             runOnUiThread(new Runnable() {
                 public void run() {
                     Toast toast = Toast.makeText(getApplicationContext(), "Swipe Offer Posted! We'll notify you when you've been matched.", Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.BOTTOM, 0, 300);
+                    toast.show();
+                }
+            });
+        }
+    };
+
+    private NetworkResponder cancelOfferResponder = new NetworkResponder() {
+        @Override
+        public void onMessageReceived(String json)
+        {
+            Log.d("Seller cancelled offer: ", json);
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    Toast toast = Toast.makeText(getApplicationContext(), "Swipe Offer Cancelled! You are a strong, independent Swipr who don't need no single.", Toast.LENGTH_LONG);
                     toast.setGravity(Gravity.BOTTOM, 0, 300);
                     toast.show();
                 }
@@ -355,6 +390,7 @@ public class SellerActivity extends DrawerBaseActivity {
         networkManager.unsubscribe("/user/queue/buyerFind", findOfferResponder);
         networkManager.unsubscribe("/user/queue/sellerInterest", sellerConfirmResponder);
         networkManager.unsubscribe("/topic/average", averageOfferResponder);
+        networkManager.unsubscribe("/user/queue/sellerCancel", cancelOfferResponder);
         super.onDestroy();
     }
 }
