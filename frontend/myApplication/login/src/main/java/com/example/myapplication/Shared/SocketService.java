@@ -11,8 +11,10 @@ import android.os.IBinder;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 
+import com.example.myapplication.Buyer.Result.ResultActivity;
 import com.example.myapplication.R;
 import com.example.myapplication.Seller.SellerActivity;
 
@@ -22,15 +24,30 @@ import io.reactivex.schedulers.Schedulers;
 import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.StompClient;
 
-
+/**
+ * Service that is capable of sending basic notifications to the user and communicating with the
+ * server via websocket.
+ */
 public class SocketService extends Service {
     public static final String CHANNEL_ID = "SocketServiceChannel";
     public static final String TAG = "SocketService";
     private static IBinder mBinder;
+    private static final int REQUIRED_NOTIFID = 8978; //just a unique ID of our choosing. can be anything except 0.
 
     private StompClient mStompClient;
     private CompositeDisposable compositeDisposable;
+    private NotificationManager notificationManager;
 
+    //Something about how each notificatin needs a unique.
+    //I'm pretty sure the number can be anything so I just picked something random.
+    public static final int IM_HERE_NOTIFID = 8979;
+    public static final int BUYER_UPDATE_NOTIFID = 8980;
+    public static final int INTEREST_CONFIRMED_NOTFID = 8981;
+    public static final int INTEREST_INCOMING_NOTIFID = 8982;
+
+    /**
+     * Sets up the stomp client connection. Call after running starting and binding the Service
+     */
     public void initialize()
     {
         if(compositeDisposable == null)
@@ -61,6 +78,9 @@ public class SocketService extends Service {
         compositeDisposable.add(dispLifecycle);
     }
 
+    /**
+     * Breaks down the stomp client. Call before unbinding and Stopping the service
+     */
     public void terminate()
     {
         if(mStompClient !=  null)
@@ -72,18 +92,22 @@ public class SocketService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        String input = intent.getStringExtra("inputExtra");
         createNotificationChannel();
-        Intent notificationIntent = new Intent(this, SellerActivity.class); //Apparently this is where we get taken
-                                                                                           //Open clicking the notification
+
+        /*
+            Foreground Services must be bound to a notification at all times.
+            This notification stays open on the status bar.
+         */
+        Intent notificationIntent = new Intent(this, SellerActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("Foreground Service")
-                .setContentText(input)
+                .setContentTitle("Swipr")
+                .setContentText("The Swipr app is currently listening for notifications.\n Logout to turn off.")
                 .setSmallIcon(R.drawable.swipr_square) //TODO: make an all white and transparent version of the icon and put it here.
                 .setContentIntent(pendingIntent)
                 .build();
-        startForeground(1, notification);
+        startForeground(REQUIRED_NOTIFID, notification);
+
         return START_NOT_STICKY;
     }
 
@@ -108,8 +132,8 @@ public class SocketService extends Service {
                     CHANNEL_ID,
                     "Foreground Service Channel",
                     NotificationManager.IMPORTANCE_DEFAULT);
-            NotificationManager manager = getSystemService(NotificationManager.class);
-            manager.createNotificationChannel(serviceChannel);
+            notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(serviceChannel);
         }
     }
 
@@ -118,6 +142,11 @@ public class SocketService extends Service {
         SocketService getService(){return SocketService.this;}
     }
 
+    /**
+     * Sets up a callback upon receiving a message from the server
+     * @param topic     The topic to subscribe to on the server.
+     * @param command   Implements the callback as "onMessageReceived".
+     */
     public void stompSubscribe(String topic, NetworkResponder command)
     {
         Disposable dispTopic = mStompClient.topic(topic)
@@ -132,6 +161,11 @@ public class SocketService extends Service {
         compositeDisposable.add(dispTopic);
     }
 
+    /**
+     * Sends a request to the server.
+     * @param endPoint  The endpoint to send the request to.
+     * @param payload   The contents of the request
+     */
     public void send(String endPoint, String payload)
     {
         compositeDisposable.add(mStompClient.send(endPoint, payload)
@@ -142,6 +176,11 @@ public class SocketService extends Service {
                 }));
     }
 
+    /**
+     * Sends a request to the server. Overload version
+     *  for requests with no payload.
+     * @param endPoint  The endpoint to send the request to.
+     */
     public void send(String endPoint)
     {
         compositeDisposable.add(mStompClient.send(endPoint)
@@ -158,4 +197,27 @@ public class SocketService extends Service {
         return testBool = !testBool;
     }
 
+    /**
+     * Generates a notification in the notification drawer.
+     * Very simple implementation: dismiss, or click to open the Application in a specific Activity.
+     * @param targetActivity    The Activity to open upon clicking the notification.
+     * @param contentTitle      Heading text displayed on the notification.
+     * @param contentText       Body text displayed on the notification.
+     * @param notification_id   Indicates which notification to spawn.
+     *                          One of either IM_HERE_NOTIFID,
+     *                          BUYER_UPDATE_NOTIFID, INTEREST_CONFIRMED_NOTFID,
+     *                          or INTEREST_INCOMING_NOTIFID
+     */
+    public void createNotification(Class targetActivity, String contentTitle, String contentText, int notification_id)
+    {
+        Intent notificationIntent = new Intent(this, targetActivity);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setContentTitle(contentTitle)
+                .setContentText(contentText)
+                .setSmallIcon(R.drawable.swipr_square) //TODO: make an all white and transparent version of the icon and put it here.
+                .setContentIntent(pendingIntent)
+                .build();
+        notificationManager.notify(notification_id, notification);
+    }
 }

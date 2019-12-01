@@ -257,6 +257,7 @@ public class SellerActivity extends DrawerBaseActivity {
 
     public void launchSearchResultActivity()
     {
+        networkManager.showBuyerUpdate = false;
         Log.d("Post", "Launching Result Activity");
         results.clearOffers();
         networkManager.send("/swipr/findOffers", createOffer().generateQuery());
