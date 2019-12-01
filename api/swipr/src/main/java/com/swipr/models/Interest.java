@@ -12,6 +12,12 @@ import lombok.NoArgsConstructor;
 /**
  * Interest JSON object used to indicate interest from a buyer to a seller.
  * Includes both the buyer and seller ID so the API knows which user to send the information to. 
+ * {
+ *  "buyerId": int,
+ *  "meetTime": long,
+ *  "preferredDiningHall": long,
+ *  "sellQuery": SellQuery
+ * }
  */
 @Data
 @NoArgsConstructor

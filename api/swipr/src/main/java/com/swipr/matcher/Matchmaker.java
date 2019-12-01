@@ -29,7 +29,7 @@ public class Matchmaker {
 
     /** 
      * Return the singleton instance of Matchmaker. 
-     * @return the matchmaker instance 
+     * @return the matchmaker instance
      * */
     public static Matchmaker getInstance() {
         if (theInstance != null) return theInstance;
