@@ -41,6 +41,7 @@ public class OneBufferInstrumentedTest {
     OneBufferResponder sellerCancel = new OneBufferResponder("/user/queue/sellerCancel");
     OneBufferResponder buyerFind = new OneBufferResponder("/user/queue/buyerFind");
     OneBufferResponder buyerInterest = new OneBufferResponder("/user/queue/buyerInterest");
+    OneBufferResponder buyerHere = new OneBufferResponder("/user/queue/here");
     private StompClient stompClientBuyer;
     private CompositeDisposable compositeDisposableBuyer;
     private StompClient stompClientSeller;
@@ -51,9 +52,7 @@ public class OneBufferInstrumentedTest {
     private String tagBuyer = "buyer";
     boolean init = false;
 
-    //TODO: get the Buyer Id dynamically after the call to create()
-
-    //@Test
+    @Test
     public void create_updateVenmo_delete_create()
     {
         init();
@@ -131,7 +130,7 @@ public class OneBufferInstrumentedTest {
     }
 
 
-    //@Test
+    @Test
     public void updateOffer_findOffer_updateOffer_refreshOffers_cancelOffer_findOffer()
     {
         LocalDateTime ldtTime = LocalDate.now().atTime(6, 0);
@@ -223,7 +222,7 @@ public class OneBufferInstrumentedTest {
         assertionWrapper(expectedResponsePayload, buyerFind.getBuffer(), TAG6);
     }
 
-    @Test
+    //@Test
     public void updateOffer_findOffer_showInterest_cancelInterest_showInterest_confirmInterest()
     {
         LocalDateTime ldtTime = LocalDate.now().atTime(6, 0);
@@ -256,6 +255,14 @@ public class OneBufferInstrumentedTest {
                 "{\"id\":"+ buyerId + ",\"firstName\":\"Ryan\",\"lastName\":\"Miyahara\",\"email\":\"hohohoitsryan@gmail.com\",\"venmo\":null,\"profilePicUrl\":null}";
         assertionWrapper(expectedResponsePayload, responseString, TAG0);
 
+        String TAGX = "create";
+        requestPayload = new JSONObject();
+        try {
+            requestPayload.put("firstName", "Christopher");
+            requestPayload.put("lastName", "Inokuchi");
+            requestPayload.put("email", "cinokuchi@gmail.com");
+        } catch (Exception e) {Log.d(TAGX, e.getMessage());}
+        send(stompClientSeller, compositeDisposableSeller, "/swipr/create", requestPayload.toString(), TAGX);
 
         String TAG2 = "updateOffer";
         Offer offer = new Offer();
@@ -264,9 +271,9 @@ public class OneBufferInstrumentedTest {
         offer.endTime = ldtTimePlus2;
         offer.diningHallList = new ArrayList<>();
         offer.diningHallList.add(true);
-        offer.diningHallList.add(false);
-        offer.diningHallList.add(false);
-        offer.diningHallList.add(false);
+        offer.diningHallList.add(true);
+        offer.diningHallList.add(true);
+        offer.diningHallList.add(true);
         offer.userId = 7;
         expectedResponsePayload =
                 "Offer successfully updated";
@@ -286,15 +293,17 @@ public class OneBufferInstrumentedTest {
             offerId = payloadJSONObject2.getLong("offerId");
         } catch (Exception e) {Log.d("here there everywhere:", e.getMessage());}
         expectedResponsePayload = "[{\"userId\":7,\"timeRangeStart\":"+ Long.valueOf(epochTime)
-                + ",\"timeRangeEnd\":" + Long.valueOf(epochTimePlus2) + ",\"priceCents\":420,\"diningHallBitfield\":1,\"offerId\":" + Long.valueOf(offerId) + "}]";
+                + ",\"timeRangeEnd\":" + Long.valueOf(epochTimePlus2) + ",\"priceCents\":420,\"diningHallBitfield\":15,\"offerId\":" + Long.valueOf(offerId) + "}]";
         assertionWrapper(expectedResponsePayload, payload2, TAG3);
+
 
         String TAG4 = "showInterest";
         JSONObject request3 = new JSONObject();
         try {
             request3.put("buyerId", buyerId);
             request3.put("meetTime", epochTimePlus1);
-            request3.put("preferredDiningHall",1);
+            long value = 1;
+            request3.put("preferredDiningHall",value);
             request3.put("sellQuery", payloadJSONObject2);
         } catch(Exception e) {Log.d("here there everywhere:", e.getMessage());}
         try {
@@ -303,11 +312,83 @@ public class OneBufferInstrumentedTest {
         expectedResponsePayload = "i have aids";
         assertionWrapper(expectedResponsePayload, sellerInterest.getBuffer(), TAG4);
 
+
         String TAG5 = "cancelOffer";
         expectedResponsePayload =
                 "Your offer has been cancelled";
         send(stompClientSeller, compositeDisposableSeller, "/swipr/cancelOffer", TAG5);
         assertionWrapper(expectedResponsePayload, sellerCancel.getBuffer(), TAG5);
+    }
+
+    //@Test
+    public void here()
+    {
+        LocalDateTime ldtTime = LocalDate.now().atTime(0, 0);
+        long epochTime = ldtTime.atZone(ZoneId.systemDefault()).toEpochSecond();
+        LocalDateTime ldtTimePlus1 = ldtTime.plusHours(23);
+        long epochTimePlus1 = ldtTimePlus1.atZone(ZoneId.systemDefault()).toEpochSecond();
+        LocalDateTime ldtTimePlus2 = ldtTime.plusHours(2);
+        long epochTimePlus2 = ldtTimePlus2.atZone(ZoneId.systemDefault()).toEpochSecond();
+        init();
+
+        String TAG0 = "create";
+        JSONObject requestPayload = new JSONObject();
+        try {
+            requestPayload.put("firstName", "Ryan");
+            requestPayload.put("lastName", "Miyahara");
+            requestPayload.put("email", "hohohoitsryan@gmail.com");
+        } catch (Exception e) {Log.d(TAG0, e.getMessage());}
+        send(stompClientBuyer, compositeDisposableBuyer, "/swipr/create", requestPayload.toString(), TAG0);
+        int buyerId = 1;
+        String id = "1";
+        String responseString = reply.getBuffer();
+        try {
+            JSONObject responsePayload = new JSONObject(responseString);
+            buyerId = responsePayload.getInt("id");
+            id = String.valueOf(buyerId);
+        } catch (Exception e) {
+            Log.d("here there everywhere:", e.getMessage());
+        }
+        String expectedResponsePayload =
+                "{\"id\":"+ buyerId + ",\"firstName\":\"Ryan\",\"lastName\":\"Miyahara\",\"email\":\"hohohoitsryan@gmail.com\",\"venmo\":null,\"profilePicUrl\":null}";
+        assertionWrapper(expectedResponsePayload, responseString, TAG0);
+
+        String TAG2 = "findOffer";
+        Offer offer = new Offer();
+        offer.price = 1500;
+        offer.startTime = ldtTime;
+        offer.diningHallList = new ArrayList<>();
+        offer.diningHallList.add(true);
+        offer.diningHallList.add(true);
+        offer.diningHallList.add(true);
+        offer.diningHallList.add(true);
+        offer.endTime = ldtTimePlus1;
+        offer.userId = buyerId;
+        send(stompClientBuyer, compositeDisposableBuyer, "/swipr/findOffers", offer.generateQuery(), TAG2);
+        String payload2 = buyerFind.getBuffer();
+        long offerId = 1;
+        try {
+            JSONArray payloadJSONArray2 = new JSONArray(payload2);
+            JSONObject payloadJSONObject2 = (JSONObject) payloadJSONArray2.get(0);
+            offerId = payloadJSONObject2.getLong("offerId");
+        } catch (Exception e) {Log.d("here there everywhere:", e.getMessage());}
+        expectedResponsePayload = "[{\"userId\":7,\"timeRangeStart\":"+ Long.valueOf(epochTime)
+                + ",\"timeRangeEnd\":" + Long.valueOf(epochTimePlus2) + ",\"priceCents\":420,\"diningHallBitfield\":1,\"offerId\":" + Long.valueOf(offerId) + "}]";
+        assertionWrapper(payload2, payload2, TAG2);
+
+        String TAG1 = "here";
+        JSONObject requestJson = new JSONObject();
+        try {
+            int newId = 5;
+        requestJson.put("id", newId);
+        requestJson.put("firstName", "Luca");
+        requestJson.put("lastName", "Matsumoto");
+        requestJson.put("email", "lucamatsumoto@gmail.com");
+        requestJson.put("venmo", "@luca-matsumoto");
+        requestJson.put("profilePicUrl", null);
+        } catch(Exception e){}
+        String requestString = "{\"id\":5,\"firstName\":\"Luca\",\"lastName\":\"Matsumoto\",\"email\":\"lucamatsumoto@gmail.com\",\"venmo\":\"@luca-matsumoto\",\"profilePicUrl\":null}";
+        send(stompClientBuyer, compositeDisposableBuyer, "/swipr/here", requestString, TAG1);
     }
 
 
@@ -348,6 +429,7 @@ public class OneBufferInstrumentedTest {
         subscribe(stompClientBuyer, compositeDisposableBuyer, average.getTopic(), tagBuyer, average);
         subscribe(stompClientBuyer, compositeDisposableBuyer, buyerFind.getTopic(), tagBuyer, buyerFind);
         subscribe(stompClientBuyer, compositeDisposableBuyer, buyerInterest.getTopic(), tagBuyer, buyerInterest);
+        subscribe(stompClientBuyer, compositeDisposableBuyer, buyerHere.getTopic(), tagBuyer, buyerHere);
         try {Thread.sleep(1500);} catch (Exception e){Log.d("here", e.getMessage());}
     }
     void connect(StompClient stompClient, CompositeDisposable compositeDisposable, String tag)
