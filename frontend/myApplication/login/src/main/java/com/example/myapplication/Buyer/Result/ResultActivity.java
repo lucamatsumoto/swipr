@@ -48,7 +48,7 @@ public class ResultActivity extends AppCompatActivity {
         Log.d("RESULTS", resultBacker.getResults().toString());
 
         BuyerQuery = getIntent().getStringExtra("BuyerQuery");
-        Log.d("BuyerQuery", BuyerQuery);
+        // Log.d("BuyerQuery", BuyerQuery);
     }
 
     public void refresh(View view)

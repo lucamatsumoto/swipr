@@ -15,6 +15,7 @@ function setConnected(connected) {
     document.getElementById('cancelInterestDiv').style.visibility = connected ? 'visible' : 'hidden';
     document.getElementById('requestAverageDiv').style.visibility = connected ? 'visible' : 'hidden';
     document.getElementById('cancelOfferDiv').style.visibility = connected ? 'visible' : 'hidden';
+    document.getElementById('hereDiv').style.visibility = connected ? 'visible' : 'hidden';
 }
 
 function connect() {
@@ -56,6 +57,9 @@ function connect() {
         stompClient.subscribe('/user/queue/error', function(message) {
             console.log(message)
             showOutput(message)
+        })
+        stompClient.subscribe('/user/queue/here', function(message) {
+            console.log(message)
         })
     });
 }
@@ -169,6 +173,14 @@ function confirmInterest() {
     var lastName = document.getElementById('confirmLastName').value;
     var email = document.getElementById('confirmEmail').value;
     stompClient.send("/swipr/confirmInterest", {}, JSON.stringify({'id': parseInt(userId), 'firstName': firstName, 'lastName': lastName, 'email': email }))
+}
+
+function here() {
+    var userId = document.getElementById('hereId').value;
+    var firstName = document.getElementById('hereFirstName').value;
+    var lastName = document.getElementById('hereLastName').value;
+    var email = document.getElementById('hereEmail').value;
+    stompClient.send("/swipr/here", {}, JSON.stringify({'id': parseInt(userId), 'firstName': firstName, 'lastName': lastName, 'email': email }))
 }
 
 function cancelOffer() {
