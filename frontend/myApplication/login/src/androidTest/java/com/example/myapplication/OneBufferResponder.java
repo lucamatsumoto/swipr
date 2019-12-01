@@ -21,6 +21,7 @@ public class OneBufferResponder implements NetworkResponder {
     public void onMessageReceived(String json) {
         synchronized (this)
         {
+            Log.d("wherever" + mTopic, "we have received this shit");
             response = json;
             flag = true;
             notify();
@@ -32,7 +33,7 @@ public class OneBufferResponder implements NetworkResponder {
         synchronized (this)
         {
             if(flag == false)
-                try{wait();}catch(Exception e) { Log.d("OneBufferResponder", e.getMessage());}
+                try{Log.d("wherever" + mTopic, "we are waiting now");wait();}catch(Exception e) { Log.d("OneBufferResponder", e.getMessage());}
             flag = false;
             return response;
         }

@@ -1,4 +1,3 @@
-
 package com.example.myapplication.Seller;
 
 import android.content.Context;
@@ -203,7 +202,8 @@ public class SellerActivity extends DrawerBaseActivity {
         networkManager = NetworkManager.getInstance();
         networkManager.subscribe("/user/queue/sellerUpdate", postOfferResponder);
         networkManager.subscribe("/user/queue/buyerFind", findOfferResponder);
-        //networkManager.subscribe("/user/queue/sellerInterest", somesortofrespondergoeshere);
+        networkManager.subscribe("/user/queue/sellerInterest", sellerConfirmResponder);
+        //TODO: FIX UNSUBSCRIBE ERROR
         networkManager.subscribe("/topic/average", averageOfferResponder);
     }
 
@@ -257,7 +257,6 @@ public class SellerActivity extends DrawerBaseActivity {
 
     public void launchSearchResultActivity()
     {
-        networkManager.showBuyerUpdate = false;
         Log.d("Post", "Launching Result Activity");
         results.clearOffers();
         networkManager.send("/swipr/findOffers", createOffer().generateQuery());
@@ -338,12 +337,23 @@ public class SellerActivity extends DrawerBaseActivity {
         }
     };
 
+    private NetworkResponder sellerConfirmResponder = new NetworkResponder(){
+        @Override
+        public void onMessageReceived(String json)
+        {
+            Log.d("Seller Received From Buyer",json);
+            Intent i = new Intent(getApplicationContext(), Popup.class);
+            i.putExtra("Offer", json);
+            startActivity(i);
+        }
+    };
+
     @Override
     protected void onDestroy()
     {
         networkManager.unsubscribe("/user/queue/sellerUpdate", postOfferResponder);
         networkManager.unsubscribe("/user/queue/buyerFind", findOfferResponder);
-        //networkManager.unsubscribe("/user/queue/sellerInterest", somesortofrespondergoeshere);
+        networkManager.unsubscribe("/user/queue/sellerInterest", sellerConfirmResponder);
         networkManager.unsubscribe("/topic/average", averageOfferResponder);
         super.onDestroy();
     }
