@@ -53,10 +53,16 @@ public class ResultActivity extends AppCompatActivity {
 
     public void refresh(View view)
     {
+        networkManager.showBuyerUpdate = false;
         ResultBacker.getInstance().clearOffers();
         networkManager.send("/swipr/refreshOffers", BuyerQuery);
-        Intent intent = new Intent(this, ResultActivity.class);
-        intent.putExtra("BuyerQuery", BuyerQuery);
-        startActivity(intent);
+        finish();
+        startActivity(getIntent());
+    }
+
+    @Override
+    protected void onDestroy() {
+        networkManager.showBuyerUpdate = true;
+        super.onDestroy();
     }
 }

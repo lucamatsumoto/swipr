@@ -29,4 +29,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="test text" />
+
+    <Button
+        android:id="@+id/buttonTestNotif"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="test notif" />
 </LinearLayout>

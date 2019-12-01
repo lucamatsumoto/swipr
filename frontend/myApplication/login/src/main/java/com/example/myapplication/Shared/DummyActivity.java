@@ -16,6 +16,9 @@ import androidx.core.content.ContextCompat;
 
 import com.example.myapplication.R;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+
 
 public class DummyActivity extends AppCompatActivity {
 
@@ -23,7 +26,7 @@ public class DummyActivity extends AppCompatActivity {
     ProfileSingleton profile;
     public SocketService mService;
 
-    Button btnStartService, btnStopService, btnBindService, btnTestService;
+    Button btnStartService, btnStopService, btnBindService, btnTestService, btnTestNotif;
 
     SocketServiceConnection mServiceConnection;
     public boolean mServiceBound = false;
@@ -50,6 +53,7 @@ public class DummyActivity extends AppCompatActivity {
         btnStopService = findViewById(R.id.buttonStopService);
         btnBindService = findViewById(R.id.buttonBindService);
         btnTestService = findViewById(R.id.buttonTestService);
+        btnTestNotif = findViewById(R.id.buttonTestNotif);
         btnStartService.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,7 +75,33 @@ public class DummyActivity extends AppCompatActivity {
         btnTestService.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                test();
+                Offer offer = new Offer();
+                offer.startTime = LocalDateTime.now().minusHours(2);
+                offer.endTime = LocalDateTime.now().plusHours(2);
+                offer.diningHallList = new ArrayList<>(4);
+                offer.diningHallList.add(true);
+                offer.diningHallList.add(true);
+                offer.diningHallList.add(true);
+                offer.diningHallList.add(true);
+                offer.price = 100;
+                offer.userId = 7;
+                networkManager.send("/swipr/updateOffer", offer.generateQuery());
+            }
+        });
+        btnTestNotif.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Offer offer = new Offer();
+                offer.startTime = LocalDateTime.now().minusHours(4);
+                offer.endTime = LocalDateTime.now().plusHours(4);
+                offer.diningHallList = new ArrayList<>(4);
+                offer.diningHallList.add(true);
+                offer.diningHallList.add(true);
+                offer.diningHallList.add(true);
+                offer.diningHallList.add(true);
+                offer.price = 1500;
+                offer.userId = 1304;
+                networkManager.send("/swipr/findOffers", offer.generateQuery());
             }
         });
     }
