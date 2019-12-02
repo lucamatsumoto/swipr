@@ -18,13 +18,14 @@
 <!--        android:text="@string/initial_value"/>-->
 
     <Button
-        android:id="@+id/status_tag"
+        android:id="@+id/confirm_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="76dp"
-        android:layout_toRightOf="@id/interest_info"
-        android:text="@string/status_tag"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_toRightOf="@id/profilePic"
+        android:layout_marginVertical="20dp"
+        android:text="Confirm"
         android:textSize="@dimen/status" />
 
     <include
@@ -33,5 +34,17 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         layout="@layout/interest_info" />
+
+    <ImageView
+        android:id="@+id/profilePic"
+        android:layout_width="81dp"
+        android:layout_height="71dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_toRightOf="@id/interest_info"
+        android:layout_marginLeft="16dp"
+        android:layout_marginVertical="8dp"
+        app:srcCompat="@color/colorPrimary" />
+
 
 </RelativeLayout>

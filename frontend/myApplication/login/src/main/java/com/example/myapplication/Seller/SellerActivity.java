@@ -17,6 +17,8 @@ import android.widget.Toast;
 
 import androidx.annotation.IdRes;
 
+import com.example.myapplication.Buyer.Interest.Interest;
+import com.example.myapplication.Buyer.InterestBacker;
 import com.example.myapplication.Buyer.Result.ResultActivity;
 import com.example.myapplication.Buyer.Result.ResultBacker;
 import com.example.myapplication.Shared.ConcreteNetworkResponder;
@@ -62,6 +64,8 @@ public class SellerActivity extends DrawerBaseActivity {
     List<Boolean> diningHalls;
 
     long average_price = 800;
+
+    InterestBacker interestBacker = InterestBacker.getInstance();
 
     ResultBacker results;
     @Override
@@ -377,11 +381,30 @@ public class SellerActivity extends DrawerBaseActivity {
         public void onMessageReceived(String json)
         {
             Log.d("Seller Received From Buyer", json);
+            setInterestsArray(json);
             Intent i = new Intent(getApplicationContext(), Popup.class);
             i.putExtra("Offer", json);
             startActivity(i);
         }
+
+        private void setInterestsArray(String interests) {
+            try {
+                JSONArray jsonarray = new JSONArray(interests);
+                for (int i = 0; i < jsonarray.length(); i++) {
+                    JSONObject jsonobject = jsonarray.getJSONObject(i);
+                    Interest interest = new Interest(jsonobject.toString());
+                    interestBacker.addInterests(interest);
+                    Log.d("Interests", interestBacker.getInterests().toString());
+                }
+            }
+            catch (JSONException e)
+            {
+                Log.e("JSON", e.getMessage());
+            }
+        }
     };
+
+
 
     @Override
     protected void onDestroy()

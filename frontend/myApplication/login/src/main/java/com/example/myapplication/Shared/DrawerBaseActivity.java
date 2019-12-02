@@ -20,6 +20,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.myapplication.Buyer.BuyerBacker;
+import com.example.myapplication.Buyer.InterestActivity;
 import com.example.myapplication.Buyer.MainActivity;
 import com.example.myapplication.EditProfileActivity;
 import com.example.myapplication.Login;
@@ -77,7 +78,7 @@ public class DrawerBaseActivity extends AppCompatActivity {
                         launchProfileActivity();
                         break;
                     case R.id.offers:
-                        //Toast.makeText(MainActivity.this, "Settings",Toast.LENGTH_SHORT).show();
+                        launchInterestsActivity();
                         break;
                     case R.id.drawer_logout:
                         launchLoginActivity();
@@ -114,6 +115,12 @@ public class DrawerBaseActivity extends AppCompatActivity {
             return true;
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void launchInterestsActivity()
+    {
+        Intent intent = new Intent(getApplicationContext(), InterestActivity.class);
+        startActivity(intent);
     }
 
     public void launchProfileActivity(){

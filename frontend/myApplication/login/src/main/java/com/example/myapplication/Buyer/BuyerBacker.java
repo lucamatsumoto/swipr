@@ -4,6 +4,8 @@ import android.util.Log;
 
 import com.example.myapplication.Shared.Offer;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +15,8 @@ public class BuyerBacker {
     private int diningHallIndex;
     boolean isResults;
     boolean isFilter;
+    public JSONObject confirmed_seller;
+    public JSONObject confirmed_buyer;
     String mSignin;
     private static volatile BuyerBacker instance;
 
