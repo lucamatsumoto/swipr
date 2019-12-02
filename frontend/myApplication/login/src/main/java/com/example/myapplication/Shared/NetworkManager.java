@@ -45,6 +45,7 @@ public class NetworkManager {
         temp.put("/user/queue/sellerUpdate", new HashSet<>());
         temp.put("/user/queue/sellerInterest", new HashSet<>());
         temp.put("/user/queue/sellerCancel", new HashSet<>());
+        temp.put("/user/queue/here", new HashSet<>());
         topicToSubset = temp;
     }
 
@@ -94,6 +95,7 @@ public class NetworkManager {
                 subscribe("/user/queue/buyerInterest", interestConfirmedResponder);
                 subscribe("/user/queue/sellerInterest", interestIncomingResponder);
                 //TODO: subscribe to I'm here notifications
+                subscribe("/user/queue/here", imHereResponder);
                 send("/swipr/create", loginPayload);
             }
 
