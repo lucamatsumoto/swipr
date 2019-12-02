@@ -29,12 +29,14 @@ public class ResultBacker {
 
     public void addOffer (Offer o){
         resultsList.add(o);
-        isOfferedCancel.put(o, false);
+        if (isOfferedCancel.get(o) == null) {
+            isOfferedCancel.put(o, false);
+        }
     }
 
     public void clearOffers(){
         resultsList = new ArrayList<Offer>();
-        isOfferedCancel.clear();
+        //23isOfferedCancel.clear();
     }
 
     public Boolean getCancelled(Offer offer) {

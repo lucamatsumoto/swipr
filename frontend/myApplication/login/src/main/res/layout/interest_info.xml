@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:padding="6dp"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/meet_time_tag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/offer_size"
+        android:text="@string/meet_time_tag"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/preferred_dining_hall_tag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/offer_size"
+        android:text="@string/preferred_dining_hall_tag"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/meet_time_tag" />
+
+    <TextView
+        android:id="@+id/price_tag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/offer_size"
+        android:text="@string/price_tag"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/preferred_dining_hall_tag" />
+
+    <TextView
+        android:id="@+id/meet_time_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/offer_size"
+        android:text="@string/initial_value"
+        app:layout_constraintStart_toEndOf="@+id/meet_time_tag"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginLeft="@dimen/value_margin_start"
+        android:layout_marginStart="@dimen/value_margin_start"/>
+
+    <TextView
+        android:id="@+id/preferred_dining_hall_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/offer_size"
+        android:text="@string/initial_value"
+        app:layout_constraintStart_toStartOf="@+id/meet_time_value"
+        app:layout_constraintTop_toBottomOf="@+id/meet_time_value" />
+
+    <TextView
+        android:id="@+id/price_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/offer_size"
+        android:text="@string/initial_value"
+        app:layout_constraintStart_toStartOf="@+id/preferred_dining_hall_value"
+        app:layout_constraintTop_toBottomOf="@+id/preferred_dining_hall_value" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

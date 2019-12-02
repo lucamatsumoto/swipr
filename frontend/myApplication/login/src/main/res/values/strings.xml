@@ -26,4 +26,7 @@
     <string name="meet_time">Meet At</string>
     <string name="first_name_user">User</string>
     <string name="here">Here!</string>
+    <string name="meet_time_tag">Meet at:</string>
+    <string name="preferred_dining_hall_tag">Dining Hall:</string>
+
 </resources>

@@ -14,7 +14,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Shared.HereActivity"></activity>
+        <activity android:name=".Seller.SellerInterestActivity"></activity>
+        <activity android:name=".Shared.HereActivity" />
         <activity android:name=".Buyer.Interest.RefineInterestActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -39,7 +40,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DisplayMessageActivity" />
+        <activity android:name=".DisplayMessageActivity">
+
+        </activity>
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
@@ -82,14 +85,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.myapplication.Buyer.MainActivity" />
         </activity>
-
-        <activity android:name=".Shared.Popup">
-        </activity>
+        <activity
+            android:name=".Shared.Popup"
+            android:theme="@style/popupTheme"></activity>
 
         <service
             android:name=".Shared.SocketService"
-            android:enabled = "true"
-            android:exported="true"></service>
+            android:enabled="true"
+            android:exported="true" />
     </application>
 
 </manifest>
