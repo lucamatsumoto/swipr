@@ -47,7 +47,7 @@ public class Interest {
                 venmo = "N/A";
             String profPicString = Buyer.getString("profilePicUrl");
 
-            if(profPicString != null )
+            if(profPicString != null  && !profPicString.isEmpty())
                 profilePicture = Uri.parse(profPicString);
             else {
                 profilePicture = Uri.parse("android.resource://com.example.myapplication/drawable/swipr_square");
@@ -59,8 +59,6 @@ public class Interest {
         }
         return true;
     }
-
-    public LocalDateTime getMeetTime(){return meetTime;}
 
     public String getPreferredDiningHall()
     {

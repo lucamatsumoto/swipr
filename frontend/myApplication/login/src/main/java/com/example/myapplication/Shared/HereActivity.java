@@ -2,14 +2,19 @@ package com.example.myapplication.Shared;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.example.myapplication.Buyer.BuyerBacker;
 import com.example.myapplication.R;
 
 import org.json.JSONException;
@@ -24,17 +29,22 @@ public class HereActivity extends AppCompatActivity {
 
     private Button hereButton;
     private NetworkManager networkManager = NetworkManager.getInstance();
-    String fullName, venmo;
+    String fullName, venmo, profPicString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String userJsonString = getIntent().getStringExtra("UserJSON");
-        JSONObject userJson = dummyUserJSON();
+        setContentView(R.layout.activity_here);
+        JSONObject userJson = BuyerBacker.getInstance().confirmed_seller;
+        Log.d("seller", userJson.toString());
+        
         String DiningHall = getDiningHallString(getIntent().getLongExtra("DiningHall", 0));
         long longValue = getIntent().getLongExtra("Time", 0);
+
+        Log.d("Epoch", Long.toString(longValue));
+
         LocalDateTime time =
-                LocalDateTime.ofInstant(Instant.ofEpochMilli(longValue), ZoneId.systemDefault());
+                LocalDateTime.ofInstant(Instant.ofEpochSecond(longValue), ZoneId.systemDefault());
 
 
         try
@@ -51,12 +61,27 @@ public class HereActivity extends AppCompatActivity {
         subscribeToHereTopic();
         hereButton = findViewById(R.id.here_button);
 
-        //TextView nameView = findViewById(R.id.name_tag);
-        //nameView.setText(fullName);
+        TextView nameView = findViewById(R.id.name_value);
+        nameView.setText(fullName);
 
         TextView timeView = findViewById(R.id.time_value);
         timeView.setText(time.toString());
 
+        TextView venmoView = findViewById(R.id.venmo_value);
+        venmoView.setText(venmo);
+
+        Uri profileUri;
+        if(profPicString != null )
+            profileUri = Uri.parse(profPicString);
+        else {
+            profileUri = Uri.parse("android.resource://com.example.myapplication/drawable/swipr_square");
+            }
+        ImageView imgView = (ImageView) findViewById(R.id.here_profile_pic);
+                Glide.with(getApplicationContext()).load(profileUri)
+                                .thumbnail(0.5f)
+                                .crossFade()
+                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                .into(imgView);
 
     }
 
@@ -68,9 +93,9 @@ public class HereActivity extends AppCompatActivity {
                 return "Bruin Plate";
             case 2:
                 return "Covel";
-            case 3:
-                return "De Neve";
             case 4:
+                return "De Neve";
+            case 8:
                 return "Feast";
         }
 
