@@ -23,13 +23,13 @@ public class InterestAdapter extends SimpleRecyclerAdapter
     }
 
     public void onBindViewHolder(@NonNull SimpleRecyclerAdapter.SimpleViewHolder simpleViewHolder, int i) {
-        Offer offer = (Offer) mObjectList.get(i);
+        Interest interest = (Interest) mObjectList.get(i);
         Log.d("CHILDREN", Integer.toString(simpleViewHolder.mItem.getChildCount()));
         for(int j = 0; j < 2; j++) {
             final View child = simpleViewHolder.mItem.getChildAt(j);
             Log.d("CHILDREN", simpleViewHolder.mItem.getChildAt(j).getClass().getName());
         }
-        Log.d("Dining Halls", offer.diningHallList.toString());
+        Log.d("Dining Halls", interest.offer.toString());
 
         //DateTimeFormatter dtf = DateTimeFormatter.ofPattern ( "yyyy-MM-dd HH:mm" );
 

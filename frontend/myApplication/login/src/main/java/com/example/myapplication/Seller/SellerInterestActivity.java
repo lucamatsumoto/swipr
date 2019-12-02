@@ -21,7 +21,7 @@ public class SellerInterestActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_seller_interest);
+        setContentView(R.layout.activity_interest);
         interestBacker = InterestBacker.getInstance();
         interestRecycler = findViewById(R.id.interestRecycler);
         interestAdapter = new InterestAdapter(this, interestBacker.getInterests());
