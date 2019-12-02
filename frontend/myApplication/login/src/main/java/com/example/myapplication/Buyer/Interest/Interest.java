@@ -33,7 +33,7 @@ public class Interest {
             JSONObject temp = new JSONObject(query);
             long longValue = temp.getInt("meetTime");
             Log.d("dining bitfield", Long.toString(longValue));
-            meetTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(longValue), ZoneId.systemDefault());
+            meetTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(longValue), ZoneId.systemDefault());
 
             Log.d("Date Time", LocalDateTime.ofInstant(Instant.ofEpochSecond(temp.getLong("meetTime")), ZoneId.systemDefault()).toString());
 

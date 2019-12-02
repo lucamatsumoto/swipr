@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.View;
 
 import androidx.core.content.ContextCompat;
 
@@ -26,6 +27,8 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.StompClient;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Intended as a wrapper for the SocketService.
@@ -105,7 +108,6 @@ public class NetworkManager {
                 subscribe("/user/queue/buyerFind", buyerUpdateResponder);
                 subscribe("/user/queue/buyerInterest", interestConfirmedResponder);
                 subscribe("/user/queue/sellerInterest", interestIncomingResponder);
-                subscribe("/user/queue/buyerConfirmed",  buyerResponder);
                 subscribe("/user/queue/sellerConfirmed",  sellerResponder);
 
 
@@ -238,22 +240,7 @@ public class NetworkManager {
         }
     };
 
-    private NetworkResponder buyerResponder = new NetworkResponder() {
-        @Override
-        public void onMessageReceived(String json) {
-            mService.createNotification(HereActivity.class,
-                    "Swipe Confirmed!",
-                    "Your Swipe has been confirmed! One step closer to FLAVOR TOWN",
-                    mService.INTEREST_INCOMING_NOTIFID);
-            try {
-                BuyerBacker.getInstance().confirmed_seller = new JSONObject(json);
-            }
-            catch(JSONException e)
-            {
-                Log.e("JSON Error Buyer", e.getMessage());
-            }
-        }
-    };
+
 
     private NetworkResponder sellerResponder = new NetworkResponder() {
         @Override

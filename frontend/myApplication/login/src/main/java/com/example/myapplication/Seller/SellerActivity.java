@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.annotation.IdRes;
 
+import com.example.myapplication.Buyer.BuyerBacker;
 import com.example.myapplication.Buyer.Interest.Interest;
 import com.example.myapplication.Buyer.InterestBacker;
 import com.example.myapplication.Buyer.Result.ResultActivity;
@@ -24,6 +25,7 @@ import com.example.myapplication.Buyer.Result.ResultBacker;
 import com.example.myapplication.Shared.ConcreteNetworkResponder;
 import com.example.myapplication.Shared.DiningHalls;
 import com.example.myapplication.Shared.DummyActivity;
+import com.example.myapplication.Shared.HereActivity;
 import com.example.myapplication.Shared.NetworkManager;
 import com.example.myapplication.Shared.NetworkResponder;
 import com.example.myapplication.Shared.Offer;
@@ -45,6 +47,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class SellerActivity extends DrawerBaseActivity {
 
@@ -213,6 +217,8 @@ public class SellerActivity extends DrawerBaseActivity {
         //TODO: FIX UNSUBSCRIBE ERROR
         networkManager.subscribe("/topic/average", averageOfferResponder);
         networkManager.subscribe("/user/queue/sellerCancel", cancelOfferResponder);
+        networkManager.subscribe("/user/queue/buyerConfirmed",  buyerResponder);
+
     }
 
     LocalDateTime convertTime(int hour, int minute)
@@ -401,6 +407,21 @@ public class SellerActivity extends DrawerBaseActivity {
             {
                 Log.e("JSON", e.getMessage());
             }
+        }
+    };
+
+    private NetworkResponder buyerResponder = new NetworkResponder() {
+        @Override
+        public void onMessageReceived(String json) {
+            try {
+                BuyerBacker.getInstance().confirmed_seller = new JSONObject(json);
+            }
+            catch(JSONException e)
+            {
+                Log.e("JSON Error Buyer", e.getMessage());
+            }
+            Intent i = new Intent(getApplicationContext(), HereActivity.class);
+            startActivity(i);
         }
     };
 

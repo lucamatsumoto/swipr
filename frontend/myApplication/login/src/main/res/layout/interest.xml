@@ -44,7 +44,10 @@
         android:layout_toRightOf="@id/interest_info"
         android:layout_marginLeft="16dp"
         android:layout_marginVertical="8dp"
-        app:srcCompat="@color/colorPrimary" />
+        android:layout_marginTop="52dp"
+        android:background="@color/colorPrimary"
+        android:padding="13dp"
+        />
 
 
 </RelativeLayout>
