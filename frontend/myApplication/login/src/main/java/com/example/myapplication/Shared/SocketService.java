@@ -29,8 +29,11 @@ import ua.naiksoftware.stomp.StompClient;
  * server via websocket.
  */
 public class SocketService extends Service {
+    /**
+     * Channel ID for all notifications coming from this service.
+     */
     public static final String CHANNEL_ID = "SocketServiceChannel";
-    public static final String TAG = "SocketService";
+    private static final String TAG = "SocketService";
     private static IBinder mBinder;
     private static final int REQUIRED_NOTIFID = 8978; //just a unique ID of our choosing. can be anything except 0.
 
@@ -40,9 +43,21 @@ public class SocketService extends Service {
 
     //Something about how each notificatin needs a unique.
     //I'm pretty sure the number can be anything so I just picked something random.
+    /**
+     * Notification ID for "Im Here" notifications
+     */
     public static final int IM_HERE_NOTIFID = 8979;
+    /**
+     * Notification ID for "Buyer Update" notifications
+     */
     public static final int BUYER_UPDATE_NOTIFID = 8980;
+    /**
+     * Notification ID for "Interest Confirmed" notifications
+     */
     public static final int INTEREST_CONFIRMED_NOTFID = 8981;
+    /**
+     * Notification ID for "Interest Incoming" notifications
+     */
     public static final int INTEREST_INCOMING_NOTIFID = 8982;
 
     /**
@@ -90,6 +105,10 @@ public class SocketService extends Service {
             compositeDisposable = null;
         }}
 
+    /**
+     * Executes when the Service is started. Do not call this directly. See standard Android function "startForegroundService()"
+     * or see NetworkManager.StartService()
+     */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         createNotificationChannel();
@@ -111,6 +130,10 @@ public class SocketService extends Service {
         return START_NOT_STICKY;
     }
 
+    /**
+     * Executes when the Service is bound. Do not call this directly. Instead, see standard Android interface "ServiceConnection"
+     * or see NetworkManager.mServiceConnection.
+     */
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -119,6 +142,9 @@ public class SocketService extends Service {
         return mBinder;
     }
 
+    /**
+     * Executes when Service is unbound. Do not call this directly.
+     */
     @Override
     public boolean onUnbind(Intent intent) {
         return false;
@@ -137,6 +163,9 @@ public class SocketService extends Service {
         }
     }
 
+    /**
+     * Returns a reference to the socket.
+     */
     public class SocketBinder extends android.os.Binder
     {
         SocketService getService(){return SocketService.this;}
