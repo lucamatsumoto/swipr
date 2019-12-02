@@ -1,6 +1,7 @@
 package com.swipr.utils;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import com.swipr.models.Buyer;
@@ -156,20 +157,30 @@ public class UserSessionManager {
 
     // Since you cannot not when a user disconnected, we will check whether the ID already exists to refresh
     private void sellerExists(User user) {
+        Map<Seller, SimpMessageHeaderAccessor> temp = new HashMap<>();
+
         for (Map.Entry<Seller, SimpMessageHeaderAccessor> entry: sellerSessions.entrySet()) {
             if (user.getId().equals(entry.getKey().getId())) {
-                sellerSessions.remove(entry.getKey());
-                break;
+                System.out.println("found a seller");
+            } else {
+                temp.put(entry.getKey(), entry.getValue());
             }
-        }
+        } 
+        sellerSessions.clear();
+        sellerSessions.putAll(temp);
     }
 
     private void buyerExists(User user) {
+        Map<Buyer, SimpMessageHeaderAccessor> temp = new HashMap<>();
+
         for (Map.Entry<Buyer, SimpMessageHeaderAccessor> entry: buyerSessions.entrySet()) {
             if (user.getId().equals(entry.getKey().getId())) {
-                buyerSessions.remove(entry.getKey());
-                break;
+                System.out.println("found a buyer");
+            } else {
+                temp.put(entry.getKey(), entry.getValue());
             }
-        }
+        } 
+        buyerSessions.clear();
+        buyerSessions.putAll(temp);
     }
 }

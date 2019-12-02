@@ -79,6 +79,7 @@ public class OfferController {
             userSessionManager.addSellerSession(seller, headerAccessor);
             query.offerId = currentOfferId.getAndIncrement();
             matchMaker.updateSellQuery(query);
+            System.out.println("current update query session ID: " + headerAccessor.getSessionId());
             userSessionManager.sendToUser(headerAccessor, "/queue/sellerUpdate", "Offer successfully updated");
         }
     }
@@ -139,12 +140,13 @@ public class OfferController {
             } else {
                 User sellingUser = userRepository.findById(sellQuery.userId);
                 SimpMessageHeaderAccessor sellingUserHeaders = userSessionManager.getSellerHeaders(sellingUser);
+                System.out.println("show interest headers: " + sellingUserHeaders.getSessionId());
                 Seller seller = userSessionManager.getSellerFromSessionId(sellingUser, sellingUserHeaders);
                 // userSessionManager.addSellerSession(seller, headerAccessor);
                 buyer.indicateInterestInOffer(sellQuery, seller, interest.getTimeToMeet(), interest.getPreferredDiningHallBit());
                 // Re-update buyer and seller sessions
                 userSessionManager.addBuyerSession(buyer, headerAccessor);
-                userSessionManager.addSellerSession(seller, sellingUserHeaders);
+                // userSessionManager.addSellerSession(seller, sellingUserHeaders);
                 System.out.println("Potential buyers");
                 Set<Information> potentialBuyers = seller.getPotentialBuyersInformation();
                 System.out.println(potentialBuyers);
