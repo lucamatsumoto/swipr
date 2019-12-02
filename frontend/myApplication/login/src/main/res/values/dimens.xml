@@ -2,7 +2,7 @@
 <resources>
     <dimen name="value_margin_start">30sp</dimen>
     <dimen name="double_margin_start">60sp</dimen>
-    <dimen name="status">14sp</dimen>
+    <dimen name="status">12sp</dimen>
     <dimen name="offer_size">14sp</dimen>
     <dimen name="here_size">18sp</dimen>
 
