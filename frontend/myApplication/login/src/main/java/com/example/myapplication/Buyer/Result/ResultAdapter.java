@@ -44,6 +44,14 @@ public class ResultAdapter extends SimpleRecyclerAdapter
         m_context = context;
     }
 
+    private String convertToHourMinutes(LocalDateTime time) {
+        int hour = time.getHour();
+        String hourString = hour < 9 ? String.format("0%d", hour) : String.format("%d", hour);
+        int minute = time.getMinute();
+        String minuteString = minute < 9 ? String.format("0%d", minute) : String.format("%d", minute);
+        return String.format("%s:%s", hourString, minuteString);
+    }
+
     public void onBindViewHolder(@NonNull SimpleRecyclerAdapter.SimpleViewHolder simpleViewHolder, int i) {
         Offer offer = (Offer) mObjectList.get(i);
         Log.d("CHILDREN", Integer.toString(simpleViewHolder.mItem.getChildCount()));
@@ -64,11 +72,12 @@ public class ResultAdapter extends SimpleRecyclerAdapter
         diningHall_val.setText(getDiningHallText(offer));
 
         TextView start = offerView.findViewById(R.id.start_time_value);
-        start.setText(offer.startTime.toString());
+
+        start.setText(convertToHourMinutes(offer.startTime));
         //start.setText(OffsetDateTime.parse(offer.startTime.toString(), dtf).toString());
 
         TextView end = offerView.findViewById(R.id.end_time_value);
-        end.setText(offer.endTime.toString());
+        end.setText(convertToHourMinutes(offer.endTime));
         //end.setText(OffsetDateTime.parse(offer.endTime.toString(), dtf).toString());
 
         TextView price = offerView.findViewById(R.id.price_value);

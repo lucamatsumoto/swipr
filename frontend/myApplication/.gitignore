@@ -12,3 +12,8 @@
 /captures
 .externalNativeBuild
 .cxx
+/.project
+/.settings
+/login/.classpath
+/login/.project
+/login/.settings

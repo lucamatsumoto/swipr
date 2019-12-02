@@ -197,12 +197,12 @@ public class OfferController {
             seller.clearPotentialBuyers();
             // We send back the buyer's information, including the venmo
             User boughtFrom = userRepository.findById(buyer.getId());
-            userSessionManager.sendToUser(headerAccessor, "/queue/sellerInterest", boughtFrom);
+            userSessionManager.sendToUser(headerAccessor, "/queue/sellerConfirmed", boughtFrom);
             // Include in the averaging statistics the seller's original SellQuery that led to this transaction.
             SellQuery sq = matchMaker.sellQueryByUserId(seller.getId());
             AverageSwipePrice.includeSellQuery(sq);
             // When the buyer confirms interest, send out the new average price to all users
-            userSessionManager.sendToUser(buyingUserHeaders, "/queue/buyerInterest", seller);
+            userSessionManager.sendToUser(buyingUserHeaders, "/queue/buyerConfirmed", seller);
             getAverageSellPrice();
         } catch(NullPointerException e) {
             userSessionManager.sendToUser(headerAccessor, "/queue/error", "Seller does not exist anymore");
