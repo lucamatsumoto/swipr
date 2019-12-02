@@ -132,6 +132,7 @@ public class OfferController {
         if (interestedUser != null) {
             Buyer buyer = userSessionManager.getBuyerFromSessionId(interestedUser, headerAccessor);
             // Assuming that the seller is still active
+            System.out.println(String.format("Received from %d", buyer.getId()));
             SellQuery sellQuery = interest.getSellquery();
             if (!matchMaker.getActiveSellQueries().contains(sellQuery)) {
                 userSessionManager.sendToUser(headerAccessor, "/queue/error", "Offer does not exist anymore");
@@ -144,7 +145,9 @@ public class OfferController {
                 // Re-update buyer and seller sessions
                 userSessionManager.addBuyerSession(buyer, headerAccessor);
                 userSessionManager.addSellerSession(seller, sellingUserHeaders);
+                System.out.println("Potential buyers");
                 Set<Information> potentialBuyers = seller.getPotentialBuyersInformation();
+                System.out.println(potentialBuyers);
                 // Batch a list of potential buyers and send them to seller
                 userSessionManager.sendToUser(sellingUserHeaders, "/queue/sellerInterest", potentialBuyers);
             }

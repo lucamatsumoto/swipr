@@ -21,7 +21,7 @@
         app:layout_constraintVertical_bias="0.273" />
 
     <TextView
-        android:id="@+id/meet_time_tag"
+        android:id="@+id/here_meet_time_tag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/meet_time"

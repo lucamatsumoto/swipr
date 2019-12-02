@@ -7,30 +7,31 @@
     android:layout_height="wrap_content">
 
 
-    <TextView
+    <!--    <TextView-->
+<!--        android:id="@+id/status_value"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_toRightOf="@id/interest_info"-->
+<!--        android:layout_below="@id/status_tag"-->
+<!--        android:layout_alignLeft="@+id/status_tag"-->
+<!--        android:textSize="@dimen/status"-->
+<!--        android:text="@string/initial_value"/>-->
+
+    <Button
         android:id="@+id/status_tag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/offer"
-        android:layout_marginLeft="@dimen/value_margin_start"
-        android:textSize="@dimen/status"
-        android:text="@string/status_tag" />
-
-    <TextView
-        android:id="@+id/status_value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/offer"
-        android:layout_below="@id/status_tag"
-        android:layout_alignLeft="@+id/status_tag"
-        android:textSize="@dimen/status"
-        android:text="@string/initial_value"/>
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="76dp"
+        android:layout_toRightOf="@id/interest_info"
+        android:text="@string/status_tag"
+        android:textSize="@dimen/status" />
 
     <include
-        android:id="@+id/offer"
+        android:id="@+id/interest_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        layout="@layout/offer" />
+        layout="@layout/interest_info" />
 
 </RelativeLayout>

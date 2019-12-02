@@ -376,7 +376,7 @@ public class SellerActivity extends DrawerBaseActivity {
         @Override
         public void onMessageReceived(String json)
         {
-            Log.d("Seller Received From Buyer",json);
+            Log.d("Seller Received From Buyer", json);
             Intent i = new Intent(getApplicationContext(), Popup.class);
             i.putExtra("Offer", json);
             startActivity(i);

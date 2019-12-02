@@ -14,7 +14,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:text="Your Selected Offers:"
+        android:text="Singles Looking for a Swipe Daddy:"
         />
 
     <androidx.recyclerview.widget.RecyclerView
