@@ -218,7 +218,7 @@ public class SellerActivity extends DrawerBaseActivity {
         networkManager.subscribe("/topic/average", averageOfferResponder);
         networkManager.subscribe("/user/queue/sellerCancel", cancelOfferResponder);
         networkManager.subscribe("/user/queue/buyerConfirmed",  buyerResponder);
-
+        networkManager.subscribe("/user/queue/here", hereResponder);
     }
 
     LocalDateTime convertTime(int hour, int minute)
@@ -390,6 +390,7 @@ public class SellerActivity extends DrawerBaseActivity {
             setInterestsArray(json);
             Intent i = new Intent(getApplicationContext(), Popup.class);
             i.putExtra("Offer", json);
+            i.putExtra("here", false);
             startActivity(i);
         }
 
@@ -426,6 +427,26 @@ public class SellerActivity extends DrawerBaseActivity {
     };
 
 
+    private NetworkResponder hereResponder = new NetworkResponder() {
+        @Override
+        public void onMessageReceived(String json) {
+            Log.d("Received: ", json);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    // Change so that it dynamically uses the dining hall and user's first name
+                    /* Toast toast = Toast.makeText(getApplicationContext(), "User has Arrived!", Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.BOTTOM, 0, 300);
+                    toast.show(); */
+                    Intent i = new Intent(getApplicationContext(), Popup.class);
+                    i.putExtra("here", true);
+                    // i.putExtra("Offer", json);
+                    startActivity(i);
+                }
+            });
+        }
+    };
+
 
     @Override
     protected void onDestroy()
@@ -435,6 +456,7 @@ public class SellerActivity extends DrawerBaseActivity {
         networkManager.unsubscribe("/user/queue/sellerInterest", sellerConfirmResponder);
         networkManager.unsubscribe("/topic/average", averageOfferResponder);
         networkManager.unsubscribe("/user/queue/sellerCancel", cancelOfferResponder);
+        networkManager.unsubscribe("/user/queue/here", hereResponder);
         super.onDestroy();
     }
 }

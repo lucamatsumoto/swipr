@@ -2,6 +2,7 @@ package com.example.myapplication.Shared;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -58,7 +59,6 @@ public class HereActivity extends AppCompatActivity {
         }
 
         setContentView(R.layout.activity_here);
-        subscribeToHereTopic();
         hereButton = findViewById(R.id.here_button);
 
         TextView nameView = findViewById(R.id.name_value);
@@ -102,10 +102,6 @@ public class HereActivity extends AppCompatActivity {
         return null;
     }
 
-    private void subscribeToHereTopic() {
-        networkManager.subscribe("/user/queue/here", hereResponder);
-    }
-
     public void launchHereButtonActivity(View v) {
         Log.d("HERE", "Sent here message to seller");
         networkManager.send("/swipr/here", dummyUserJSON().toString());
@@ -131,19 +127,4 @@ public class HereActivity extends AppCompatActivity {
         return json;
     }
 
-    private NetworkResponder hereResponder = new NetworkResponder() {
-        @Override
-        public void onMessageReceived(String json) {
-            Log.d("Received: ", json);
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    // Change so that it dynamically uses the dining hall and user's first name
-                    Toast toast = Toast.makeText(getApplicationContext(), "User has Arrived!", Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.BOTTOM, 0, 300);
-                    toast.show();
-                }
-            });
-        }
-    };
 }

@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.example.myapplication.Buyer.Interest.Interest;
 import com.example.myapplication.Buyer.InterestBacker;
@@ -25,10 +26,16 @@ public class Popup extends Activity {
 
     private String interests;
     private InterestBacker interestBacker = InterestBacker.getInstance();
+    private TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+        boolean here = getIntent().getBooleanExtra("here", false);
+        if (here) {
+            textView = findViewById(R.id.takeMeThere);
+            textView.setText("Your Partner has Arrived in Flavortown!");
+        }
         setContentView(R.layout.popup);
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
