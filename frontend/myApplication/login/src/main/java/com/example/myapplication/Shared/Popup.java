@@ -28,8 +28,6 @@ public class Popup extends Activity {
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.popup);
-        interests = getIntent().getStringExtra("Offer");
-        setInterestsArray();
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         int width = dm.widthPixels;
@@ -43,18 +41,4 @@ public class Popup extends Activity {
         startActivity(i);
     }
 
-    private void setInterestsArray() {
-        try {
-            JSONArray jsonarray = new JSONArray(interests);
-            for (int i = 0; i < jsonarray.length(); i++) {
-                JSONObject jsonobject = jsonarray.getJSONObject(i);
-                Interest interest = new Interest(jsonobject.toString());
-                interestBacker.addInterests(interest);
-            }
-        }
-        catch (JSONException e)
-        {
-            Log.e("JSON", e.getMessage());
-        }
-    }
 }

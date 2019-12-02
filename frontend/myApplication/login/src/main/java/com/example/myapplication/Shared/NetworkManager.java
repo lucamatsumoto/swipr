@@ -99,6 +99,8 @@ public class NetworkManager {
                 subscribe("/user/queue/buyerFind", buyerUpdateResponder);
                 subscribe("/user/queue/buyerInterest", interestConfirmedResponder);
                 subscribe("/user/queue/sellerInterest", interestIncomingResponder);
+                subscribe("/user/queue/sellerConfirmed", new ConcreteNetworkResponder());
+                subscribe("/user/queue/BuyerConfirmed", new ConcreteNetworkResponder());
                 //TODO: subscribe to I'm here notifications
                 subscribe("/user/queue/here", imHereResponder);
                 send("/swipr/create", loginPayload);
