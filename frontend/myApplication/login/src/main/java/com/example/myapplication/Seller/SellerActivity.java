@@ -404,6 +404,8 @@ public class SellerActivity extends DrawerBaseActivity {
         }
     };
 
+
+
     @Override
     protected void onDestroy()
     {

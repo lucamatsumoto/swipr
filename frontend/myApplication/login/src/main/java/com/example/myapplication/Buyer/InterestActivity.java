@@ -2,6 +2,8 @@ package com.example.myapplication.Buyer;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -30,6 +32,8 @@ public class InterestActivity extends AppCompatActivity {
         interestAdapter = new InterestAdapter(this, interestBacker.getInterests());
         interestRecycler.setAdapter(interestAdapter);
         interestRecycler.setLayoutManager(new LinearLayoutManager(this));
+        interestRecycler.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+        interestRecycler.setItemAnimator(new DefaultItemAnimator());
 //        interestButton = findViewById(R.id.interest_button);
 //        interestButton.setOnClickListener(new View.OnClickListener() {
 //            @Override

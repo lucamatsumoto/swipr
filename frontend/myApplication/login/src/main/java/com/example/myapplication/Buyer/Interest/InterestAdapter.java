@@ -18,6 +18,7 @@ import com.example.myapplication.Shared.Offer;
 import com.example.myapplication.Shared.SimpleRecyclerAdapter;
 import com.example.myapplication.R;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
@@ -36,8 +37,6 @@ public class InterestAdapter extends SimpleRecyclerAdapter
             Log.d("CHILDREN", simpleViewHolder.mItem.getChildAt(j).getClass().getName());
         }
 
-        //DateTimeFormatter dtf = DateTimeFormatter.ofPattern ( "yyyy-MM-dd HH:mm" );
-
         View InterestView = simpleViewHolder.mItem.getChildAt(1);
 
         TextView diningHall_value = InterestView.findViewById(R.id.preferred_dining_hall_value);
@@ -45,7 +44,7 @@ public class InterestAdapter extends SimpleRecyclerAdapter
 
 
         TextView meetTime = InterestView.findViewById(R.id.meet_time_value);
-        meetTime.setText("12:00");
+        meetTime.setText(convertToHourMinutes(interest.meetTime));
 
         TextView nameView = InterestView.findViewById(R.id.name_value);
         nameView.setText(interest.name);
@@ -70,5 +69,13 @@ public class InterestAdapter extends SimpleRecyclerAdapter
                 .crossFade()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(imgView);
+    }
+
+    private String convertToHourMinutes(LocalDateTime time) {
+        int hour = time.getHour();
+        String hourString = hour < 9 ? String.format("0%d", hour) : String.format("%d", hour);
+        int minute = time.getMinute();
+        String minuteString = minute < 9 ? String.format("0%d", minute) : String.format("%d", minute);
+        return String.format("%s:%s", hourString, minuteString);
     }
 }

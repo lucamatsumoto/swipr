@@ -9,8 +9,12 @@ import android.util.Log;
 
 import androidx.core.content.ContextCompat;
 
+import com.example.myapplication.Buyer.BuyerBacker;
 import com.example.myapplication.Buyer.Result.ResultActivity;
 import com.example.myapplication.Seller.SellerActivity;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -51,6 +55,8 @@ public class NetworkManager {
         temp.put("/user/queue/sellerInterest", new HashSet<>());
         temp.put("/user/queue/sellerCancel", new HashSet<>());
         temp.put("/user/queue/here", new HashSet<>());
+        temp.put("/user/queue/buyerConfirmed", new HashSet<>());
+        temp.put("/user/queue/sellerConfirmed", new HashSet<>());
         topicToSubset = temp;
     }
 
@@ -99,8 +105,10 @@ public class NetworkManager {
                 subscribe("/user/queue/buyerFind", buyerUpdateResponder);
                 subscribe("/user/queue/buyerInterest", interestConfirmedResponder);
                 subscribe("/user/queue/sellerInterest", interestIncomingResponder);
-                subscribe("/user/queue/sellerConfirmed", new ConcreteNetworkResponder());
-                subscribe("/user/queue/BuyerConfirmed", new ConcreteNetworkResponder());
+                subscribe("/user/queue/buyerConfirmed",  buyerResponder);
+                subscribe("/user/queue/sellerConfirmed",  sellerResponder);
+
+
                 //TODO: subscribe to I'm here notifications
                 subscribe("/user/queue/here", imHereResponder);
                 send("/swipr/create", loginPayload);
@@ -229,4 +237,36 @@ public class NetworkManager {
                     mService.INTEREST_INCOMING_NOTIFID);
         }
     };
+
+    private NetworkResponder buyerResponder = new NetworkResponder() {
+        @Override
+        public void onMessageReceived(String json) {
+            mService.createNotification(HereActivity.class,
+                    "Swipe Confirmed!",
+                    "Your Swipe has been confirmed! One step closer to FLAVOR TOWN",
+                    mService.INTEREST_INCOMING_NOTIFID);
+            try {
+                BuyerBacker.getInstance().confirmed_seller = new JSONObject(json);
+            }
+            catch(JSONException e)
+            {
+                Log.e("JSON Error Buyer", e.getMessage());
+            }
+        }
+    };
+
+    private NetworkResponder sellerResponder = new NetworkResponder() {
+        @Override
+        public void onMessageReceived(String json) {
+            try {
+                BuyerBacker.getInstance().confirmed_buyer = new JSONObject(json);
+            }
+            catch(JSONException e)
+            {
+                Log.e("JSON Error Seller", e.getMessage());
+            }
+        }
+    };
 }
+
+
