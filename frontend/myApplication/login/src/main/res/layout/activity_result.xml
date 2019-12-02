@@ -14,6 +14,8 @@
         android:layout_alignParentLeft="false"
         android:layout_alignParentTop="true"
         android:text="Available Offers:"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="15dp"
         android:textColor="@color/black"
         android:textSize="24dp"
         android:textStyle="bold"
@@ -21,6 +23,7 @@
         tools:layout_editor_absoluteX="3dp" />
 
     <androidx.recyclerview.widget.RecyclerView
+        android:paddingTop="10dp"
         android:id="@+id/b_resultRecycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
