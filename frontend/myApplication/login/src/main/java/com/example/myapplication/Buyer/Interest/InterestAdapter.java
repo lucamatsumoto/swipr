@@ -12,6 +12,8 @@ import androidx.annotation.NonNull;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.example.myapplication.Buyer.BuyerBacker;
+import com.example.myapplication.Buyer.InterestBacker;
 import com.example.myapplication.Buyer.Result.ResultBacker;
 import com.example.myapplication.Shared.NetworkManager;
 import com.example.myapplication.Shared.Offer;
@@ -55,11 +57,22 @@ public class InterestAdapter extends SimpleRecyclerAdapter
 
         Button confirmButton = (Button) simpleViewHolder.mItem.getChildAt(0);
 
+        if(InterestBacker.getInstance().isConfirmed(interest))
+            confirmButton.setText("I'm Here!");
+        else
+            confirmButton.setText("confirm");
+
         confirmButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-                NetworkManager.getInstance().send("/swipr/confirmInterest", interest.Buyer.toString());
+                if(InterestBacker.getInstance().isConfirmed(interest))
+                    NetworkManager.getInstance().send("/swipr/here", BuyerBacker.getInstance().confirmed_buyer.toString());
+                else {
+                    NetworkManager.getInstance().send("/swipr/confirmInterest", interest.Buyer.toString());
+                    InterestBacker.getInstance().setConfirmed(interest, true);
+                    confirmButton.setText("I'm here");
+                }
             }
         });
 

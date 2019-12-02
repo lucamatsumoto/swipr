@@ -13,6 +13,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.myapplication.Buyer.BuyerBacker;
 import com.example.myapplication.Buyer.Result.ResultActivity;
 import com.example.myapplication.Buyer.Result.ResultBacker;
 import com.example.myapplication.R;
@@ -164,6 +165,7 @@ public class RefineInterestActivity extends AppCompatActivity {
         }
 
         long preferredTimeEpoch = preferredTime.atZone(ZoneId.systemDefault()).toEpochSecond();
+        BuyerBacker.getInstance().confirmed_epoch = preferredTimeEpoch;
         JSONObject interestJSON = new JSONObject();
 
         long preferredDiningHallLong = 0;
@@ -182,7 +184,7 @@ public class RefineInterestActivity extends AppCompatActivity {
                 preferredDiningHallLong = 8;
                 break;
         }
-
+        BuyerBacker.getInstance().confirmed_hall = preferredDiningHallLong;
 
         try
         {

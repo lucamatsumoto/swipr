@@ -32,11 +32,11 @@ public class Popup extends Activity {
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         boolean here = getIntent().getBooleanExtra("here", false);
+        setContentView(R.layout.popup);
         if (here) {
             textView = findViewById(R.id.takeMeThere);
             textView.setText("Your Partner has Arrived in Flavortown!");
         }
-        setContentView(R.layout.popup);
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         int width = dm.widthPixels;

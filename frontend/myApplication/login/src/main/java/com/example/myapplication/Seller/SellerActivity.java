@@ -431,19 +431,10 @@ public class SellerActivity extends DrawerBaseActivity {
         @Override
         public void onMessageReceived(String json) {
             Log.d("Received: ", json);
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    // Change so that it dynamically uses the dining hall and user's first name
-                    /* Toast toast = Toast.makeText(getApplicationContext(), "User has Arrived!", Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.BOTTOM, 0, 300);
-                    toast.show(); */
-                    Intent i = new Intent(getApplicationContext(), Popup.class);
-                    i.putExtra("here", true);
-                    // i.putExtra("Offer", json);
-                    startActivity(i);
-                }
-            });
+            Intent i = new Intent(getApplicationContext(), Popup.class);
+            i.putExtra("here", true);
+            // i.putExtra("Offer", json);
+            startActivity(i);
         }
     };
 

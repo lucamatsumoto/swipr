@@ -205,6 +205,7 @@ public class NetworkManager {
     private NetworkResponder imHereResponder = new NetworkResponder() {
         @Override
         public void onMessageReceived(String json) {
+            Log.d("HereResponder", json);
             mService.createNotification(SellerActivity.class,
                     "Your Daddy is here!",
                     "Your Swipe Seller is at the designated location.",
