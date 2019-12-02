@@ -67,4 +67,22 @@ public class Offer {
     {
         return "User_ID: " + userId + " start_time: " + startTime + " end_time: " + endTime + " price: " + price + " dining_hall_list: " + diningHallList;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof Offer)) {
+            return false;
+        }
+        Offer offer = (Offer)o;
+        return offer.offerId == this.offerId;
+    }
+
+    @Override
+    public int hashCode() {
+        return 31 * (int) offerId;
+    }
+
 }

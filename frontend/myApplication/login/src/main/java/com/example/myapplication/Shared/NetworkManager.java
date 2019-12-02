@@ -222,8 +222,8 @@ public class NetworkManager {
         @Override
         public void onMessageReceived(String json) {
             mService.createNotification(SellerActivity.class,
-                    "Incoming Interest",
-                    "A Hungry Single is interested in your offer. Click to Confirm.",
+                    "Interests Update",
+                    "A Hungry Single has updated interested in your offer. Click to view.",
                     mService.INTEREST_INCOMING_NOTIFID);
         }
     };

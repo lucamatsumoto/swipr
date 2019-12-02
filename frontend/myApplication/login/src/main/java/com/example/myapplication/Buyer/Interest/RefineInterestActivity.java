@@ -2,6 +2,7 @@ package com.example.myapplication.Buyer.Interest;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,6 +13,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.myapplication.Buyer.Result.ResultActivity;
+import com.example.myapplication.Buyer.Result.ResultBacker;
 import com.example.myapplication.R;
 import com.example.myapplication.Shared.ConcreteNetworkResponder;
 import com.example.myapplication.Shared.DiningHalls;
@@ -29,11 +32,14 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.transform.Result;
+
 public class RefineInterestActivity extends AppCompatActivity {
 
     String offer_json_string;
     Offer m_offer;
     private Spinner diningHallSpinner;
+    private ResultBacker resultBacker = ResultBacker.getInstance();
     SeekBar s_time;
     LocalDateTime preferredTime;
     String preferredDiningHallString;
@@ -189,8 +195,10 @@ public class RefineInterestActivity extends AppCompatActivity {
         {
             Log.d("JSON ERROR", e.getMessage());
         }
-
+        resultBacker.setCancelled(m_offer, true);
         Log.d("JSON from buyer", interestJSON.toString());
         networkManager.send("/swipr/showInterest", interestJSON.toString());
+        Intent i = new Intent(this, ResultActivity.class);
+        startActivity(i);
     }
 }
