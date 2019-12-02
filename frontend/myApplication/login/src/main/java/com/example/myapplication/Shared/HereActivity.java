@@ -22,6 +22,7 @@ public class HereActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        String userJsonString = getIntent().getStringExtra("UserJSON");
         setContentView(R.layout.activity_here);
         subscribeToHereTopic();
         hereButton = findViewById(R.id.here_button);

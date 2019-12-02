@@ -126,7 +126,7 @@ public class SellerActivity extends DrawerBaseActivity {
             public void onStopTrackingTouch(SeekBar seekBar) {
                 int progress = seekBar.getProgress();
                 Log.d("PRICE", Integer.toString(progress));
-
+                priceCents = (long) progress;
             }
         });
 
