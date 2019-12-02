@@ -76,4 +76,29 @@ public class Interest {
 
         return null;
     }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof Interest)) {
+            return false;
+        }
+        Interest i = (Interest) o;
+        try {
+            return i.Buyer.getInt("id") == this.Buyer.getInt("id");
+        }
+        catch (Exception e)
+        {
+            Log.e("JSON ERR", e. getMessage());
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return 31 * (int) name.hashCode();
+    }
 }

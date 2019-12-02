@@ -37,9 +37,9 @@ public class HereActivity extends AppCompatActivity {
         setContentView(R.layout.activity_here);
         JSONObject userJson = BuyerBacker.getInstance().confirmed_seller;
         Log.d("seller", userJson.toString());
-        
-        String DiningHall = getDiningHallString(getIntent().getLongExtra("DiningHall", 0));
-        long longValue = getIntent().getLongExtra("Time", 0);
+
+        String DiningHall = getDiningHallString(BuyerBacker.getInstance().confirmed_hall);
+        long longValue = BuyerBacker.getInstance().confirmed_epoch;
 
         Log.d("Epoch", Long.toString(longValue));
 
@@ -58,14 +58,16 @@ public class HereActivity extends AppCompatActivity {
         }
 
         setContentView(R.layout.activity_here);
-        subscribeToHereTopic();
         hereButton = findViewById(R.id.here_button);
 
         TextView nameView = findViewById(R.id.name_value);
         nameView.setText(fullName);
 
+        TextView diningHallView = findViewById((R.id.dining_hall_value));
+        diningHallView.setText(DiningHall);
+
         TextView timeView = findViewById(R.id.time_value);
-        timeView.setText(time.toString());
+        timeView.setText(convertToHourMinutes(time));
 
         TextView venmoView = findViewById(R.id.venmo_value);
         venmoView.setText(venmo);
@@ -85,6 +87,14 @@ public class HereActivity extends AppCompatActivity {
 
     }
 
+    private String convertToHourMinutes(LocalDateTime time) {
+        int hour = time.getHour();
+        String hourString = hour < 9 ? String.format("0%d", hour) : String.format("%d", hour);
+        int minute = time.getMinute();
+        String minuteString = minute < 9 ? String.format("0%d", minute) : String.format("%d", minute);
+        return String.format("%s:%s", hourString, minuteString);
+    }
+
     private String getDiningHallString(long bitField)
     {
         switch((int) bitField)
@@ -102,34 +112,11 @@ public class HereActivity extends AppCompatActivity {
         return null;
     }
 
-    private void subscribeToHereTopic() {
-        networkManager.subscribe("/user/queue/here", hereResponder);
-    }
 
     public void launchHereButtonActivity(View v) {
-        Log.d("HERE", "Sent here message to seller");
-        networkManager.send("/swipr/here", dummyUserJSON().toString());
+        networkManager.send("/swipr/here", BuyerBacker.getInstance().confirmed_seller.toString());
     }
 
-
-    public static JSONObject dummyUserJSON()
-    {
-        JSONObject json = new JSONObject();
-        try
-        {
-            json.put("id", 1307);
-            json.put("firstName", "Luca");
-            json.put("lastName", "Matsumoto");
-            json.put("email", "luca@matsumoto.us");
-            json.put("profilePicUrl", "https://lh3.googleusercontent.com/a-/AAuE7mDxNb7wKqRjR-1YZTgCy17m_3AyonadpYsFNxYgCw");
-            json.put("venmo", "@test");
-        }
-        catch(JSONException e)
-        {
-            e.printStackTrace();
-        }
-        return json;
-    }
 
     private NetworkResponder hereResponder = new NetworkResponder() {
         @Override

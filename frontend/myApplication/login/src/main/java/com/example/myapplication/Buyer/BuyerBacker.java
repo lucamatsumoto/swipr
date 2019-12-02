@@ -17,6 +17,9 @@ public class BuyerBacker {
     boolean isFilter;
     public JSONObject confirmed_seller;
     public JSONObject confirmed_buyer;
+
+    public long confirmed_epoch;
+    public long  confirmed_hall;
     String mSignin;
     private static volatile BuyerBacker instance;
 
