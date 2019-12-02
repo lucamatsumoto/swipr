@@ -15,12 +15,18 @@ import com.example.myapplication.Buyer.Interest.InterestDialog;
 import com.example.myapplication.Buyer.Interest.RefineInterestActivity;
 import com.example.myapplication.Buyer.InterestActivity;
 import com.example.myapplication.Shared.DiningHalls;
+import com.example.myapplication.Shared.NetworkManager;
+import com.example.myapplication.Shared.ProfileSingleton;
 import com.example.myapplication.Shared.SimpleRecyclerAdapter;
 import com.example.myapplication.Shared.Offer;
 import com.example.myapplication.R;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -30,6 +36,8 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 public class ResultAdapter extends SimpleRecyclerAdapter
 {
     private Context m_context;
+    private NetworkManager networkManager = NetworkManager.getInstance();
+
     public ResultAdapter(Context context, List<Offer> resultArray) {
 
         super(context, resultArray, R.layout.result);
@@ -66,25 +74,33 @@ public class ResultAdapter extends SimpleRecyclerAdapter
         TextView price = offerView.findViewById(R.id.price_value);
         price.setText(String.format("$%.02f", offer.price / 100.0));
         Button interestButton = (Button) simpleViewHolder.mItem.getChildAt(0);
-//        interestButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Log.d("Interested Button", "clicked");
-//                showInterestDialog(offer.diningHallList);
-//            }
-//        });
+
+        ResultBacker resultBacker = ResultBacker.getInstance();
+        if (resultBacker.getCancelled(offer)) {
+            interestButton.setText("Cancel");
+        } else {
+            interestButton.setText("I'm Interested");
+        }
+
         interestButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-                Log.d("Interested", Integer.toString(i));
-                Intent i = new Intent(view.getContext(), RefineInterestActivity.class);
-                i.putExtra("Offer", offer.generateQuery());
-                view.getContext().startActivity(i);
+                if (!resultBacker.getCancelled(offer)) {
+                    Log.d("Interested", Integer.toString(i));
+                    Intent i = new Intent(view.getContext(), RefineInterestActivity.class);
+                    i.putExtra("Offer", offer.generateQuery());
+                    view.getContext().startActivity(i);
+                } else {
+                    Log.d("Cancelled", Integer.toString(i));
+                    // Send the cancel request over to the server
+                    sendCancelInterest(offer);
+                    resultBacker.setCancelled(offer, false);
+                    interestButton.setText("I'm Interested");
+                }
             }
         });
     }
-
 
 
     public String getDiningHallText(Offer offer){
@@ -114,6 +130,32 @@ public class ResultAdapter extends SimpleRecyclerAdapter
         dialogFragment.setDiningHalls(diningHalls);
         dialogFragment.show(((FragmentActivity) m_context).getSupportFragmentManager(), "Interested Button");
         Log.d("Interested Button", "interest clicked");
+    }
+
+    private void sendCancelInterest(Offer offer)
+    {
+        JSONObject interestJSON = new JSONObject();
+        String offerjsonString = offer.generateQuery();
+        JSONObject offerJSON = null;
+        try {
+            offerJSON = new JSONObject(offerjsonString);
+        } catch (JSONException e) {
+            Log.e("JSON ERR", e.getLocalizedMessage());
+        }
+
+        try
+        {
+            interestJSON.put("buyerId", ProfileSingleton.getInstance().getID());
+            interestJSON.put("meetTime", 0);
+            interestJSON.put("preferredDiningHall", 0);
+            interestJSON.put("sellQuery", offerJSON);
+        }
+        catch (JSONException e)
+        {
+            Log.d("JSON ERROR", e.getMessage());
+        }
+        // Log.d("JSON from buyer", interestJSON.toString());
+        networkManager.send("/swipr/cancelInterest", interestJSON.toString());
     }
 }
 

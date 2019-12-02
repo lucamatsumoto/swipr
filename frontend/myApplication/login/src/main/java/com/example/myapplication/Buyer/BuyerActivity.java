@@ -27,6 +27,7 @@ import com.example.myapplication.R;
 import com.example.myapplication.Seller.SellerActivity;
 import com.example.myapplication.Shared.DrawerBaseActivity;
 import com.example.myapplication.Shared.DummyActivity;
+import com.example.myapplication.Shared.HereActivity;
 import com.example.myapplication.Shared.NetworkManager;
 import com.example.myapplication.Shared.NetworkResponder;
 import com.example.myapplication.Shared.Offer;

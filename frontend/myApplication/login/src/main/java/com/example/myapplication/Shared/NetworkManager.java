@@ -32,6 +32,11 @@ public class NetworkManager {
     private SocketService mService;
     private ServiceConnection mServiceConnection;
     private boolean mServiceBound = false;
+    /**
+     * Used to enable or disable notifications for new search results.
+     * In particular, if never set to false, the user would get a notification for
+     * new search results even when they are manually executing the request for new search results.
+     */
     public boolean showBuyerUpdate = true;
 
     private static final Map<String, Set<NetworkResponder>> topicToSubset;
@@ -45,6 +50,7 @@ public class NetworkManager {
         temp.put("/user/queue/sellerUpdate", new HashSet<>());
         temp.put("/user/queue/sellerInterest", new HashSet<>());
         temp.put("/user/queue/sellerCancel", new HashSet<>());
+        temp.put("/user/queue/here", new HashSet<>());
         topicToSubset = temp;
     }
 
@@ -52,7 +58,7 @@ public class NetworkManager {
     private NetworkManager(){ }
 
     /**
-     * NetworkManager is a Singleton.
+     * Returns the instance of the NetworkManager Singleton
      * @return  Returns the instance of the NetworkManager
      */
     public static NetworkManager getInstance()
@@ -94,6 +100,7 @@ public class NetworkManager {
                 subscribe("/user/queue/buyerInterest", interestConfirmedResponder);
                 subscribe("/user/queue/sellerInterest", interestIncomingResponder);
                 //TODO: subscribe to I'm here notifications
+                subscribe("/user/queue/here", imHereResponder);
                 send("/swipr/create", loginPayload);
             }
 
@@ -127,8 +134,7 @@ public class NetworkManager {
     }
 
     /**
-     * Adds a callback for a specific topic.
-     * Does not auto unsubscribe. Call "unsubscribe" if your callback should not survive
+     * Adds a callback for a specific topic. Call "unsubscribe" if your callback should not survive
      * destruction of the containing Activity.
      * @param topic     The topic to listen and react to.
      * @param command   The callback.
@@ -140,7 +146,8 @@ public class NetworkManager {
     }
 
     /**
-     * Unsubscribes a callback for a specific topic.
+     * Unsubscribes a callback for a specific topic. If an Activity instance subscribes to a topic
+     * "on the way in", it should also unsubscribe "on the way out".
      * Make sure to keep the original "command" parameter used to subscribe with.
      * @param topic     The topic the original callback was subscribed to.
      * @param command   The original callback used in the call to "subscribe".
@@ -215,8 +222,8 @@ public class NetworkManager {
         @Override
         public void onMessageReceived(String json) {
             mService.createNotification(SellerActivity.class,
-                    "Incoming Interest",
-                    "A Hungry Single is interested in your offer. Click to Confirm.",
+                    "Interests Update",
+                    "A Hungry Single has updated interested in your offer. Click to view.",
                     mService.INTEREST_INCOMING_NOTIFID);
         }
     };
