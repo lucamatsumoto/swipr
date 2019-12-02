@@ -19,35 +19,32 @@
 
     <Button
         android:id="@+id/confirm_button"
-        android:layout_width="wrap_content"
+        android:layout_width="105dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_toRightOf="@id/profilePic"
         android:layout_marginVertical="20dp"
+        android:layout_marginLeft="19dp"
+        android:layout_marginRight="4dp"
+        android:layout_toRightOf="@id/profilePic"
         android:text="Confirm"
         android:textSize="@dimen/status" />
 
     <include
         android:id="@+id/interest_info"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        layout="@layout/interest_info" />
+        layout="@layout/interest_info"
+        android:layout_width="199dp"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/profilePic"
-        android:layout_width="81dp"
-        android:layout_height="71dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_toRightOf="@id/interest_info"
-        android:layout_marginLeft="16dp"
+        android:src="@drawable/swipr_square"
+        android:layout_width="61dp"
+        android:layout_height="66dp"
         android:layout_marginVertical="8dp"
-        android:layout_marginTop="52dp"
-        android:background="@color/colorPrimary"
-        android:padding="13dp"
-        />
+        android:layout_marginLeft="23dp"
+        android:layout_toRightOf="@id/interest_info"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </RelativeLayout>

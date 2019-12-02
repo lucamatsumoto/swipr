@@ -65,7 +65,7 @@ public class InterestAdapter extends SimpleRecyclerAdapter
 
         ImageView imgView = (ImageView) simpleViewHolder.mItem.getChildAt(2);
         Glide.with(getApplicationContext()).load(interest.profilePicture)
-                .thumbnail(0.5f)
+                .thumbnail(0.2f)
                 .crossFade()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(imgView);
