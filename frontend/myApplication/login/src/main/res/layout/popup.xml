@@ -5,18 +5,16 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/name_tag"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Incoming Swipe Request!"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
-
-    <Button
         android:id="@+id/takeMeThere"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/name_tag"
-        android:onClick="launchSellerInterest"
-        android:text="Take me there" />
+        android:layout_alignParentEnd="true"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="284dp"
+        android:layout_marginEnd="38dp"
+        android:gravity="center"
+        android:text="Your list of Potential Swipr's has changed!"
+        android:textColor="@color/white"
+        android:textSize="18dp" />
 
 </RelativeLayout>

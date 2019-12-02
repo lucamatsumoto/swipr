@@ -51,8 +51,8 @@ public class HereActivity extends AppCompatActivity {
         subscribeToHereTopic();
         hereButton = findViewById(R.id.here_button);
 
-        TextView nameView = findViewById(R.id.name_tag);
-        nameView.setText(fullName);
+        //TextView nameView = findViewById(R.id.name_tag);
+        //nameView.setText(fullName);
 
         TextView timeView = findViewById(R.id.time_value);
         timeView.setText(time.toString());
