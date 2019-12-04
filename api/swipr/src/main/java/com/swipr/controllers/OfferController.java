@@ -202,7 +202,8 @@ public class OfferController {
             SellQuery sq = matchMaker.sellQueryByUserId(seller.getId());
             AverageSwipePrice.includeSellQuery(sq);
             // When the buyer confirms interest, send out the new average price to all users
-            userSessionManager.sendToUser(buyingUserHeaders, "/queue/buyerConfirmed", seller);
+            User soldTo = userRepository.findById(seller.getId());
+            userSessionManager.sendToUser(buyingUserHeaders, "/queue/buyerConfirmed", soldTo);
             getAverageSellPrice();
         } catch(NullPointerException e) {
             userSessionManager.sendToUser(headerAccessor, "/queue/error", "Seller does not exist anymore");

@@ -114,6 +114,7 @@ public class HereActivity extends AppCompatActivity {
     }
 
     public void launchHereButtonActivity(View v) {
+        Log.d("Sending to here", BuyerBacker.getInstance().confirmed_seller.toString());
         networkManager.send("/swipr/here", BuyerBacker.getInstance().confirmed_seller.toString());
     }
 

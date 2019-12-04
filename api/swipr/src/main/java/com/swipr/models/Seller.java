@@ -32,6 +32,7 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties({"potentialBuyers"})
 public class Seller extends User {
 
+    @JsonIgnore
     @Transient
     private Set<Information> potentialBuyers;
 
