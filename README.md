@@ -4,7 +4,11 @@ Matching hungry singles in your area! We are an android application designed to 
 
 
 ## Get our Application ##
-We should probably figure out posting our app on the Android store. 
+The application file swipr/apk/debug/swipr.apk can be downloaded directly to any android device (NOTE: make sure device allows installation of apps from unknown sources)
+The application can also be run directly from Android Studio by opening the folder 'MyApplication' 
+NOTE: development environment must first be registered with Google and Facebook to be able to use their API's for sign in. Instructions can be found here:
+Google: https://developers.google.com/identity/sign-in/android/start-integrating
+Facebook: https://developers.facebook.com/docs/facebook-login/android/
 
 ## Dependencies ##
 
